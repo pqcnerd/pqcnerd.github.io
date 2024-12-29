@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Materials - PQC Hub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #003366;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        nav {
+            background-color: #002244;
+            overflow: hidden;
+            padding: 5px 0;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: inline-block;
+        }
+        nav a:hover {
+            background-color: #66ccff;
+        }
+        section {
+            max-width: 900px;
+            margin: 20px auto;
+            background: white;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .filter {
+            margin-bottom: 20px;
+        }
+        .filter label {
+            margin-right: 10px;
+        }
+        .materials-list {
+            list-style: none;
+            padding: 0;
+        }
+        .materials-list li {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            background-color: #f7f7f7;
+        }
+        .materials-list a {
+            color: #003366;
+            text-decoration: none;
+        }
+        footer {
+            background-color: #002244;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Study Materials</h1>
+        <p>Resources for students diving into post-quantum cryptography</p>
+    </header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="resume.html">Resume</a>
+        <a href="schoolwork.html">Schoolwork</a>
+        <a href="study-material.html">Study Materials</a>
+        <a href="about.html">About Me</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <section>
+        <h2>Available Materials</h2>
+        <div class="filter">
+            <label for="course-filter">Filter by Course:</label>
+            <select id="course-filter">
+                <option value="all">All</option>
+                <option value="pqc101">PQC 101</option>
+                <option value="crypto102">Crypto 102</option>
+            </select>
+        </div>
+        <ul class="materials-list">
+            <li data-course="pqc101">
+                <strong>PQC 101 - Lecture 1 Notes</strong><br>
+                <a href="#">Download</a>
+            </li>
+            <li data-course="crypto102">
+                <strong>Crypto 102 - Week 2 Problem Set</strong><br>
+                <a href="#">Download</a>
+            </li>
+        </ul>
+    </section>
+    <footer>
+        <p>&copy; 2024 Post-Quantum Cryptography Hub. All rights reserved.</p>
+    </footer>
+    <script>
+        const courseFilter = document.getElementById('course-filter');
+        const materials = document.querySelectorAll('.materials-list li');
+
+        courseFilter.addEventListener('change', () => {
+            const selectedCourse = courseFilter.value;
+            materials.forEach(material => {
+                material.style.display = selectedCourse === 'all' || material.dataset.course === selectedCourse ? 'block' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
+

@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>pqcnerd's</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f7f7f7;
-            color: #333;
-            line-height: 1.6;
+            background-color: #0b0c10;
+            color: #c5c6c7;
         }
         header {
-            background-color: #003366;
-            color: white;
+            background-color: #1f2833;
+            color: #66fcf1;
             padding: 20px 0;
             text-align: center;
         }
@@ -28,46 +28,53 @@
             font-size: 1.2em;
         }
         nav {
-            background-color: #002244;
-            overflow: hidden;
-            padding: 5px 0;
+            display: flex;
+            justify-content: center;
+            background-color: #45a29e;
+            padding: 10px 0;
         }
         nav a {
             color: white;
             text-decoration: none;
-            padding: 10px 15px;
-            display: inline-block;
+            margin: 0 15px;
+            font-weight: bold;
+            transition: color 0.3s;
         }
         nav a:hover {
-            background-color: #66ccff;
+            color: #66fcf1;
         }
         section {
+            padding: 20px;
             max-width: 900px;
             margin: 20px auto;
-            background: white;
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background: #1f2833;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            color: #c5c6c7;
+        }
+        section h2 {
+            color: #66fcf1;
         }
         footer {
-            background-color: #002244;
-            color: white;
+            background-color: #1f2833;
+            color: #c5c6c7;
             text-align: center;
             padding: 10px 0;
             position: fixed;
             bottom: 0;
             width: 100%;
         }
+        footer p {
+            margin: 0;
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>pqcnerd's</h1>
-        <p>Exploring the intersection of cryptography and the quantum era</p>
+        <p>Exploring the future of secure communication in a post-quantum world</p>
     </header>
     <nav>
-        <a href="index.html">Home</a>
         <a href="resume.html">Resume</a>
         <a href="schoolwork.html">Schoolwork</a>
         <a href="study-material.html">Study Materials</a>
@@ -75,11 +82,12 @@
         <a href="contact.html">Contact</a>
     </nav>
     <section>
-        <h2>Welcome!</h2>
-        <p>This website is a portal to explore my journey through the evolving landscape of post-quantum cryptography. Navigate through the menu to discover resources, projects, and insights into this fascinating field.</p>
+        <h2>Hello and Welcome!</h2>
+        <p>This website serves as a dedicated space to delve into the intricacies of post-quantum cryptography. As advancements in quantum computing loom on the horizon, ensuring secure communication becomes a paramount challenge. Here, I showcase my research, insights, and resources in this cutting-edge field.</p>
+        <p>Navigate through the menu above to explore my academic work, research projects, and curated materials on post-quantum security.</p>
     </section>
     <footer>
-        <p>&copy; 2024 pqcnerd's. All rights reserved.</p>
+        <p>&copy; 2024 pqcnerd. All rights reserved. | Empowering security in the quantum era</p>
     </footer>
 </body>
 </html>
