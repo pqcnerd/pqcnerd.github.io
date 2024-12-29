@@ -9,75 +9,94 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f7f7f7;
-            color: #333;
-            line-height: 1.6;
+            background-color: #ffffff;
+            color: #000;
         }
         header {
-            background-color: #003366;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
+            background-color: #f8f8f8;
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.8em;
+            color: #003366;
         }
         nav {
-            background-color: #002244;
-            overflow: hidden;
-            padding: 5px 0;
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            background-color: #f8f8f8;
         }
         nav a {
-            color: white;
+            margin-right: 20px;
             text-decoration: none;
-            padding: 10px 15px;
-            display: inline-block;
+            font-size: 0.9em;
+            color: #003366;
+            font-weight: bold;
         }
         nav a:hover {
-            background-color: #66ccff;
+            text-decoration: underline;
         }
-        section {
+        main {
             max-width: 900px;
             margin: 20px auto;
-            background: white;
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 0 20px;
         }
-        .filter {
+        main h2 {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            color: #003366;
+        }
+        main .filter {
             margin-bottom: 20px;
         }
-        .filter label {
+        main .filter label {
             margin-right: 10px;
+            font-weight: bold;
         }
-        .materials-list {
+        main .materials-list {
             list-style: none;
             padding: 0;
         }
-        .materials-list li {
+        main .materials-list li {
             padding: 10px;
             margin: 10px 0;
             border: 1px solid #ddd;
             border-radius: 3px;
-            background-color: #f7f7f7;
+            background-color: #f8f8f8;
         }
-        .materials-list a {
+        main .materials-list a {
             color: #003366;
             text-decoration: none;
         }
         footer {
-            background-color: #002244;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-            position: fixed;
-            bottom: 0;
+            margin-top: 40px;
+            font-size: 0.8em;
+            text-align: left;
+            padding: 10px 20px;
+            border-top: 1px solid #ddd;
+            background-color: #f8f8f8;
+        }
+        .quirk {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, #66ccff, #003366);
+            animation: moveGradient 5s infinite linear;
+        }
+        @keyframes moveGradient {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
     </style>
 </head>
 <body>
+    <div class="quirk"></div>
     <header>
         <h1>Study Materials</h1>
-        <p>Resources for students diving into post-quantum cryptography</p>
     </header>
     <nav>
         <a href="index.html">Home</a>
@@ -87,7 +106,7 @@
         <a href="about.html">About Me</a>
         <a href="contact.html">Contact</a>
     </nav>
-    <section>
+    <main>
         <h2>Available Materials</h2>
         <div class="filter">
             <label for="course-filter">Filter by Course:</label>
@@ -107,9 +126,9 @@
                 <a href="#">Download</a>
             </li>
         </ul>
-    </section>
+    </main>
     <footer>
-        <p>&copy; 2024 Post-Quantum Cryptography Hub. All rights reserved.</p>
+        <p>&copy; 2024 PQC Hub. Built for learners and researchers.</p>
     </footer>
     <script>
         const courseFilter = document.getElementById('course-filter');
