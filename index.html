@@ -3,91 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>pqcnerd's</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Post-Quantum Cryptography Hub</title>
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #0b0c10;
-            color: #c5c6c7;
+            background-color: #ffffff;
+            color: #000;
         }
         header {
-            background-color: #1f2833;
-            color: #66fcf1;
-            padding: 20px 0;
-            text-align: center;
+            background-color: #f8f8f8;
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
         }
         header h1 {
             margin: 0;
-            font-size: 2.5em;
+            font-size: 1.8em;
+            color: #003366;
         }
         header p {
-            margin: 10px 0 0;
-            font-size: 1.2em;
+            margin: 5px 0 0;
+            font-size: 0.9em;
         }
         nav {
             display: flex;
-            justify-content: center;
-            background-color: #45a29e;
+            border-bottom: 1px solid #ddd;
             padding: 10px 0;
+            background-color: #f8f8f8;
         }
         nav a {
-            color: white;
+            margin-right: 20px;
             text-decoration: none;
-            margin: 0 15px;
+            font-size: 0.9em;
+            color: #003366;
             font-weight: bold;
-            transition: color 0.3s;
         }
         nav a:hover {
-            color: #66fcf1;
+            text-decoration: underline;
         }
-        section {
-            padding: 20px;
+        main {
             max-width: 900px;
             margin: 20px auto;
-            background: #1f2833;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-            color: #c5c6c7;
+            padding: 0 20px;
         }
-        section h2 {
-            color: #66fcf1;
+        main h2 {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            color: #003366;
+        }
+        main p {
+            font-size: 1em;
+            line-height: 1.6;
         }
         footer {
-            background-color: #1f2833;
-            color: #c5c6c7;
-            text-align: center;
-            padding: 10px 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
+            margin-top: 40px;
+            font-size: 0.8em;
+            text-align: left;
+            padding: 10px 20px;
+            border-top: 1px solid #ddd;
+            background-color: #f8f8f8;
         }
-        footer p {
-            margin: 0;
+        .quirk {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, #66ccff, #003366);
+            animation: moveGradient 5s infinite linear;
+        }
+        @keyframes moveGradient {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
         }
     </style>
 </head>
 <body>
+    <div class="quirk"></div>
     <header>
-        <h1>pqcnerd's</h1>
-        <p>Exploring the future of secure communication in a post-quantum world</p>
+        <h1>Post-Quantum Cryptography Hub</h1>
+        <p>Your gateway to post-quantum security and research</p>
     </header>
     <nav>
+        <a href="index.html">Home</a>
         <a href="resume.html">Resume</a>
         <a href="schoolwork.html">Schoolwork</a>
         <a href="study-material.html">Study Materials</a>
         <a href="about.html">About Me</a>
         <a href="contact.html">Contact</a>
     </nav>
-    <section>
-        <h2>Hello and Welcome!</h2>
-        <p>This website serves as a dedicated space to delve into the intricacies of post-quantum cryptography. As advancements in quantum computing loom on the horizon, ensuring secure communication becomes a paramount challenge. Here, I showcase my research, insights, and resources in this cutting-edge field.</p>
-        <p>Navigate through the menu above to explore my academic work, research projects, and curated materials on post-quantum security.</p>
-    </section>
+    <main>
+        <h2>Welcome to PQC Hub!</h2>
+        <p>This is your central hub for exploring resources, research, and knowledge in the field of post-quantum cryptography. Whether you're a student, researcher, or enthusiast, there's something here for everyone.</p>
+        <p>Use the navigation links above to explore study materials, research updates, and more.</p>
+    </main>
     <footer>
-        <p>&copy; 2024 pqcnerd. All rights reserved. | Empowering security in the quantum era</p>
+        <p>&copy; 2024 Post-Quantum Cryptography Hub. Built for learners and researchers.</p>
     </footer>
 </body>
 </html>
