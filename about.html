@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me - PQC Hub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: #000;
+        }
+        header {
+            background-color: #f8f8f8;
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.8em;
+            color: #003366;
+        }
+        nav {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            background-color: #f8f8f8;
+        }
+        nav a {
+            margin-right: 20px;
+            text-decoration: none;
+            font-size: 0.9em;
+            color: #003366;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        main {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        main h2 {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+            color: #003366;
+        }
+        main .about-section {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+        main .about-section img {
+            max-width: 200px;
+            margin-right: 20px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        main .about-section div {
+            flex: 1;
+        }
+        footer {
+            margin-top: 40px;
+            font-size: 0.8em;
+            text-align: left;
+            padding: 10px 20px;
+            border-top: 1px solid #ddd;
+            background-color: #f8f8f8;
+        }
+        .quirk {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, #66ccff, #003366);
+            animation: moveGradient 5s infinite linear;
+        }
+        @keyframes moveGradient {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="quirk"></div>
+    <header>
+        <h1>About Me</h1>
+    </header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="resume.html">Resume</a>
+        <a href="schoolwork.html">Schoolwork</a>
+        <a href="study-material.html">Study Materials</a>
+        <a href="about.html">About Me</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <main>
+        <h2>Hello! I'm [Your Name]</h2>
+        <div class="about-section">
+            <img src="your-photo.jpg" alt="Your photo">
+            <div>
+                <p>Welcome to my personal space on the web! I'm a passionate researcher and student dedicated to exploring the fascinating field of post-quantum cryptography. My journey has been fueled by curiosity and a drive to contribute to the future of secure communication.</p>
+                <p>In addition to my academic pursuits, I enjoy mentoring students, working on collaborative projects, and constantly learning new skills. My work bridges theory and application, ensuring that what I create has a real-world impact.</p>
+                <p>Feel free to explore my website to see my projects, achievements, and the resources I share. I'm excited to connect with like-minded individuals and exchange ideas!</p>
+            </div>
+        </div>
+        <h2>Highlights</h2>
+        <ul>
+            <li><strong>Expertise:</strong> Post-Quantum Cryptography, Secure Algorithms, Machine Learning.</li>
+            <li><strong>Hobbies:</strong> Reading tech blogs, playing chess, and exploring nature trails.</li>
+            <li><strong>Favorite Quote:</strong> "The future belongs to those who prepare for it today."</li>
+        </ul>
+    </main>
+    <footer>
+        <p>&copy; 2024 PQC Hub. Built for learners and researchers.</p>
+    </footer>
+</body>
+</html>
+
