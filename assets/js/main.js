@@ -43,11 +43,20 @@ const state = {
   sessions: new Map(),
 };
 
+const ui = {
+  tabBar: null,
+  panelContainer: null,
+  addTabButton: null,
+};
+
 document.addEventListener("DOMContentLoaded", () => {
-  const tabBar = document.querySelector(".tab-bar");
-  const panelContainer = document.querySelector(".terminal-body");
-  const addTabButton = document.querySelector(".add-tab");
-  const initialTabButton = document.getElementById("tab-button-1");
+  ui.tabBar = document.querySelector(".tab-bar");
+  ui.panelContainer = document.querySelector(".terminal-body");
+  ui.addTabButton = document.querySelector(".add-tab");
+
+  const initialWrapper = ui.tabBar.querySelector('.tab[data-tab-id="tab-1"]');
+  const initialTrigger = initialWrapper.querySelector(".tab-trigger");
+  const initialClose = initialWrapper.querySelector(".tab-close");
   const initialPanel = document.getElementById("tab-1");
   const initialInput = document.getElementById("input-tab-1");
   const initialForm = initialPanel.querySelector(".terminal-input");
@@ -56,14 +65,17 @@ document.addEventListener("DOMContentLoaded", () => {
   registerSession({
     id: "tab-1",
     name: "main",
-    button: initialTabButton,
+    wrapper: initialWrapper,
+    trigger: initialTrigger,
+    closeButton: initialClose,
     panel: initialPanel,
     input: initialInput,
     form: initialForm,
     output: initialOutput,
   });
 
-  initialTabButton.addEventListener("click", () => activateTab("tab-1"));
+  initialTrigger.addEventListener("click", () => activateTab("tab-1"));
+  initialClose.addEventListener("click", () => closeTab("tab-1"));
   initialForm.addEventListener("submit", (event) =>
     handleSubmit(event, "tab-1"),
   );
@@ -72,79 +84,26 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   printWelcome("tab-1");
 
-  addTabButton.addEventListener("click", () => {
-    const index = state.nextIndex++;
-    const tabId = `tab-${index}`;
-    const buttonId = `tab-button-${index}`;
-    const inputId = `input-${tabId}`;
-
-    const tabButton = document.createElement("button");
-    tabButton.type = "button";
-    tabButton.id = buttonId;
-    tabButton.className = "tab";
-    tabButton.setAttribute("role", "tab");
-    tabButton.setAttribute("aria-controls", tabId);
-    tabButton.setAttribute("aria-selected", "false");
-    tabButton.textContent = `tab-${index}`;
-
-    const panel = document.createElement("div");
-    panel.className = "tab-panel";
-    panel.id = tabId;
-    panel.setAttribute("role", "tabpanel");
-    panel.setAttribute("aria-labelledby", buttonId);
-    panel.dataset.tab = "";
-
-    const output = document.createElement("div");
-    output.className = "terminal-output";
-    output.setAttribute("aria-live", "polite");
-    output.setAttribute("aria-atomic", "false");
-
-    const form = document.createElement("form");
-    form.className = "terminal-input";
-    form.autocomplete = "off";
-
-    const promptLabel = document.createElement("label");
-    promptLabel.className = "prompt";
-    promptLabel.setAttribute("for", inputId);
-    promptLabel.setAttribute("aria-hidden", "true");
-    promptLabel.textContent = "$";
-
-    const input = document.createElement("input");
-    input.type = "text";
-    input.id = inputId;
-    input.spellcheck = false;
-    input.inputMode = "text";
-    input.setAttribute("aria-label", "Type a command");
-
-    form.append(promptLabel, input);
-    panel.append(output, form);
-    panelContainer.append(panel);
-    tabBar.append(tabButton);
-
-    registerSession({
-      id: tabId,
-      name: tabButton.textContent,
-      button: tabButton,
-      panel,
-      input,
-      form,
-      output,
-    });
-
-    tabButton.addEventListener("click", () => activateTab(tabId));
-    form.addEventListener("submit", (event) => handleSubmit(event, tabId));
-    input.addEventListener("keydown", (event) => handleHistory(event, tabId));
-
-    activateTab(tabId);
-    printWelcome(tabId);
-  });
+  ui.addTabButton.addEventListener("click", () => createTab());
 });
 
-function registerSession({ id, name, button, panel, input, form, output }) {
+function registerSession({
+  id,
+  name,
+  wrapper,
+  trigger,
+  closeButton,
+  panel,
+  input,
+  form,
+  output,
+}) {
   state.sessions.set(id, {
     id,
     name,
-    button,
+    wrapper,
+    trigger,
+    closeButton,
     panel,
     input,
     form,
@@ -162,8 +121,8 @@ function activateTab(tabId) {
   state.activeId = tabId;
   state.sessions.forEach((session, id) => {
     const isActive = id === tabId;
-    session.button.classList.toggle("active", isActive);
-    session.button.setAttribute("aria-selected", String(isActive));
+    session.wrapper.classList.toggle("active", isActive);
+    session.trigger.setAttribute("aria-selected", String(isActive));
     session.panel.classList.toggle("active", isActive);
   });
 
@@ -271,5 +230,126 @@ function printWelcome(tabId) {
 
 function scrollToBottom(element) {
   element.scrollTop = element.scrollHeight;
+}
+
+function createTab() {
+  if (!ui.tabBar || !ui.panelContainer) {
+    return;
+  }
+
+  const index = state.nextIndex++;
+  const tabId = `tab-${index}`;
+  const buttonId = `tab-button-${index}`;
+  const inputId = `input-${tabId}`;
+  const labelText = `tab-${index}`;
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "tab";
+  wrapper.dataset.tabId = tabId;
+
+  const trigger = document.createElement("button");
+  trigger.type = "button";
+  trigger.id = buttonId;
+  trigger.className = "tab-trigger";
+  trigger.setAttribute("role", "tab");
+  trigger.setAttribute("aria-controls", tabId);
+  trigger.setAttribute("aria-selected", "false");
+
+  const icon = document.createElement("span");
+  icon.className = "tab-icon";
+  icon.setAttribute("aria-hidden", "true");
+  icon.textContent = "_";
+
+  const label = document.createElement("span");
+  label.className = "tab-label";
+  label.textContent = labelText;
+
+  trigger.append(icon, label);
+
+  const closeButton = document.createElement("button");
+  closeButton.type = "button";
+  closeButton.className = "tab-close";
+  closeButton.setAttribute("aria-label", `Close ${labelText}`);
+  closeButton.textContent = "x";
+
+  wrapper.append(trigger, closeButton);
+  ui.tabBar.append(wrapper);
+
+  const panel = document.createElement("div");
+  panel.className = "tab-panel";
+  panel.id = tabId;
+  panel.setAttribute("role", "tabpanel");
+  panel.setAttribute("aria-labelledby", buttonId);
+  panel.dataset.tab = "";
+
+  const output = document.createElement("div");
+  output.className = "terminal-output";
+  output.setAttribute("aria-live", "polite");
+  output.setAttribute("aria-atomic", "false");
+
+  const form = document.createElement("form");
+  form.className = "terminal-input";
+  form.autocomplete = "off";
+
+  const promptLabel = document.createElement("label");
+  promptLabel.className = "prompt";
+  promptLabel.setAttribute("for", inputId);
+  promptLabel.setAttribute("aria-hidden", "true");
+  promptLabel.textContent = "$";
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.id = inputId;
+  input.spellcheck = false;
+  input.inputMode = "text";
+  input.setAttribute("aria-label", "Type a command");
+
+  form.append(promptLabel, input);
+  panel.append(output, form);
+  ui.panelContainer.append(panel);
+
+  registerSession({
+    id: tabId,
+    name: labelText,
+    wrapper,
+    trigger,
+    closeButton,
+    panel,
+    input,
+    form,
+    output,
+  });
+
+  trigger.addEventListener("click", () => activateTab(tabId));
+  closeButton.addEventListener("click", () => closeTab(tabId));
+  form.addEventListener("submit", (event) => handleSubmit(event, tabId));
+  input.addEventListener("keydown", (event) => handleHistory(event, tabId));
+
+  activateTab(tabId);
+  printWelcome(tabId);
+}
+
+function closeTab(tabId) {
+  const session = state.sessions.get(tabId);
+  if (!session) {
+    return;
+  }
+
+  const wasActive = state.activeId === tabId;
+
+  session.wrapper.remove();
+  session.panel.remove();
+  state.sessions.delete(tabId);
+
+  if (state.sessions.size === 0) {
+    createTab();
+    return;
+  }
+
+  if (wasActive) {
+    const remaining = Array.from(state.sessions.keys());
+    const fallbackId = remaining[remaining.length - 1];
+    activateTab(fallbackId);
+  }
 }
 
