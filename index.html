@@ -57,89 +57,55 @@
           </div>
         </section>
 
-        <aside class="questionnaire-panel" role="complementary" aria-labelledby="questionnaire-title">
-          <div class="questionnaire-card">
-            <header class="questionnaire-header">
-              <h2 class="questionnaire-title" id="questionnaire-title">Quick Questions</h2>
-              <p class="questionnaire-subtitle">Help me tailor the site by answering a few quick prompts.</p>
-            </header>
+        <aside class="visitor-panel" role="complementary" aria-labelledby="visitor-heading">
+          <div class="visitor-card">
+            <h2 class="visitor-heading" id="visitor-heading">Quick Questions</h2>
+            <p class="visitor-intro">Help me tailor the site by answering a few quick questions.</p>
 
-            <form id="questionnaire-form" class="questionnaire-form" novalidate>
-              <div class="field-group" data-group="role">
-                <p class="field-title">Which best describes you?</p>
-                <div class="option-group" role="group" aria-label="Visitor type">
-                  <button type="button" class="option-button" data-option="role" data-value="student" aria-pressed="false">
-                    Student
-                  </button>
-                  <button type="button" class="option-button" data-option="role" data-value="professor" aria-pressed="false">
-                    Professor
-                  </button>
-                  <button type="button" class="option-button" data-option="role" data-value="recruiter" aria-pressed="false">
-                    Recruiter
-                  </button>
-                  <button type="button" class="option-button" data-option="role" data-value="other" aria-pressed="false">
-                    Other
-                  </button>
+            <form id="visitor-form" novalidate>
+              <div class="question active" data-step="1">
+                <p class="question-title">What are you?</p>
+                <div class="option-group">
+                  <button type="button" class="option-button" data-role-option="student" aria-pressed="false">Student</button>
+                  <button type="button" class="option-button" data-role-option="professor" aria-pressed="false">Professor</button>
+                  <button type="button" class="option-button" data-role-option="recruiter" aria-pressed="false">Recruiter</button>
+                  <button type="button" class="option-button" data-role-option="other" aria-pressed="false">Other</button>
                 </div>
-                <p class="field-helper" data-feedback-for="role" data-default-text="Pick the option that fits you best.">
-                  Pick the option that fits you best.
-                </p>
               </div>
 
-              <div class="field-group" data-group="reason">
-                <label for="questionnaire-reason" class="field-title">Why are you here?</label>
+              <div class="question" data-step="2">
+                <label for="visitor-reason" class="question-title">Why are you here?</label>
                 <textarea
-                  id="questionnaire-reason"
-                  class="field-textarea"
+                  id="visitor-reason"
                   rows="3"
-                  placeholder="Let me know what brings you here."
-                  aria-describedby="reason-helper"
+                  placeholder="Tell me what brings you here."
+                  aria-describedby="visitor-reason-help"
                 ></textarea>
-                <p class="field-helper" id="reason-helper" data-feedback-for="reason" data-default-text="A quick sentence or two is perfect.">
-                  A quick sentence or two is perfect.
-                </p>
+                <p class="helper-text" id="visitor-reason-help">A quick sentence or two is perfect.</p>
+                <button type="button" class="question-next" data-action="next-reason" disabled>Next</button>
               </div>
 
-              <div class="field-group" data-group="rating">
-                <p class="field-title">How would you rate the page?</p>
-                <div class="option-group rating" role="group" aria-label="Page rating">
-                  <button type="button" class="option-button" data-option="rating" data-value="1" aria-pressed="false" aria-label="Rate 1 out of 5">
-                    1
-                  </button>
-                  <button type="button" class="option-button" data-option="rating" data-value="2" aria-pressed="false" aria-label="Rate 2 out of 5">
-                    2
-                  </button>
-                  <button type="button" class="option-button" data-option="rating" data-value="3" aria-pressed="false" aria-label="Rate 3 out of 5">
-                    3
-                  </button>
-                  <button type="button" class="option-button" data-option="rating" data-value="4" aria-pressed="false" aria-label="Rate 4 out of 5">
-                    4
-                  </button>
-                  <button type="button" class="option-button" data-option="rating" data-value="5" aria-pressed="false" aria-label="Rate 5 out of 5">
-                    5
-                  </button>
+              <div class="question" data-step="3">
+                <p class="question-title">How would you rate the page?</p>
+                <div class="option-group rating">
+                  <button type="button" class="option-button" data-rating-option="1" aria-pressed="false" aria-label="Rate 1 out of 5">1</button>
+                  <button type="button" class="option-button" data-rating-option="2" aria-pressed="false" aria-label="Rate 2 out of 5">2</button>
+                  <button type="button" class="option-button" data-rating-option="3" aria-pressed="false" aria-label="Rate 3 out of 5">3</button>
+                  <button type="button" class="option-button" data-rating-option="4" aria-pressed="false" aria-label="Rate 4 out of 5">4</button>
+                  <button type="button" class="option-button" data-rating-option="5" aria-pressed="false" aria-label="Rate 5 out of 5">5</button>
                 </div>
-                <p class="field-helper" data-feedback-for="rating" data-default-text="Choose the rating that feels right.">
-                  Choose the rating that feels right.
-                </p>
               </div>
 
-              <div class="field-group">
-                <label for="questionnaire-notes" class="field-title">Any other notes?</label>
+              <div class="question" data-step="4">
+                <label for="visitor-notes" class="question-title">Any additional notes?</label>
                 <textarea
-                  id="questionnaire-notes"
-                  class="field-textarea"
+                  id="visitor-notes"
                   rows="3"
                   placeholder="Anything else you'd like to share?"
                 ></textarea>
+                <button type="submit" class="submit-button">Submit</button>
               </div>
-
-              <button type="submit" class="questionnaire-submit">Submit</button>
             </form>
-
-            <div class="questionnaire-thanks" id="questionnaire-thanks" role="status" aria-live="polite" hidden tabindex="-1">
-              <p>Thanks for answering!</p>
-            </div>
           </div>
         </aside>
       </div>
@@ -148,4 +114,3 @@
     <script src="assets/js/main.js"></script>
   </body>
 </html>
-

@@ -43,21 +43,29 @@ const state = {
   sessions: new Map(),
 };
 
+const visitorState = {
+  viewport: null,
+  panel: null,
+  form: null,
+  steps: [],
+  currentIndex: 0,
+  answers: {
+    role: "",
+    reason: "",
+    rating: "",
+    notes: "",
+  },
+  roleButtons: [],
+  reasonInput: null,
+  reasonNext: null,
+  ratingButtons: [],
+  notesInput: null,
+};
+
 const ui = {
   tabBar: null,
   panelContainer: null,
   addTabButton: null,
-};
-
-const questionnaire = {
-  form: null,
-  thanks: null,
-  roleButtons: [],
-  ratingButtons: [],
-  reasonInput: null,
-  feedback: {},
-  roleValue: "",
-  ratingValue: "",
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -96,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
   printWelcome("tab-1");
 
   ui.addTabButton.addEventListener("click", () => createTab());
-  initQuestionnaire();
+  initVisitorFlow();
 });
 
 function registerSession({
@@ -365,160 +373,139 @@ function closeTab(tabId) {
   }
 }
 
-function initQuestionnaire() {
-  questionnaire.form = document.getElementById("questionnaire-form");
-  questionnaire.thanks = document.getElementById("questionnaire-thanks");
+function initVisitorFlow() {
+  visitorState.viewport = document.querySelector(".viewport");
+  visitorState.panel = document.querySelector(".visitor-panel");
+  visitorState.form = document.querySelector("#visitor-form");
 
-  if (!questionnaire.form || !questionnaire.thanks) {
+  if (!visitorState.viewport || !visitorState.panel || !visitorState.form) {
     return;
   }
 
-  questionnaire.roleButtons = Array.from(
-    questionnaire.form.querySelectorAll('[data-option="role"]'),
+  visitorState.steps = Array.from(
+    visitorState.form.querySelectorAll(".question"),
   );
-  questionnaire.ratingButtons = Array.from(
-    questionnaire.form.querySelectorAll('[data-option="rating"]'),
+  visitorState.roleButtons = Array.from(
+    visitorState.form.querySelectorAll("[data-role-option]"),
   );
-  questionnaire.reasonInput = questionnaire.form.querySelector(
-    "#questionnaire-reason",
+  visitorState.reasonInput =
+    visitorState.form.querySelector("#visitor-reason");
+  visitorState.reasonNext = visitorState.form.querySelector(
+    '[data-action="next-reason"]',
   );
-  questionnaire.feedback = {
-    role: questionnaire.form.querySelector('[data-feedback-for="role"]'),
-    reason: questionnaire.form.querySelector('[data-feedback-for="reason"]'),
-    rating: questionnaire.form.querySelector('[data-feedback-for="rating"]'),
+  visitorState.ratingButtons = Array.from(
+    visitorState.form.querySelectorAll("[data-rating-option]"),
+  );
+  visitorState.notesInput =
+    visitorState.form.querySelector("#visitor-notes");
+  visitorState.currentIndex = 0;
+  visitorState.answers = {
+    role: "",
+    reason: "",
+    rating: "",
+    notes: "",
   };
 
-  Object.values(questionnaire.feedback).forEach((element) => {
-    if (element && !element.dataset.defaultText) {
-      element.dataset.defaultText = element.textContent.trim();
-    }
+  visitorState.roleButtons.forEach((button) => {
+    button.addEventListener("click", () => handleRoleSelect(button));
   });
 
-  questionnaire.roleButtons.forEach((button) => {
-    button.addEventListener("click", () =>
-      selectQuestionnaireOption(button, "role"),
-    );
-  });
-
-  questionnaire.ratingButtons.forEach((button) => {
-    button.addEventListener("click", () =>
-      selectQuestionnaireOption(button, "rating"),
-    );
-  });
-
-  if (questionnaire.reasonInput) {
-    questionnaire.reasonInput.addEventListener("input", () => {
-      if (questionnaire.reasonInput.value.trim().length > 0) {
-        clearQuestionnaireFeedback("reason");
-      }
-    });
+  if (visitorState.reasonInput && visitorState.reasonNext) {
+    visitorState.reasonInput.addEventListener("input", handleReasonInput);
+    visitorState.reasonNext.addEventListener("click", handleReasonNext);
+    visitorState.reasonNext.disabled =
+      visitorState.reasonInput.value.trim().length === 0;
   }
 
-  questionnaire.form.addEventListener("submit", handleQuestionnaireSubmit);
-}
-
-function selectQuestionnaireOption(button, type) {
-  const buttons =
-    type === "role" ? questionnaire.roleButtons : questionnaire.ratingButtons;
-
-  buttons.forEach((item) => {
-    const isSelected = item === button;
-    item.classList.toggle("selected", isSelected);
-    item.setAttribute("aria-pressed", String(isSelected));
+  visitorState.ratingButtons.forEach((button) => {
+    button.addEventListener("click", () => handleRatingSelect(button));
   });
 
-  const value = button.dataset.value ?? "";
-  if (type === "role") {
-    questionnaire.roleValue = value;
-  } else {
-    questionnaire.ratingValue = value;
-  }
-
-  clearQuestionnaireFeedback(type);
+  visitorState.form.addEventListener("submit", handleVisitorSubmit);
+  showVisitorStep(0);
 }
 
-function handleQuestionnaireSubmit(event) {
+function showVisitorStep(index) {
+  visitorState.steps.forEach((step, idx) => {
+    step.classList.toggle("active", idx === index);
+  });
+  visitorState.currentIndex = index;
+}
+
+function nextVisitorStep() {
+  const nextIndex = Math.min(
+    visitorState.currentIndex + 1,
+    visitorState.steps.length - 1,
+  );
+  showVisitorStep(nextIndex);
+}
+
+function handleRoleSelect(button) {
+  const value = button.dataset.roleOption;
+  if (!value) {
+    return;
+  }
+
+  visitorState.answers.role = value;
+  visitorState.roleButtons.forEach((btn) => {
+    const isSelected = btn === button;
+    btn.classList.toggle("selected", isSelected);
+    btn.setAttribute("aria-pressed", String(isSelected));
+  });
+  nextVisitorStep();
+  visitorState.reasonInput?.focus();
+}
+
+function handleReasonInput() {
+  if (!visitorState.reasonInput || !visitorState.reasonNext) {
+    return;
+  }
+
+  const hasText = visitorState.reasonInput.value.trim().length > 0;
+  visitorState.reasonNext.disabled = !hasText;
+}
+
+function handleReasonNext() {
+  if (!visitorState.reasonInput) {
+    return;
+  }
+
+  const value = visitorState.reasonInput.value.trim();
+  if (!value) {
+    return;
+  }
+
+  visitorState.answers.reason = value;
+  nextVisitorStep();
+  visitorState.ratingButtons[0]?.focus();
+}
+
+function handleRatingSelect(button) {
+  const value = button.dataset.ratingOption;
+  if (!value) {
+    return;
+  }
+
+  visitorState.answers.rating = value;
+  visitorState.ratingButtons.forEach((btn) => {
+    const isSelected = btn === button;
+    btn.classList.toggle("selected", isSelected);
+    btn.setAttribute("aria-pressed", String(isSelected));
+  });
+  nextVisitorStep();
+  visitorState.notesInput?.focus();
+}
+
+function handleVisitorSubmit(event) {
   event.preventDefault();
-
-  if (!questionnaire.form || !questionnaire.thanks) {
-    return;
+  if (visitorState.notesInput) {
+    visitorState.answers.notes = visitorState.notesInput.value.trim();
   }
 
-  let isValid = true;
+  visitorState.panel.classList.add("hidden");
+  visitorState.panel.setAttribute("aria-hidden", "true");
+  visitorState.viewport.classList.add("panel-hidden");
 
-  clearQuestionnaireFeedback("role");
-  clearQuestionnaireFeedback("reason");
-  clearQuestionnaireFeedback("rating");
-
-  if (!questionnaire.roleValue) {
-    showQuestionnaireFeedback("role", "Please choose one option.");
-    questionnaire.roleButtons[0]?.focus();
-    isValid = false;
-  }
-
-  const reasonText = questionnaire.reasonInput?.value.trim() ?? "";
-  if (!reasonText) {
-    showQuestionnaireFeedback("reason", "Let me know what brings you here.");
-    if (isValid) {
-      questionnaire.reasonInput?.focus();
-    }
-    isValid = false;
-  }
-
-  if (!questionnaire.ratingValue) {
-    showQuestionnaireFeedback("rating", "Select a rating before submitting.");
-    if (isValid) {
-      questionnaire.ratingButtons[0]?.focus();
-    }
-    isValid = false;
-  }
-
-  if (!isValid) {
-    return;
-  }
-
-  questionnaire.form.reset();
-  questionnaire.roleButtons.forEach((button) => {
-    button.classList.remove("selected");
-    button.setAttribute("aria-pressed", "false");
-  });
-  questionnaire.ratingButtons.forEach((button) => {
-    button.classList.remove("selected");
-    button.setAttribute("aria-pressed", "false");
-  });
-
-  questionnaire.roleValue = "";
-  questionnaire.ratingValue = "";
-
-  questionnaire.form.classList.add("is-hidden");
-  questionnaire.form.setAttribute("aria-hidden", "true");
-  questionnaire.thanks.hidden = false;
-  questionnaire.thanks.setAttribute("aria-hidden", "false");
-  questionnaire.thanks.focus();
+  const activeSession = state.sessions.get(state.activeId);
+  activeSession?.input.focus();
 }
-
-function showQuestionnaireFeedback(type, message) {
-  const feedbackElement = questionnaire.feedback[type];
-  const group = questionnaire.form?.querySelector(`[data-group="${type}"]`);
-
-  group?.classList.add("error");
-  if (feedbackElement) {
-    feedbackElement.textContent = message;
-    feedbackElement.classList.add("is-error");
-  }
-}
-
-function clearQuestionnaireFeedback(type) {
-  const feedbackElement = questionnaire.feedback[type];
-  const group = questionnaire.form?.querySelector(`[data-group="${type}"]`);
-
-  group?.classList.remove("error");
-  if (feedbackElement) {
-    const defaultText = feedbackElement.dataset.defaultText ?? "";
-    if (defaultText) {
-      feedbackElement.textContent = defaultText;
-    }
-    feedbackElement.classList.remove("is-error");
-  }
-}
-
