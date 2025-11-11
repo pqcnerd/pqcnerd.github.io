@@ -122,7 +122,7 @@ class Terminal {
         const command = this.input.value.trim().toLowerCase();
         
         if (command === '') {
-            this.addOutput('pqcnerd@terminal:~$', '');
+            this.addOutput('pqcnerd@Handheld-Compile$', '');
             this.input.value = '';
             return;
         }
@@ -132,7 +132,7 @@ class Terminal {
         this.historyIndex = this.history.length;
         
         // Display command
-        this.addOutput('pqcnerd@terminal:~$', command);
+        this.addOutput('pqcnerd@Handheld-Compile$', command);
         
         // Execute command
         if (commands[command]) {
