@@ -1,0 +1,226 @@
+:root {
+  color-scheme: dark;
+  --bg-gradient: radial-gradient(circle at top, #172554, #0f172a 55%, #020617 100%);
+  --terminal-bg: rgba(15, 23, 42, 0.88);
+  --terminal-border: rgba(148, 163, 184, 0.2);
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --accent: #38bdf8;
+  --prompt: #34d399;
+  font-size: clamp(14px, 1.8vw, 16px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Fira Code", "Cascadia Code", "SFMono-Regular", Menlo, Consolas,
+    "Liberation Mono", monospace;
+  background: var(--bg-gradient) fixed;
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+.background {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+
+.terminal-app {
+  width: min(960px, 100%);
+  background: var(--terminal-bg);
+  border: 1px solid var(--terminal-border);
+  border-radius: 12px;
+  box-shadow: 0 30px 90px rgba(2, 6, 23, 0.55);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+}
+
+.terminal-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--terminal-border);
+  background: rgba(15, 23, 42, 0.75);
+}
+
+.window-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-close {
+  background: #ef4444;
+}
+
+.dot-minimize {
+  background: #f59e0b;
+}
+
+.dot-maximize {
+  background: #10b981;
+}
+
+.tab-bar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.tab {
+  background: rgba(30, 41, 59, 0.65);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 0.4rem 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: color 150ms ease, background 150ms ease, border-color 150ms ease;
+}
+
+.tab:hover {
+  color: var(--text-primary);
+}
+
+.tab.active {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.4);
+  color: var(--accent);
+}
+
+.add-tab {
+  appearance: none;
+  border: 1px solid var(--terminal-border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  line-height: 1;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  transition: color 150ms ease, border-color 150ms ease, background 150ms ease;
+}
+
+.add-tab:hover {
+  color: var(--accent);
+  border-color: rgba(56, 189, 248, 0.4);
+  background: rgba(56, 189, 248, 0.12);
+}
+
+.terminal-body {
+  display: grid;
+  grid-auto-flow: row;
+  position: relative;
+  min-height: clamp(320px, 50vh, 560px);
+}
+
+.tab-panel {
+  display: none;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.tab-panel.active {
+  display: flex;
+}
+
+.terminal-output {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  padding-right: 0.25rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.terminal-output::-webkit-scrollbar {
+  width: 6px;
+}
+
+.terminal-output::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 6px;
+}
+
+.terminal-line {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.35rem;
+}
+
+.terminal-line .prompt {
+  color: var(--prompt);
+}
+
+.terminal-line .command {
+  color: var(--text-primary);
+}
+
+.terminal-line .response {
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+}
+
+.terminal-input {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  gap: 0.75rem;
+  align-items: center;
+  color: var(--text-primary);
+  border-top: 1px solid var(--terminal-border);
+  padding-top: 0.75rem;
+}
+
+.terminal-input .prompt {
+  color: var(--prompt);
+  font-size: 1rem;
+}
+
+.terminal-input input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-family: inherit;
+  padding: 0;
+  caret-color: var(--accent);
+}
+
+.terminal-input input::placeholder {
+  color: rgba(148, 163, 184, 0.45);
+}
+
+@media (max-width: 640px) {
+  .terminal-header {
+    grid-template-columns: auto 1fr auto;
+    gap: 0.5rem;
+  }
+
+  .terminal-app {
+    border-radius: 10px;
+  }
+}
+

@@ -1,21 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terminal</title>
-    <link rel="stylesheet" href="assets/css/terminal.css">
-</head>
-<body>
-    <div class="terminal-container">
-        <div class="terminal-tabs">
-            <div class="tab active" data-tab="1">
-                <span class="tab-title">Terminal</span>
-                <span class="tab-close" data-tab="1">×</span>
-            </div>
-            <div class="tab-add" id="add-tab">+</div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pqcnerd - Terminal</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <main class="background">
+      <section class="terminal-app" role="application" aria-label="Interactive terminal">
+        <header class="terminal-header">
+          <div class="window-controls" aria-hidden="true">
+            <span class="dot dot-close"></span>
+            <span class="dot dot-minimize"></span>
+            <span class="dot dot-maximize"></span>
+          </div>
+          <div class="tab-bar" role="tablist" aria-label="Terminal tabs">
+            <button class="tab active" role="tab" aria-selected="true" aria-controls="tab-1" id="tab-button-1">
+              main
+            </button>
+          </div>
+          <button class="add-tab" type="button" title="New tab" aria-label="Open new tab">+</button>
+        </header>
+
+        <div class="terminal-body">
+          <div class="tab-panel active" id="tab-1" role="tabpanel" aria-labelledby="tab-button-1" data-tab>
+            <div class="terminal-output" aria-live="polite" aria-atomic="false"></div>
+            <form class="terminal-input" autocomplete="off">
+              <label for="input-tab-1" class="prompt" aria-hidden="true">$</label>
+              <input
+                id="input-tab-1"
+                type="text"
+                inputmode="text"
+                spellcheck="false"
+                aria-label="Type a command"
+                autofocus
+              />
+            </form>
+          </div>
         </div>
-    </div>
-    <script src="assets/js/terminal.js"></script>
-</body>
+      </section>
+    </main>
+
+    <script src="assets/js/main.js"></script>
+  </body>
 </html>
+
