@@ -10,7 +10,7 @@ body {
     color: #ffffff;
     height: 100vh;
     overflow: hidden;
-    padding: 20px;
+    padding: 0;
 }
 
 .terminal-container {
@@ -22,8 +22,83 @@ body {
     overflow: hidden;
 }
 
-.terminal-header {
-    display: none;
+.terminal-tabs {
+    background-color: #2d2d2d;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    border-bottom: 1px solid #1a1a1a;
+    min-height: 32px;
+    overflow-x: auto;
+}
+
+.terminal-tabs::-webkit-scrollbar {
+    height: 4px;
+}
+
+.terminal-tabs::-webkit-scrollbar-track {
+    background: #2d2d2d;
+}
+
+.terminal-tabs::-webkit-scrollbar-thumb {
+    background: #555555;
+    border-radius: 2px;
+}
+
+.tab {
+    background-color: #1e1e1e;
+    color: #cccccc;
+    padding: 6px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-right: 1px solid #1a1a1a;
+    font-size: 12px;
+    user-select: none;
+    white-space: nowrap;
+    min-width: 100px;
+}
+
+.tab:hover {
+    background-color: #252525;
+}
+
+.tab.active {
+    background-color: #000000;
+    color: #ffffff;
+    border-bottom: 2px solid #87ceeb;
+}
+
+.tab-title {
+    flex: 1;
+}
+
+.tab-close {
+    opacity: 0.6;
+    font-size: 16px;
+    line-height: 1;
+    padding: 0 2px;
+}
+
+.tab-close:hover {
+    opacity: 1;
+    background-color: #333333;
+    border-radius: 2px;
+}
+
+.tab-add {
+    background-color: #2d2d2d;
+    color: #cccccc;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 16px;
+    user-select: none;
+    border-right: 1px solid #1a1a1a;
+}
+
+.tab-add:hover {
+    background-color: #3a3a3a;
 }
 
 .terminal-body {
@@ -33,6 +108,8 @@ body {
     font-size: 14px;
     line-height: 1.5;
     background-color: #000000;
+    display: flex;
+    flex-direction: column;
 }
 
 .terminal-output {
@@ -44,7 +121,7 @@ body {
 }
 
 .prompt {
-    color: #00ff00;
+    color: #87ceeb;
     margin-right: 8px;
 }
 
@@ -70,6 +147,7 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-shrink: 0;
 }
 
 .terminal-input {

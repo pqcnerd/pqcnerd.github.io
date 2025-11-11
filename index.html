@@ -8,25 +8,12 @@
 </head>
 <body>
     <div class="terminal-container">
-        <div class="terminal-body" id="terminal-body">
-            <div class="terminal-output">
-                <div class="terminal-line">
-                    <span class="prompt">~$</span>
-                    <span class="command">help</span>
-                </div>
-                <div class="output">
-                    <div>Available commands:</div>
-                    <div>  help     - Show this help message</div>
-                    <div>  contact  - Contact information</div>
-                    <div>  about    - About me</div>
-                    <div>  projects - My projects</div>
-                    <div>  resume   - Resume/CV</div>
-                </div>
+        <div class="terminal-tabs">
+            <div class="tab active" data-tab="1">
+                <span class="tab-title">Terminal</span>
+                <span class="tab-close" data-tab="1">×</span>
             </div>
-        </div>
-        <div class="terminal-input-container">
-            <span class="prompt">~$</span>
-            <input type="text" class="terminal-input" id="terminal-input" autofocus autocomplete="off" spellcheck="false">
+            <div class="tab-add" id="add-tab">+</div>
         </div>
     </div>
     <script src="assets/js/terminal.js"></script>
