@@ -43,6 +43,25 @@ const state = {
   sessions: new Map(),
 };
 
+const visitorState = {
+  viewport: null,
+  panel: null,
+  form: null,
+  steps: [],
+  currentIndex: 0,
+  answers: {
+    role: "",
+    reason: "",
+    rating: "",
+    notes: "",
+  },
+  roleButtons: [],
+  reasonInput: null,
+  reasonNext: null,
+  ratingButtons: [],
+  notesInput: null,
+};
+
 const ui = {
   tabBar: null,
   panelContainer: null,
@@ -85,6 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
   printWelcome("tab-1");
 
   ui.addTabButton.addEventListener("click", () => createTab());
+  initVisitorFlow();
 });
 
 function registerSession({
@@ -351,5 +371,142 @@ function closeTab(tabId) {
     const fallbackId = remaining[remaining.length - 1];
     activateTab(fallbackId);
   }
+}
+
+function initVisitorFlow() {
+  visitorState.viewport = document.querySelector(".viewport");
+  visitorState.panel = document.querySelector(".visitor-panel");
+  visitorState.form = document.querySelector("#visitor-form");
+
+  if (!visitorState.viewport || !visitorState.panel || !visitorState.form) {
+    return;
+  }
+
+  visitorState.steps = Array.from(
+    visitorState.form.querySelectorAll(".question"),
+  );
+  visitorState.roleButtons = Array.from(
+    visitorState.form.querySelectorAll("[data-role-option]"),
+  );
+  visitorState.reasonInput =
+    visitorState.form.querySelector("#visitor-reason");
+  visitorState.reasonNext = visitorState.form.querySelector(
+    '[data-action="next-reason"]',
+  );
+  visitorState.ratingButtons = Array.from(
+    visitorState.form.querySelectorAll("[data-rating-option]"),
+  );
+  visitorState.notesInput =
+    visitorState.form.querySelector("#visitor-notes");
+  visitorState.currentIndex = 0;
+  visitorState.answers = {
+    role: "",
+    reason: "",
+    rating: "",
+    notes: "",
+  };
+
+  visitorState.roleButtons.forEach((button) => {
+    button.addEventListener("click", () => handleRoleSelect(button));
+  });
+
+  if (visitorState.reasonInput && visitorState.reasonNext) {
+    visitorState.reasonInput.addEventListener("input", handleReasonInput);
+    visitorState.reasonNext.addEventListener("click", handleReasonNext);
+    visitorState.reasonNext.disabled =
+      visitorState.reasonInput.value.trim().length === 0;
+  }
+
+  visitorState.ratingButtons.forEach((button) => {
+    button.addEventListener("click", () => handleRatingSelect(button));
+  });
+
+  visitorState.form.addEventListener("submit", handleVisitorSubmit);
+  showVisitorStep(0);
+}
+
+function showVisitorStep(index) {
+  visitorState.steps.forEach((step, idx) => {
+    step.classList.toggle("active", idx === index);
+  });
+  visitorState.currentIndex = index;
+}
+
+function nextVisitorStep() {
+  const nextIndex = Math.min(
+    visitorState.currentIndex + 1,
+    visitorState.steps.length - 1,
+  );
+  showVisitorStep(nextIndex);
+}
+
+function handleRoleSelect(button) {
+  const value = button.dataset.roleOption;
+  if (!value) {
+    return;
+  }
+
+  visitorState.answers.role = value;
+  visitorState.roleButtons.forEach((btn) => {
+    const isSelected = btn === button;
+    btn.classList.toggle("selected", isSelected);
+    btn.setAttribute("aria-pressed", String(isSelected));
+  });
+  nextVisitorStep();
+  visitorState.reasonInput?.focus();
+}
+
+function handleReasonInput() {
+  if (!visitorState.reasonInput || !visitorState.reasonNext) {
+    return;
+  }
+
+  const hasText = visitorState.reasonInput.value.trim().length > 0;
+  visitorState.reasonNext.disabled = !hasText;
+}
+
+function handleReasonNext() {
+  if (!visitorState.reasonInput) {
+    return;
+  }
+
+  const value = visitorState.reasonInput.value.trim();
+  if (!value) {
+    return;
+  }
+
+  visitorState.answers.reason = value;
+  nextVisitorStep();
+  visitorState.ratingButtons[0]?.focus();
+}
+
+function handleRatingSelect(button) {
+  const value = button.dataset.ratingOption;
+  if (!value) {
+    return;
+  }
+
+  visitorState.answers.rating = value;
+  visitorState.ratingButtons.forEach((btn) => {
+    const isSelected = btn === button;
+    btn.classList.toggle("selected", isSelected);
+    btn.setAttribute("aria-pressed", String(isSelected));
+  });
+  nextVisitorStep();
+  visitorState.notesInput?.focus();
+}
+
+function handleVisitorSubmit(event) {
+  event.preventDefault();
+  if (visitorState.notesInput) {
+    visitorState.answers.notes = visitorState.notesInput.value.trim();
+  }
+
+  visitorState.panel.classList.add("hidden");
+  visitorState.panel.setAttribute("aria-hidden", "true");
+  visitorState.viewport.classList.add("panel-hidden");
+
+  const activeSession = state.sessions.get(state.activeId);
+  activeSession?.input.focus();
 }
 
