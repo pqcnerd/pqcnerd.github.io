@@ -1,36 +1,59 @@
-const COMMAND_RESPONSES = {
-  help: [
-    "Available commands:",
-    "  - help       - list available commands",
-    "  - about      - learn more about me",
-    "  - contact    - ways to reach out",
-    "  - resume     - resume",
-    "  - projects   - project highlights",
-  ],
-  about: [
-    "About Mark (Zeheng) Mu",
-    "----------------",
-    "Passionate about post-quantum cryptography, low-level systems, and building delightful developer tooling.",
-    "I am a student at the University of Toronto, pursuing a Bachelor's degree in Computer Science.",
-  ],
-  contact: [
-    "Contact",
-    "-------",
-    "email: pqcnerd@gmail.com",
-    "github: https://github.com/pqcnerd",
-    "linkedin: https://www.linkedin.com/in/mark-mu",
-    "x: https://x.com/pqcnerd",
-  ],
-  resume: [
-    "Resume",
-    "------",
-    "PDF: https://pqcnerd.github.io/Resume%20CV.pdf",
-  ],
-  projects: [
-    "Projects",
-    "--------",
-    "coming soon!",
-  ],
+const HOME_DIR = "/home/guest";
+const ABOUT_TEXT = [
+  "About Mark (Zeheng) Mu",
+  "----------------",
+  "Passionate about post-quantum cryptography, low-level systems, and building delightful developer tooling.",
+  "I am a student at the University of Toronto, pursuing a Bachelor's degree in Computer Science.",
+].join("\n");
+const CONTACT_TEXT = [
+  "Contact",
+  "-------",
+  "email: pqcnerd@gmail.com",
+  "github: https://github.com/pqcnerd",
+  "linkedin: https://www.linkedin.com/in/mark-mu",
+  "x: https://x.com/pqcnerd",
+].join("\n");
+const RESUME_TEXT = [
+  "Resume",
+  "------",
+  "PDF: https://pqcnerd.github.io/Resume%20CV.pdf",
+].join("\n");
+const PROJECTS_TEXT = [
+  "Projects",
+  "--------",
+  "coming soon!",
+].join("\n");
+
+const FILE_SYSTEM = {
+  type: "dir",
+  children: {
+    home: {
+      type: "dir",
+      children: {
+        guest: {
+          type: "dir",
+          children: {
+            "about.txt": { type: "file", content: ABOUT_TEXT },
+            "contact.txt": { type: "file", content: CONTACT_TEXT },
+            "resume.pdf": { type: "file", content: RESUME_TEXT },
+            projects: {
+              type: "dir",
+              children: {
+                "pqc-terminal.txt": {
+                  type: "file",
+                  content: "Terminal-inspired personal site.\nStatus: in progress.",
+                },
+                "pqc-crypto.txt": {
+                  type: "file",
+                  content: "Post-quantum cryptography explorations.\nStatus: expanding.",
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 };
 
 const state = {
@@ -70,6 +93,13 @@ const navState = {
   activeView: "terminal",
 };
 
+const settingsState = {
+  theme: "dark",
+  accent: "cyan",
+  fontSize: "medium",
+};
+const SETTINGS_KEY = "pqcnerd-settings";
+
 document.addEventListener("DOMContentLoaded", () => {
   ui.tabBar = document.querySelector(".tab-bar");
   ui.panelContainer = document.querySelector(".terminal-body");
@@ -108,6 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ui.addTabButton.addEventListener("click", () => createTab());
   initVisitorFlow();
   initTopNav();
+  initSettings();
 });
 
 function registerSession({
@@ -133,6 +164,7 @@ function registerSession({
     output,
     history: [],
     historyIndex: 0,
+    cwd: HOME_DIR,
   });
 }
 
@@ -171,16 +203,9 @@ function handleSubmit(event, tabId) {
   session.history.push(command);
   session.historyIndex = session.history.length;
 
-  const normalized = command.toLowerCase();
-  const response = COMMAND_RESPONSES[normalized];
-
-  if (response) {
+  const response = executeCommand(command, session);
+  if (response && response.length > 0) {
     appendResponse(session, response);
-  } else {
-    appendResponse(session, [
-      `Command not found: ${command}`,
-      "Type 'help' to see the list of available commands.",
-    ]);
   }
 
   session.input.value = "";
@@ -253,6 +278,308 @@ function printWelcome(tabId) {
 
 function scrollToBottom(element) {
   element.scrollTop = element.scrollHeight;
+}
+
+function executeCommand(input, session) {
+  const args = parseInput(input);
+  const command = args.shift()?.toLowerCase();
+
+  if (!command) {
+    return null;
+  }
+
+  switch (command) {
+    case "help":
+      return getHelpText();
+    case "ls":
+      return handleLs(args, session);
+    case "cd":
+      return handleCd(args, session);
+    case "pwd":
+      return [session.cwd];
+    case "cat":
+      return handleCat(args, session);
+    case "clear":
+      session.output.innerHTML = "";
+      return null;
+    case "echo":
+      return [args.join(" ")];
+    case "whoami":
+      return ["guest"];
+    case "date":
+      return [new Date().toString()];
+    case "history":
+      return session.history.map((entry, index) => `${index + 1}  ${entry}`);
+    case "neofetch":
+      return getNeofetch();
+    case "about":
+      return ABOUT_TEXT.split("\n");
+    case "contact":
+      return CONTACT_TEXT.split("\n");
+    case "resume":
+      return RESUME_TEXT.split("\n");
+    case "projects":
+      return PROJECTS_TEXT.split("\n");
+    default:
+      return [
+        `Command not found: ${command}`,
+        "Type 'help' to see the list of available commands.",
+      ];
+  }
+}
+
+function parseInput(input) {
+  const tokens = [];
+  const regex = /"([^"]*)"|'([^']*)'|(\S+)/g;
+  let match = regex.exec(input);
+  while (match) {
+    tokens.push(match[1] ?? match[2] ?? match[3]);
+    match = regex.exec(input);
+  }
+  return tokens;
+}
+
+function resolvePath(targetPath, cwd) {
+  if (!targetPath || targetPath === "~") {
+    return HOME_DIR;
+  }
+
+  let resolved = targetPath;
+  if (resolved.startsWith("~")) {
+    resolved = HOME_DIR + resolved.slice(1);
+  } else if (!resolved.startsWith("/")) {
+    resolved = `${cwd.replace(/\/$/, "")}/${resolved}`;
+  }
+
+  const segments = [];
+  resolved.split("/").forEach((segment) => {
+    if (!segment || segment === ".") {
+      return;
+    }
+    if (segment === "..") {
+      segments.pop();
+      return;
+    }
+    segments.push(segment);
+  });
+  return `/${segments.join("/")}`;
+}
+
+function getNode(path) {
+  const segments = path.split("/").filter(Boolean);
+  let node = FILE_SYSTEM;
+  for (const segment of segments) {
+    if (!node.children || !node.children[segment]) {
+      return null;
+    }
+    node = node.children[segment];
+  }
+  return node;
+}
+
+function handleLs(args, session) {
+  const detailed = args.includes("-la") || args.includes("-l");
+  const targetArg = args.find((arg) => !arg.startsWith("-"));
+  const targetPath = resolvePath(targetArg ?? "", session.cwd);
+  const node = getNode(targetPath);
+
+  if (!node) {
+    return [
+      `ls: cannot access '${targetArg ?? targetPath}': No such file or directory`,
+    ];
+  }
+
+  if (node.type !== "dir") {
+    return [targetPath.split("/").pop() || targetPath];
+  }
+
+  const entries = Object.entries(node.children ?? {});
+  const sorted = entries.sort(([aName], [bName]) =>
+    aName.localeCompare(bName),
+  );
+
+  if (sorted.length === 0) {
+    return [];
+  }
+
+  if (!detailed) {
+    return [sorted.map(([name]) => name).join("  ")];
+  }
+
+  return sorted.map(([name, entry]) => {
+    const permissions = entry.type === "dir" ? "drwxr-xr-x" : "-rw-r--r--";
+    const size = entry.type === "dir" ? 0 : entry.content.length;
+    return `${permissions} 1 guest staff ${String(size).padStart(4)} ${name}`;
+  });
+}
+
+function handleCd(args, session) {
+  const target = args[0];
+  const nextPath = resolvePath(target ?? "~", session.cwd);
+  const node = getNode(nextPath);
+
+  if (!node) {
+    return [`cd: no such file or directory: ${target ?? ""}`.trim()];
+  }
+  if (node.type !== "dir") {
+    return [`cd: not a directory: ${target ?? ""}`.trim()];
+  }
+
+  session.cwd = nextPath;
+  return null;
+}
+
+function handleCat(args, session) {
+  if (!args[0]) {
+    return ["cat: missing file operand"];
+  }
+
+  const targetPath = resolvePath(args[0], session.cwd);
+  const node = getNode(targetPath);
+
+  if (!node) {
+    return [`cat: ${args[0]}: No such file or directory`];
+  }
+  if (node.type === "dir") {
+    return [`cat: ${args[0]}: Is a directory`];
+  }
+
+  return node.content.split("\n");
+}
+
+function getHelpText() {
+  return [
+    "Available commands:",
+    "  - help       - list available commands",
+    "  - ls         - list directory contents",
+    "  - ls -la     - detailed list",
+    "  - cd         - change directory",
+    "  - pwd        - print working directory",
+    "  - cat        - show file contents",
+    "  - echo       - print text",
+    "  - clear      - clear the terminal",
+    "  - whoami     - show current user",
+    "  - date       - show date and time",
+    "  - history    - show command history",
+    "  - neofetch   - system snapshot",
+    "  - about      - learn more about me",
+    "  - contact    - ways to reach out",
+    "  - resume     - resume",
+    "  - projects   - project highlights",
+  ];
+}
+
+function getNeofetch() {
+  return [
+    "pqcnerd@terminal",
+    "---------------",
+    "OS: PQC Terminal",
+    "Host: pqcnerd.github.io",
+    "Kernel: 5.0.0",
+    "Uptime: 42 days",
+    "Shell: pqsh",
+    "Resolution: responsive",
+    "Theme: custom",
+    "CPU: Quantum-Ready",
+    "GPU: Neural Render",
+    "Memory: 512MB",
+  ];
+}
+
+function initSettings() {
+  const savedSettings = loadSettings();
+  settingsState.theme = savedSettings.theme;
+  settingsState.accent = savedSettings.accent;
+  settingsState.fontSize = savedSettings.fontSize;
+
+  applySettings();
+  bindSettingsControls();
+}
+
+function loadSettings() {
+  if (!window.localStorage) {
+    return { ...settingsState };
+  }
+
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (!raw) {
+      return { ...settingsState };
+    }
+    const parsed = JSON.parse(raw);
+    return {
+      theme: parsed.theme ?? settingsState.theme,
+      accent: parsed.accent ?? settingsState.accent,
+      fontSize: parsed.fontSize ?? settingsState.fontSize,
+    };
+  } catch (error) {
+    return { ...settingsState };
+  }
+}
+
+function saveSettings() {
+  if (!window.localStorage) {
+    return;
+  }
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settingsState));
+}
+
+function applySettings() {
+  const root = document.documentElement;
+  root.classList.remove("theme-light", "theme-contrast");
+  root.classList.remove(
+    "accent-green",
+    "accent-purple",
+    "accent-orange",
+    "accent-pink",
+  );
+  root.classList.remove("font-small", "font-medium", "font-large");
+
+  if (settingsState.theme === "light") {
+    root.classList.add("theme-light");
+  } else if (settingsState.theme === "contrast") {
+    root.classList.add("theme-contrast");
+  }
+
+  if (settingsState.accent !== "cyan") {
+    root.classList.add(`accent-${settingsState.accent}`);
+  }
+
+  root.classList.add(`font-${settingsState.fontSize}`);
+  updateSettingsUI();
+}
+
+function bindSettingsControls() {
+  const settingsGroups = document.querySelectorAll(".settings-options");
+  settingsGroups.forEach((group) => {
+    group.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-value]");
+      if (!button) {
+        return;
+      }
+      const setting = group.dataset.setting;
+      const value = button.dataset.value;
+      if (!setting || !value) {
+        return;
+      }
+      settingsState[setting] = value;
+      applySettings();
+      saveSettings();
+    });
+  });
+}
+
+function updateSettingsUI() {
+  const settingsGroups = document.querySelectorAll(".settings-options");
+  settingsGroups.forEach((group) => {
+    const setting = group.dataset.setting;
+    const activeValue = settingsState[setting];
+    const buttons = group.querySelectorAll("button[data-value]");
+    buttons.forEach((button) => {
+      const isActive = button.dataset.value === activeValue;
+      button.classList.toggle("active", isActive);
+    });
+  });
 }
 
 function createTab() {

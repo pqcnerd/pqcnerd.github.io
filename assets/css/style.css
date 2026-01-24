@@ -11,6 +11,54 @@
   font-size: clamp(14px, 1.8vw, 16px);
 }
 
+:root.theme-light {
+  color-scheme: light;
+  --bg-gradient: radial-gradient(circle at top, #f8fafc, #e2e8f0 60%, #cbd5f5 100%);
+  --terminal-bg: rgba(248, 250, 252, 0.92);
+  --terminal-border: rgba(100, 116, 139, 0.35);
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --prompt: #16a34a;
+}
+
+:root.theme-contrast {
+  color-scheme: dark;
+  --bg-gradient: radial-gradient(circle at top, #000000, #020617 70%, #020617 100%);
+  --terminal-bg: rgba(2, 6, 23, 0.95);
+  --terminal-border: rgba(148, 163, 184, 0.45);
+  --text-primary: #f8fafc;
+  --text-secondary: #e2e8f0;
+  --prompt: #facc15;
+}
+
+:root.accent-green {
+  --accent: #34d399;
+}
+
+:root.accent-purple {
+  --accent: #a78bfa;
+}
+
+:root.accent-orange {
+  --accent: #fb923c;
+}
+
+:root.accent-pink {
+  --accent: #f472b6;
+}
+
+:root.font-small {
+  font-size: clamp(13px, 1.6vw, 14px);
+}
+
+:root.font-medium {
+  font-size: clamp(14px, 1.8vw, 16px);
+}
+
+:root.font-large {
+  font-size: clamp(16px, 2vw, 18px);
+}
+
 *,
 *::before,
 *::after {
@@ -202,6 +250,95 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
+}
+
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(30, 41, 59, 0.35);
+}
+
+.settings-label {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.settings-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.settings-button,
+.settings-options .swatch {
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.55);
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.95rem;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease, box-shadow 150ms ease;
+}
+
+.settings-options .swatch {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-button:hover,
+.settings-button:focus-visible,
+.settings-options .swatch:hover,
+.settings-options .swatch:focus-visible {
+  color: var(--text-primary);
+  border-color: rgba(56, 189, 248, 0.6);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+
+.settings-button.active,
+.settings-options .swatch.active {
+  color: var(--accent);
+  border-color: rgba(56, 189, 248, 0.7);
+  background: rgba(56, 189, 248, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(56, 189, 248, 0.25);
+}
+
+.settings-options.color-swatches .swatch {
+  border-radius: 12px;
+}
+
+.settings-options .swatch.cyan {
+  background: #38bdf8;
+}
+
+.settings-options .swatch.green {
+  background: #34d399;
+}
+
+.settings-options .swatch.purple {
+  background: #a78bfa;
+}
+
+.settings-options .swatch.orange {
+  background: #fb923c;
+}
+
+.settings-options .swatch.pink {
+  background: #f472b6;
 }
 
 .terminal-app {
@@ -594,6 +731,14 @@ body {
 }
 
 @media (max-width: 640px) {
+  .background {
+    min-height: calc(100dvh - var(--nav-height));
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 0.75rem;
+    padding-top: calc(var(--nav-height) + 0.75rem);
+  }
+
   .terminal-header {
     grid-template-columns: auto 1fr auto;
     gap: 0.5rem;
@@ -601,6 +746,8 @@ body {
 
   .terminal-app {
     border-radius: 10px;
+    flex: 1;
+    min-height: 0;
   }
 
   .nav-container {
@@ -620,6 +767,17 @@ body {
     flex-direction: column;
   }
 
+  .terminal-body {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .terminal-output {
+    min-height: 0;
+  }
+
   .terminal-app,
   .visitor-panel {
     max-width: 100%;
@@ -627,6 +785,16 @@ body {
 
   .visitor-panel {
     align-self: center;
+    display: none;
+  }
+
+  .view-panel:not(.terminal-view) {
+    align-items: stretch;
+  }
+
+  .view-content {
+    width: 100%;
+    min-height: calc(100dvh - var(--nav-height) - 1.5rem);
   }
 
   .option-group {

@@ -165,7 +165,32 @@
           <div class="view-content">
             <h2 class="view-title" id="settings-heading">Settings</h2>
             <p class="view-text">Personalize your experience with theme and preference controls.</p>
-            <div class="view-placeholder">Settings controls coming soon.</div>
+            <div class="settings-group">
+              <p class="settings-label">Theme</p>
+              <div class="settings-options" data-setting="theme" role="group" aria-label="Theme">
+                <button type="button" class="settings-button active" data-value="dark">Dark</button>
+                <button type="button" class="settings-button" data-value="light">Light</button>
+                <button type="button" class="settings-button" data-value="contrast">High Contrast</button>
+              </div>
+            </div>
+            <div class="settings-group">
+              <p class="settings-label">Accent Color</p>
+              <div class="settings-options color-swatches" data-setting="accent" role="group" aria-label="Accent color">
+                <button type="button" class="swatch cyan active" data-value="cyan" aria-label="Cyan accent"></button>
+                <button type="button" class="swatch green" data-value="green" aria-label="Green accent"></button>
+                <button type="button" class="swatch purple" data-value="purple" aria-label="Purple accent"></button>
+                <button type="button" class="swatch orange" data-value="orange" aria-label="Orange accent"></button>
+                <button type="button" class="swatch pink" data-value="pink" aria-label="Pink accent"></button>
+              </div>
+            </div>
+            <div class="settings-group">
+              <p class="settings-label">Font Size</p>
+              <div class="settings-options" data-setting="fontSize" role="group" aria-label="Font size">
+                <button type="button" class="settings-button" data-value="small">Small</button>
+                <button type="button" class="settings-button active" data-value="medium">Medium</button>
+                <button type="button" class="settings-button" data-value="large">Large</button>
+              </div>
+            </div>
           </div>
         </section>
 
