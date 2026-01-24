@@ -95,6 +95,16 @@ const FALLBACK_QUOTES = [
 const quoteHistory = [];
 let currentQuoteIndex = -1;
 
+const FORUM_KEY = "pqcnerd-forum-posts";
+const DEFAULT_FORUM_POST = {
+  id: "welcome-post",
+  title: "Welcome to the PQC Forum",
+  author: "guest",
+  date: "Jan 24, 2026",
+  content:
+    "This is a placeholder discussion space for sharing ideas on post-quantum cryptography, system design, and tooling.\n\nUse the + New Post button to start a thread.",
+};
+
 const state = {
   nextIndex: 2,
   activeId: "tab-1",
@@ -179,6 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initTopNav();
   initSettings();
   initQuote();
+  initForum();
 });
 
 function registerSession({
@@ -784,6 +795,153 @@ function getTodayKey() {
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const day = String(now.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+function initForum() {
+  const posts = loadOrSeedPosts();
+  renderForumPosts(posts);
+  bindForumEvents();
+}
+
+function loadOrSeedPosts() {
+  if (!window.localStorage) {
+    return [DEFAULT_FORUM_POST];
+  }
+
+  try {
+    const raw = localStorage.getItem(FORUM_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      localStorage.setItem(FORUM_KEY, JSON.stringify([DEFAULT_FORUM_POST]));
+      return [DEFAULT_FORUM_POST];
+    }
+    return parsed;
+  } catch (error) {
+    return [DEFAULT_FORUM_POST];
+  }
+}
+
+function savePosts(posts) {
+  if (!window.localStorage) {
+    return;
+  }
+  localStorage.setItem(FORUM_KEY, JSON.stringify(posts));
+}
+
+function renderForumPosts(posts) {
+  const container = document.getElementById("forum-posts");
+  if (!container) {
+    return;
+  }
+
+  container.innerHTML = "";
+  posts.forEach((post) => {
+    const card = document.createElement("article");
+    card.className = "forum-post";
+    card.tabIndex = 0;
+    card.dataset.postId = post.id;
+
+    const title = document.createElement("h4");
+    title.textContent = post.title;
+
+    const meta = document.createElement("p");
+    meta.className = "forum-meta";
+    meta.textContent = `by ${post.author} · ${post.date}`;
+
+    const preview = document.createElement("p");
+    preview.className = "forum-preview";
+    preview.textContent = getPreview(post.content);
+
+    card.append(title, meta, preview);
+    container.append(card);
+
+    card.addEventListener("click", () => togglePost(card, post));
+    card.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        togglePost(card, post);
+      }
+    });
+  });
+}
+
+function togglePost(card, post) {
+  const preview = card.querySelector(".forum-preview");
+  if (!preview) {
+    return;
+  }
+  const isExpanded = card.classList.toggle("expanded");
+  preview.textContent = isExpanded ? post.content : getPreview(post.content);
+}
+
+function getPreview(content) {
+  const trimmed = content.trim();
+  if (trimmed.length <= 140) {
+    return trimmed;
+  }
+  return `${trimmed.slice(0, 140)}…`;
+}
+
+function bindForumEvents() {
+  const newButton = document.getElementById("forum-new-btn");
+  const modal = document.getElementById("forum-modal");
+  const form = document.getElementById("forum-form");
+  const cancelButton = document.getElementById("forum-cancel");
+
+  if (!newButton || !modal || !form) {
+    return;
+  }
+
+  newButton.addEventListener("click", () => modal.showModal());
+  cancelButton?.addEventListener("click", () => modal.close());
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      modal.close();
+    }
+  });
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    handlePostSubmit(form, modal);
+  });
+}
+
+function handlePostSubmit(form, modal) {
+  const titleInput = form.querySelector("#post-title");
+  const contentInput = form.querySelector("#post-content");
+  if (!titleInput || !contentInput) {
+    return;
+  }
+
+  const title = titleInput.value.trim();
+  const content = contentInput.value.trim();
+  if (!title || !content) {
+    return;
+  }
+
+  const posts = loadOrSeedPosts();
+  const newPost = {
+    id: `post-${Date.now()}`,
+    title,
+    author: "guest",
+    date: formatDate(new Date()),
+    content,
+  };
+  const updated = [newPost, ...posts];
+  savePosts(updated);
+  renderForumPosts(updated);
+
+  titleInput.value = "";
+  contentInput.value = "";
+  modal.close();
+}
+
+function formatDate(date) {
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
 }
 
 function createTab() {

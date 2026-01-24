@@ -166,13 +166,82 @@
             <div class="profile-hero">
               <span class="profile-avatar large" aria-hidden="true"></span>
               <div>
-                <h2 class="view-title" id="profile-heading">Profile</h2>
-                <p class="view-subtitle">Profile details are coming soon.</p>
+                <h2 class="view-title" id="profile-heading">Mark (Zeheng) Mu</h2>
+                <p class="profile-tagline">PQC Enthusiast | Systems Programmer | UofT CS</p>
               </div>
             </div>
-            <p class="view-text">
-              This space will highlight your background, featured work, and links once the profile content is ready.
-            </p>
+
+            <section class="profile-section">
+              <h3 class="profile-section-title">About</h3>
+              <p class="profile-bio">
+                I build secure systems and tooling with a focus on post-quantum cryptography, low-level performance,
+                and human-friendly developer experiences.
+              </p>
+            </section>
+
+            <section class="profile-section">
+              <h3 class="profile-section-title">Skills</h3>
+              <div class="skill-tags">
+                <span class="skill-tag">Rust</span>
+                <span class="skill-tag">C/C++</span>
+                <span class="skill-tag">Go</span>
+                <span class="skill-tag">Python</span>
+                <span class="skill-tag">Cryptography</span>
+                <span class="skill-tag">Systems Design</span>
+                <span class="skill-tag">Web Security</span>
+              </div>
+            </section>
+
+            <section class="profile-section">
+              <h3 class="profile-section-title">Projects</h3>
+              <div class="project-cards">
+                <article class="project-card">
+                  <h4>PQC Terminal</h4>
+                  <p>Terminal-inspired portfolio experience with interactive commands and theming.</p>
+                  <a href="#terminal" class="project-link">View demo</a>
+                </article>
+                <article class="project-card">
+                  <h4>Crypto Playground</h4>
+                  <p>Explorations of lattice-based primitives with clean, annotated implementations.</p>
+                  <a href="#" class="project-link">Details soon</a>
+                </article>
+              </div>
+            </section>
+
+            <section class="profile-section">
+              <h3 class="profile-section-title">Experience</h3>
+              <div class="timeline">
+                <div class="timeline-item">
+                  <h4>Research Assistant</h4>
+                  <span class="timeline-meta">University of Toronto · 2024 - Present</span>
+                  <p>Exploring PQC protocols and evaluating implementation trade-offs.</p>
+                </div>
+                <div class="timeline-item">
+                  <h4>Software Engineering Intern</h4>
+                  <span class="timeline-meta">Security Lab · Summer 2023</span>
+                  <p>Built tooling for automated analysis of cryptographic implementations.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="profile-section">
+              <h3 class="profile-section-title">Education</h3>
+              <div class="education-item">
+                <h4>University of Toronto</h4>
+                <p>BSc Computer Science · 2022 - 2026</p>
+              </div>
+            </section>
+
+            <section class="profile-section">
+              <h3 class="profile-section-title">Connect</h3>
+              <div class="social-links">
+                <a href="https://github.com/pqcnerd" target="_blank" rel="noreferrer">GitHub</a>
+                <a href="https://www.linkedin.com/in/mark-mu" target="_blank" rel="noreferrer">LinkedIn</a>
+                <a href="https://x.com/pqcnerd" target="_blank" rel="noreferrer">X</a>
+                <a href="mailto:pqcnerd@gmail.com">Email</a>
+              </div>
+              <a href="Resume CV.pdf" class="resume-btn">Download Resume</a>
+            </section>
           </div>
         </section>
 
@@ -211,9 +280,30 @@
 
         <section class="view-panel" data-view-id="forum" aria-labelledby="forum-heading">
           <div class="view-content">
-            <h2 class="view-title" id="forum-heading">Forum</h2>
+            <div class="forum-header">
+              <h2 class="view-title" id="forum-heading">Forum</h2>
+              <button type="button" class="forum-new-post" id="forum-new-btn">+ New Post</button>
+            </div>
             <p class="view-text">Join the discussion and share ideas with the community.</p>
-            <div class="view-placeholder">Forum threads will appear here.</div>
+            <p class="forum-disclaimer">
+              Note: This forum exists because I never finished a previous forum project and wanted closure. Feel free
+              to discuss anything related to me, my work, or just say hi — recruiters and students welcome.
+            </p>
+            <div class="forum-posts" id="forum-posts"></div>
+
+            <dialog class="forum-modal" id="forum-modal">
+              <form class="forum-form" id="forum-form">
+                <h3 class="forum-modal-title">New Post</h3>
+                <label for="post-title">Title</label>
+                <input type="text" id="post-title" required />
+                <label for="post-content">Content</label>
+                <textarea id="post-content" rows="5" required></textarea>
+                <div class="forum-form-actions">
+                  <button type="button" class="forum-cancel" id="forum-cancel">Cancel</button>
+                  <button type="submit" class="forum-submit">Post</button>
+                </div>
+              </form>
+            </dialog>
           </div>
         </section>
       </div>
