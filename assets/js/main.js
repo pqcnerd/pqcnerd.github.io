@@ -57,6 +57,7 @@ const FILE_SYSTEM = {
 };
 
 const QUOTE_CACHE_KEY = "pqcnerd-daily-quote";
+const MAX_QUOTE_HISTORY = 5;
 const FALLBACK_QUOTES = [
   {
     text: "Simplicity is the soul of efficiency.",
@@ -91,6 +92,8 @@ const FALLBACK_QUOTES = [
     author: "Robert Frost",
   },
 ];
+const quoteHistory = [];
+let currentQuoteIndex = -1;
 
 const state = {
   nextIndex: 2,
@@ -622,6 +625,7 @@ function updateSettingsUI() {
 function initQuote() {
   const cached = getCachedQuote();
   if (cached) {
+    addQuoteToHistory(cached);
     displayQuote(cached);
     return;
   }
@@ -629,17 +633,22 @@ function initQuote() {
   fetchDailyQuote()
     .then((quote) => {
       cacheQuote(quote);
+      addQuoteToHistory(quote);
       displayQuote(quote);
     })
     .catch(() => {
       const fallback = pickFallbackQuote();
       cacheQuote(fallback);
+      addQuoteToHistory(fallback);
       displayQuote(fallback);
     });
+
+  const refreshButton = document.getElementById("quote-refresh");
+  refreshButton?.addEventListener("click", handleRefreshClick);
 }
 
 async function fetchDailyQuote() {
-  const response = await fetch("https://zenquotes.io/api/today");
+  const response = await fetch("https://zenquotes.io/api/random");
   if (!response.ok) {
     throw new Error("Failed to fetch quote");
   }
@@ -700,6 +709,63 @@ function displayQuote(quote) {
 
   quoteText.textContent = quote.text ?? "";
   quoteAuthor.textContent = quote.author ? `— ${quote.author}` : "";
+}
+
+function addQuoteToHistory(quote) {
+  quoteHistory.push(quote);
+  if (quoteHistory.length > MAX_QUOTE_HISTORY) {
+    quoteHistory.shift();
+    currentQuoteIndex = Math.max(0, currentQuoteIndex - 1);
+  }
+  currentQuoteIndex = quoteHistory.length - 1;
+  renderQuoteDots();
+}
+
+function renderQuoteDots() {
+  const dotsContainer = document.getElementById("quote-dots");
+  if (!dotsContainer) {
+    return;
+  }
+
+  dotsContainer.innerHTML = "";
+  quoteHistory.forEach((quote, index) => {
+    const dot = document.createElement("button");
+    dot.type = "button";
+    dot.className = "quote-dot";
+    dot.setAttribute("role", "tab");
+    dot.setAttribute("aria-label", `Quote ${index + 1}`);
+    dot.setAttribute("aria-selected", String(index === currentQuoteIndex));
+    if (index === currentQuoteIndex) {
+      dot.classList.add("active");
+    }
+    dot.addEventListener("click", () => handleDotClick(index));
+    dotsContainer.append(dot);
+  });
+}
+
+function handleDotClick(index) {
+  const quote = quoteHistory[index];
+  if (!quote) {
+    return;
+  }
+  currentQuoteIndex = index;
+  displayQuote(quote);
+  renderQuoteDots();
+}
+
+function handleRefreshClick() {
+  fetchDailyQuote()
+    .then((quote) => {
+      cacheQuote(quote);
+      addQuoteToHistory(quote);
+      displayQuote(quote);
+    })
+    .catch(() => {
+      const fallback = pickFallbackQuote();
+      cacheQuote(fallback);
+      addQuoteToHistory(fallback);
+      displayQuote(fallback);
+    });
 }
 
 function pickFallbackQuote() {

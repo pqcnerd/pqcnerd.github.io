@@ -42,9 +42,20 @@
         </a>
       </div>
     </nav>
-    <div class="quote-banner" aria-label="Daily quote">
+    <div class="quote-card" aria-label="Daily quote">
       <blockquote class="quote-text" id="daily-quote">Loading quote...</blockquote>
       <cite class="quote-author" id="quote-author"></cite>
+      <div class="quote-controls">
+        <div class="quote-dots" id="quote-dots" role="tablist" aria-label="Quote history"></div>
+        <button type="button" class="quote-refresh" id="quote-refresh" aria-label="Next quote">
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 1 0 8 8h-2a6 6 0 1 1-1.76-4.24l-2.24 2.24H20V4l-2.35 2.35Z"
+              fill="currentColor"
+            />
+          </svg>
+        </button>
+      </div>
     </div>
     <main class="background">
       <div class="viewport">
