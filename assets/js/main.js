@@ -56,6 +56,42 @@ const FILE_SYSTEM = {
   },
 };
 
+const QUOTE_CACHE_KEY = "pqcnerd-daily-quote";
+const FALLBACK_QUOTES = [
+  {
+    text: "Simplicity is the soul of efficiency.",
+    author: "Austin Freeman",
+  },
+  {
+    text: "Well begun is half done.",
+    author: "Aristotle",
+  },
+  {
+    text: "Action is the foundational key to all success.",
+    author: "Pablo Picasso",
+  },
+  {
+    text: "The secret of getting ahead is getting started.",
+    author: "Mark Twain",
+  },
+  {
+    text: "Quality is not an act, it is a habit.",
+    author: "Aristotle",
+  },
+  {
+    text: "What we know is a drop, what we do not know is an ocean.",
+    author: "Isaac Newton",
+  },
+  {
+    text: "Stay hungry, stay foolish.",
+    author: "Steve Jobs",
+  },
+  {
+    text: "The best way out is always through.",
+    author: "Robert Frost",
+  },
+];
+
 const state = {
   nextIndex: 2,
   activeId: "tab-1",
@@ -139,6 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initVisitorFlow();
   initTopNav();
   initSettings();
+  initQuote();
 });
 
 function registerSession({
@@ -580,6 +617,107 @@ function updateSettingsUI() {
       button.classList.toggle("active", isActive);
     });
   });
+}
+
+function initQuote() {
+  const cached = getCachedQuote();
+  if (cached) {
+    displayQuote(cached);
+    return;
+  }
+
+  fetchDailyQuote()
+    .then((quote) => {
+      cacheQuote(quote);
+      displayQuote(quote);
+    })
+    .catch(() => {
+      const fallback = pickFallbackQuote();
+      cacheQuote(fallback);
+      displayQuote(fallback);
+    });
+}
+
+async function fetchDailyQuote() {
+  const response = await fetch("https://zenquotes.io/api/today");
+  if (!response.ok) {
+    throw new Error("Failed to fetch quote");
+  }
+
+  const data = await response.json();
+  const first = Array.isArray(data) ? data[0] : null;
+  if (!first || !first.q) {
+    throw new Error("Invalid quote response");
+  }
+
+  return {
+    text: String(first.q),
+    author: first.a ? String(first.a) : "Unknown",
+  };
+}
+
+function getCachedQuote() {
+  if (!window.localStorage) {
+    return null;
+  }
+
+  try {
+    const raw = localStorage.getItem(QUOTE_CACHE_KEY);
+    if (!raw) {
+      return null;
+    }
+    const parsed = JSON.parse(raw);
+    if (parsed.dateKey !== getTodayKey() || !parsed.text) {
+      return null;
+    }
+    return {
+      text: parsed.text,
+      author: parsed.author ?? "Unknown",
+    };
+  } catch (error) {
+    return null;
+  }
+}
+
+function cacheQuote(quote) {
+  if (!window.localStorage) {
+    return;
+  }
+  const payload = {
+    dateKey: getTodayKey(),
+    text: quote.text,
+    author: quote.author,
+  };
+  localStorage.setItem(QUOTE_CACHE_KEY, JSON.stringify(payload));
+}
+
+function displayQuote(quote) {
+  const quoteText = document.getElementById("daily-quote");
+  const quoteAuthor = document.getElementById("quote-author");
+  if (!quoteText || !quoteAuthor) {
+    return;
+  }
+
+  quoteText.textContent = quote.text ?? "";
+  quoteAuthor.textContent = quote.author ? `— ${quote.author}` : "";
+}
+
+function pickFallbackQuote() {
+  const dateKey = getTodayKey();
+  let hash = 0;
+  for (const char of dateKey) {
+    hash = (hash + char.charCodeAt(0)) % 100000;
+  }
+  const index = hash % FALLBACK_QUOTES.length;
+  return FALLBACK_QUOTES[index];
+}
+
+function getTodayKey() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function createTab() {
