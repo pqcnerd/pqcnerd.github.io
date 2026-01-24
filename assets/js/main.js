@@ -64,6 +64,12 @@ const ui = {
   addTabButton: null,
 };
 
+const navState = {
+  items: [],
+  panels: new Map(),
+  activeView: "terminal",
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   ui.tabBar = document.querySelector(".tab-bar");
   ui.panelContainer = document.querySelector(".terminal-body");
@@ -101,6 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   ui.addTabButton.addEventListener("click", () => createTab());
   initVisitorFlow();
+  initTopNav();
 });
 
 function registerSession({
@@ -366,6 +373,65 @@ function closeTab(tabId) {
     const remaining = Array.from(state.sessions.keys());
     const fallbackId = remaining[remaining.length - 1];
     activateTab(fallbackId);
+  }
+}
+
+function initTopNav() {
+  navState.items = Array.from(document.querySelectorAll(".nav-item[data-view]"));
+  const panels = Array.from(
+    document.querySelectorAll(".view-panel[data-view-id]"),
+  );
+
+  if (navState.items.length === 0 || panels.length === 0) {
+    return;
+  }
+
+  navState.panels = new Map();
+  panels.forEach((panel) => {
+    const viewId = panel.dataset.viewId;
+    if (viewId) {
+      navState.panels.set(viewId, panel);
+    }
+  });
+
+  navState.items.forEach((item) => {
+    item.addEventListener("click", (event) => {
+      event.preventDefault();
+      const viewId = item.dataset.view;
+      if (!viewId) {
+        return;
+      }
+      setActiveView(viewId);
+    });
+  });
+
+  setActiveView(navState.activeView);
+}
+
+function setActiveView(viewId) {
+  if (!navState.panels.has(viewId)) {
+    return;
+  }
+
+  navState.activeView = viewId;
+
+  navState.items.forEach((item) => {
+    const isActive = item.dataset.view === viewId;
+    item.classList.toggle("active", isActive);
+    if (isActive) {
+      item.setAttribute("aria-current", "page");
+    } else {
+      item.removeAttribute("aria-current");
+    }
+  });
+
+  navState.panels.forEach((panel, id) => {
+    panel.classList.toggle("active", id === viewId);
+  });
+
+  if (viewId === "terminal") {
+    const activeSession = state.sessions.get(state.activeId);
+    activeSession?.input.focus();
   }
 }
 

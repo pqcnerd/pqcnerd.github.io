@@ -7,107 +7,175 @@
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
   <body>
+    <nav class="top-nav" role="navigation" aria-label="Primary">
+      <div class="nav-container">
+        <a class="nav-item active" href="#terminal" data-view="terminal" aria-current="page">
+          <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm2.3 4.3a1 1 0 0 0 0 1.4L8.59 13l-2.3 2.3a1 1 0 1 0 1.42 1.4l3-3a1 1 0 0 0 0-1.4l-3-3a1 1 0 0 0-1.41 0ZM12 16a1 1 0 0 0 1 1h3a1 1 0 1 0 0-2h-3a1 1 0 0 0-1 1Z"
+              fill="currentColor"
+            />
+          </svg>
+          <span class="nav-label">Terminal</span>
+        </a>
+        <a class="nav-item" href="#profile" data-view="profile">
+          <span class="profile-avatar" aria-hidden="true"></span>
+          <span class="nav-label">Profile</span>
+        </a>
+        <a class="nav-item" href="#settings" data-view="settings">
+          <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8Zm8.7 2.7-1.7-.3a7.2 7.2 0 0 0-.7-1.7l1-1.4a.9.9 0 0 0-.1-1.1l-1.6-1.6a.9.9 0 0 0-1.1-.1l-1.4 1a7.2 7.2 0 0 0-1.7-.7l-.3-1.7A.9.9 0 0 0 11.1 2h-2.2a.9.9 0 0 0-.9.7l-.3 1.7a7.2 7.2 0 0 0-1.7.7l-1.4-1a.9.9 0 0 0-1.1.1L1.9 5.8a.9.9 0 0 0-.1 1.1l1 1.4a7.2 7.2 0 0 0-.7 1.7l-1.7.3A.9.9 0 0 0 0 12.4v2.2c0 .4.3.8.7.9l1.7.3c.2.6.4 1.2.7 1.7l-1 1.4a.9.9 0 0 0 .1 1.1l1.6 1.6a.9.9 0 0 0 1.1.1l1.4-1c.5.3 1.1.5 1.7.7l.3 1.7c.1.4.5.7.9.7h2.2c.4 0 .8-.3.9-.7l.3-1.7c.6-.2 1.2-.4 1.7-.7l1.4 1a.9.9 0 0 0 1.1-.1l1.6-1.6a.9.9 0 0 0 .1-1.1l-1-1.4c.3-.5.5-1.1.7-1.7l1.7-.3c.4-.1.7-.5.7-.9v-2.2a.9.9 0 0 0-.7-.9ZM12 17.6a5.6 5.6 0 1 1 0-11.2 5.6 5.6 0 0 1 0 11.2Z"
+              fill="currentColor"
+            />
+          </svg>
+          <span class="nav-label">Settings</span>
+        </a>
+        <a class="nav-item" href="#forum" data-view="forum">
+          <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M5 4h14a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H9.5L5 21.5V17H5a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3Zm2.5 5a1 1 0 0 0 0 2H16a1 1 0 1 0 0-2H7.5Zm0 4a1 1 0 0 0 0 2H13a1 1 0 1 0 0-2H7.5Z"
+              fill="currentColor"
+            />
+          </svg>
+          <span class="nav-label">Forum</span>
+        </a>
+      </div>
+    </nav>
     <main class="background">
       <div class="viewport">
-        <section class="terminal-app" role="application" aria-label="Interactive terminal">
-          <header class="terminal-header">
-            <div class="terminal-brand" aria-hidden="true">
-              <svg class="terminal-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm2.3 4.3a1 1 0 0 0 0 1.4L8.59 13l-2.3 2.3a1 1 0 1 0 1.42 1.4l3-3a1 1 0 0 0 0-1.4l-3-3a1 1 0 0 0-1.41 0ZM12 16a1 1 0 0 0 1 1h3a1 1 0 1 0 0-2h-3a1 1 0 0 0-1 1Z"
-                  fill="currentColor"
-                />
-              </svg>
-              <span class="terminal-title">Terminal</span>
-            </div>
-            <div class="tab-bar" role="tablist" aria-label="Terminal tabs">
-              <div class="tab active" data-tab-id="tab-1">
-                <button
-                  class="tab-trigger"
-                  role="tab"
-                  aria-selected="true"
-                  aria-controls="tab-1"
-                  id="tab-button-1"
-                  type="button"
-                >
-                  <span class="tab-icon" aria-hidden="true">_</span>
-                  <span class="tab-label">main</span>
-                </button>
-                <button class="tab-close" type="button" aria-label="Close main tab">x</button>
+        <section class="view-panel terminal-view active" data-view-id="terminal" aria-label="Terminal view">
+          <section class="terminal-app" role="application" aria-label="Interactive terminal">
+            <header class="terminal-header">
+              <div class="terminal-brand" aria-hidden="true">
+                <svg class="terminal-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm2.3 4.3a1 1 0 0 0 0 1.4L8.59 13l-2.3 2.3a1 1 0 1 0 1.42 1.4l3-3a1 1 0 0 0 0-1.4l-3-3a1 1 0 0 0-1.41 0ZM12 16a1 1 0 0 0 1 1h3a1 1 0 1 0 0-2h-3a1 1 0 0 0-1 1Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                <span class="terminal-title">Terminal</span>
+              </div>
+              <div class="tab-bar" role="tablist" aria-label="Terminal tabs">
+                <div class="tab active" data-tab-id="tab-1">
+                  <button
+                    class="tab-trigger"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="tab-1"
+                    id="tab-button-1"
+                    type="button"
+                  >
+                    <span class="tab-icon" aria-hidden="true">_</span>
+                    <span class="tab-label">main</span>
+                  </button>
+                  <button class="tab-close" type="button" aria-label="Close main tab">x</button>
+                </div>
+              </div>
+              <button class="add-tab" type="button" title="New tab" aria-label="Open new tab">+</button>
+            </header>
+
+            <div class="terminal-body">
+              <div class="tab-panel active" id="tab-1" role="tabpanel" aria-labelledby="tab-button-1" data-tab>
+                <div class="terminal-output" aria-live="polite" aria-atomic="false"></div>
+                <form class="terminal-input" autocomplete="off">
+                  <label for="input-tab-1" class="prompt" aria-hidden="true">$</label>
+                  <input
+                    id="input-tab-1"
+                    type="text"
+                    inputmode="text"
+                    spellcheck="false"
+                    aria-label="Type a command"
+                    autofocus
+                  />
+                </form>
               </div>
             </div>
-            <button class="add-tab" type="button" title="New tab" aria-label="Open new tab">+</button>
-          </header>
+          </section>
 
-          <div class="terminal-body">
-            <div class="tab-panel active" id="tab-1" role="tabpanel" aria-labelledby="tab-button-1" data-tab>
-              <div class="terminal-output" aria-live="polite" aria-atomic="false"></div>
-              <form class="terminal-input" autocomplete="off">
-                <label for="input-tab-1" class="prompt" aria-hidden="true">$</label>
-                <input
-                  id="input-tab-1"
-                  type="text"
-                  inputmode="text"
-                  spellcheck="false"
-                  aria-label="Type a command"
-                  autofocus
-                />
+          <aside class="visitor-panel" role="complementary" aria-labelledby="visitor-heading">
+            <div class="visitor-card">
+              <h2 class="visitor-heading" id="visitor-heading">Quick Questions</h2>
+              <p class="visitor-intro">Help me tailor the site by answering a few quick questions.</p>
+
+              <form id="visitor-form" novalidate>
+                <div class="question active" data-step="1">
+                  <p class="question-title">What are you?</p>
+                  <div class="option-group">
+                    <button type="button" class="option-button" data-role-option="student" aria-pressed="false">Student</button>
+                    <button type="button" class="option-button" data-role-option="professor" aria-pressed="false">Professor</button>
+                    <button type="button" class="option-button" data-role-option="recruiter" aria-pressed="false">Recruiter</button>
+                    <button type="button" class="option-button" data-role-option="other" aria-pressed="false">Other</button>
+                  </div>
+                </div>
+
+                <div class="question" data-step="2">
+                  <label for="visitor-reason" class="question-title">Why are you here?</label>
+                  <textarea
+                    id="visitor-reason"
+                    rows="3"
+                    placeholder="Tell me what brings you here."
+                    aria-describedby="visitor-reason-help"
+                  ></textarea>
+                  <p class="helper-text" id="visitor-reason-help">A quick sentence or two is perfect.</p>
+                  <button type="button" class="question-next" data-action="next-reason" disabled>Next</button>
+                </div>
+
+                <div class="question" data-step="3">
+                  <p class="question-title">How would you rate the page?</p>
+                  <div class="option-group rating">
+                    <button type="button" class="option-button" data-rating-option="1" aria-pressed="false" aria-label="Rate 1 out of 5">1</button>
+                    <button type="button" class="option-button" data-rating-option="2" aria-pressed="false" aria-label="Rate 2 out of 5">2</button>
+                    <button type="button" class="option-button" data-rating-option="3" aria-pressed="false" aria-label="Rate 3 out of 5">3</button>
+                    <button type="button" class="option-button" data-rating-option="4" aria-pressed="false" aria-label="Rate 4 out of 5">4</button>
+                    <button type="button" class="option-button" data-rating-option="5" aria-pressed="false" aria-label="Rate 5 out of 5">5</button>
+                  </div>
+                </div>
+
+                <div class="question" data-step="4">
+                  <label for="visitor-notes" class="question-title">Any additional notes?</label>
+                  <textarea
+                    id="visitor-notes"
+                    rows="3"
+                    placeholder="Anything else you'd like to share?"
+                  ></textarea>
+                  <button type="submit" class="submit-button">Submit</button>
+                </div>
               </form>
             </div>
+          </aside>
+        </section>
+
+        <section class="view-panel" data-view-id="profile" aria-labelledby="profile-heading">
+          <div class="view-content">
+            <div class="profile-hero">
+              <span class="profile-avatar large" aria-hidden="true"></span>
+              <div>
+                <h2 class="view-title" id="profile-heading">Profile</h2>
+                <p class="view-subtitle">Profile details are coming soon.</p>
+              </div>
+            </div>
+            <p class="view-text">
+              This space will highlight your background, featured work, and links once the profile content is ready.
+            </p>
           </div>
         </section>
 
-        <aside class="visitor-panel" role="complementary" aria-labelledby="visitor-heading">
-          <div class="visitor-card">
-            <h2 class="visitor-heading" id="visitor-heading">Quick Questions</h2>
-            <p class="visitor-intro">Help me tailor the site by answering a few quick questions.</p>
-
-            <form id="visitor-form" novalidate>
-              <div class="question active" data-step="1">
-                <p class="question-title">What are you?</p>
-                <div class="option-group">
-                  <button type="button" class="option-button" data-role-option="student" aria-pressed="false">Student</button>
-                  <button type="button" class="option-button" data-role-option="professor" aria-pressed="false">Professor</button>
-                  <button type="button" class="option-button" data-role-option="recruiter" aria-pressed="false">Recruiter</button>
-                  <button type="button" class="option-button" data-role-option="other" aria-pressed="false">Other</button>
-                </div>
-              </div>
-
-              <div class="question" data-step="2">
-                <label for="visitor-reason" class="question-title">Why are you here?</label>
-                <textarea
-                  id="visitor-reason"
-                  rows="3"
-                  placeholder="Tell me what brings you here."
-                  aria-describedby="visitor-reason-help"
-                ></textarea>
-                <p class="helper-text" id="visitor-reason-help">A quick sentence or two is perfect.</p>
-                <button type="button" class="question-next" data-action="next-reason" disabled>Next</button>
-              </div>
-
-              <div class="question" data-step="3">
-                <p class="question-title">How would you rate the page?</p>
-                <div class="option-group rating">
-                  <button type="button" class="option-button" data-rating-option="1" aria-pressed="false" aria-label="Rate 1 out of 5">1</button>
-                  <button type="button" class="option-button" data-rating-option="2" aria-pressed="false" aria-label="Rate 2 out of 5">2</button>
-                  <button type="button" class="option-button" data-rating-option="3" aria-pressed="false" aria-label="Rate 3 out of 5">3</button>
-                  <button type="button" class="option-button" data-rating-option="4" aria-pressed="false" aria-label="Rate 4 out of 5">4</button>
-                  <button type="button" class="option-button" data-rating-option="5" aria-pressed="false" aria-label="Rate 5 out of 5">5</button>
-                </div>
-              </div>
-
-              <div class="question" data-step="4">
-                <label for="visitor-notes" class="question-title">Any additional notes?</label>
-                <textarea
-                  id="visitor-notes"
-                  rows="3"
-                  placeholder="Anything else you'd like to share?"
-                ></textarea>
-                <button type="submit" class="submit-button">Submit</button>
-              </div>
-            </form>
+        <section class="view-panel" data-view-id="settings" aria-labelledby="settings-heading">
+          <div class="view-content">
+            <h2 class="view-title" id="settings-heading">Settings</h2>
+            <p class="view-text">Personalize your experience with theme and preference controls.</p>
+            <div class="view-placeholder">Settings controls coming soon.</div>
           </div>
-        </aside>
+        </section>
+
+        <section class="view-panel" data-view-id="forum" aria-labelledby="forum-heading">
+          <div class="view-content">
+            <h2 class="view-title" id="forum-heading">Forum</h2>
+            <p class="view-text">Join the discussion and share ideas with the community.</p>
+            <div class="view-placeholder">Forum threads will appear here.</div>
+          </div>
+        </section>
       </div>
     </main>
 
