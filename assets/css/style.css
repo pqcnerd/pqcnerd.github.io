@@ -13,12 +13,12 @@
 
 :root.theme-light {
   color-scheme: light;
-  --bg-gradient: radial-gradient(circle at top, #f8fafc, #e2e8f0 60%, #cbd5f5 100%);
-  --terminal-bg: rgba(248, 250, 252, 0.92);
-  --terminal-border: rgba(100, 116, 139, 0.35);
-  --text-primary: #1e293b;
+  --bg-gradient: radial-gradient(circle at top, #f8fafc, #e2e8f0 55%, #cbd5f5 100%);
+  --terminal-bg: rgba(248, 250, 252, 0.96);
+  --terminal-border: rgba(100, 116, 139, 0.3);
+  --text-primary: #0f172a;
   --text-secondary: #475569;
-  --prompt: #16a34a;
+  --prompt: #15803d;
 }
 
 :root.theme-contrast {
@@ -75,7 +75,7 @@ body {
 }
 
 .quote-card {
-  width: min(720px, calc(100% - 3rem));
+  width: min(1400px, calc(100% - 3rem));
   margin: calc(var(--nav-height) + 1.5rem) auto 0;
   padding: 1.25rem 1.5rem 1rem;
   background: var(--terminal-bg);
@@ -166,7 +166,7 @@ body {
 }
 
 .viewport {
-  width: min(1180px, 100%);
+  width: min(1400px, 100%);
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -200,7 +200,7 @@ body {
 
 .nav-container {
   height: 100%;
-  width: min(1180px, 100%);
+  width: min(1400px, 100%);
   margin: 0 auto;
   padding: 0 1.5rem;
   display: flex;
@@ -291,7 +291,7 @@ body {
 }
 
 .view-content {
-  width: min(760px, 100%);
+  width: min(1400px, 100%);
   background: var(--terminal-bg);
   border: 1px solid var(--terminal-border);
   border-radius: 12px;
@@ -425,7 +425,8 @@ body {
 
 .terminal-app {
   flex: 1 1 0;
-  max-width: 720px;
+  max-width: none;
+  width: 100%;
   background: var(--terminal-bg);
   border: 1px solid var(--terminal-border);
   border-radius: 12px;
@@ -565,7 +566,7 @@ body {
 }
 
 .visitor-panel {
-  flex: 0 0 clamp(260px, 30vw, 340px);
+  flex: 0 0 clamp(280px, 24vw, 420px);
   background: rgba(15, 23, 42, 0.72);
   border: 1px solid var(--terminal-border);
   border-radius: 12px;
