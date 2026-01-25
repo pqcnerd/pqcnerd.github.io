@@ -655,10 +655,18 @@ function initQuote() {
       displayQuote(quote);
     })
     .catch(() => {
-      const fallback = pickFallbackQuote();
-      cacheQuote(fallback);
-      addQuoteToHistory(fallback);
-      displayQuote(fallback);
+      fetchLocalQuote()
+        .then((fallback) => {
+          cacheQuote(fallback);
+          addQuoteToHistory(fallback);
+          displayQuote(fallback);
+        })
+        .catch(() => {
+          const fallback = pickFallbackQuote();
+          cacheQuote(fallback);
+          addQuoteToHistory(fallback);
+          displayQuote(fallback);
+        });
     });
 
   const refreshButton = document.getElementById("quote-refresh");
@@ -779,11 +787,42 @@ function handleRefreshClick() {
       displayQuote(quote);
     })
     .catch(() => {
-      const fallback = pickFallbackQuote();
-      cacheQuote(fallback);
-      addQuoteToHistory(fallback);
-      displayQuote(fallback);
+      fetchLocalQuote()
+        .then((fallback) => {
+          cacheQuote(fallback);
+          addQuoteToHistory(fallback);
+          displayQuote(fallback);
+        })
+        .catch(() => {
+          const fallback = pickFallbackQuote();
+          cacheQuote(fallback);
+          addQuoteToHistory(fallback);
+          displayQuote(fallback);
+        });
     });
+}
+
+async function fetchLocalQuote() {
+  const response = await fetch("assets/quotes.txt");
+  if (!response.ok) {
+    throw new Error("Failed to fetch local quotes");
+  }
+  const text = await response.text();
+  const lines = text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  if (lines.length === 0) {
+    throw new Error("No local quotes found");
+  }
+
+  const randomIndex = Math.floor(Math.random() * lines.length);
+  const line = lines[randomIndex];
+  const match = line.match(/"(.+)"\s*—\s*(.+)/);
+  if (match) {
+    return { text: match[1], author: match[2].trim() };
+  }
+  return { text: line, author: "Unknown" };
 }
 
 function pickFallbackQuote() {

@@ -1,0 +1,30 @@
+"The only way to do great work is to love what you do." — Steve Jobs
+"Simplicity is the soul of efficiency." — Austin Freeman
+"Well begun is half done." — Aristotle
+"Action is the foundational key to all success." — Pablo Picasso
+"The secret of getting ahead is getting started." — Mark Twain
+"Quality is not an act, it is a habit." — Aristotle
+"What we know is a drop, what we do not know is an ocean." — Isaac Newton
+"Stay hungry, stay foolish." — Steve Jobs
+"The best way out is always through." — Robert Frost
+"First, solve the problem. Then, write the code." — John Johnson
+"Code is like humor. When you have to explain it, it is bad." — Cory House
+"Programming is not about typing, it is about thinking." — Rich Hickey
+"Make it work, make it right, make it fast." — Kent Beck
+"In the middle of difficulty lies opportunity." — Albert Einstein
+"The future depends on what you do today." — Mahatma Gandhi
+"Great things are done by a series of small things brought together." — Vincent Van Gogh
+"Success is the sum of small efforts, repeated day in and day out." — Robert Collier
+"You miss 100% of the shots you do not take." — Wayne Gretzky
+"What gets measured gets improved." — Peter Drucker
+"The best time to plant a tree was 20 years ago. The second best time is now." — Chinese Proverb
+"Discipline equals freedom." — Jocko Willink
+"It always seems impossible until it is done." — Nelson Mandela
+"The obstacle is the way." — Marcus Aurelius
+"Do the hard things while they are easy." — Johann Wolfgang von Goethe
+"If you are going through hell, keep going." — Winston Churchill
+"Fall seven times and stand up eight." — Japanese Proverb
+"A journey of a thousand miles begins with a single step." — Lao Tzu
+"You cannot improve what you do not measure." — Tom DeMarco
+"The only way to learn a new programming language is by writing programs in it." — Dennis Ritchie
+"Simplicity is prerequisite for reliability." — Edsger W. Dijkstra
