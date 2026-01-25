@@ -159,89 +159,64 @@
               </form>
             </div>
           </aside>
+          <section class="featured-projects" aria-label="Featured projects">
+            <h3 class="featured-title">My Most Important Projects</h3>
+            <div class="featured-grid">
+              <article class="featured-card">
+                <div class="featured-icon"></div>
+                <h4>Project One</h4>
+                <p>Placeholder for a standout project.</p>
+              </article>
+              <article class="featured-card">
+                <div class="featured-icon"></div>
+                <h4>Project Two</h4>
+                <p>Placeholder for a standout project.</p>
+              </article>
+              <article class="featured-card">
+                <div class="featured-icon"></div>
+                <h4>Project Three</h4>
+                <p>Placeholder for a standout project.</p>
+              </article>
+              <article class="featured-card">
+                <div class="featured-icon"></div>
+                <h4>Project Four</h4>
+                <p>Placeholder for a standout project.</p>
+              </article>
+            </div>
+          </section>
         </section>
 
         <section class="view-panel" data-view-id="profile" aria-labelledby="profile-heading">
           <div class="view-content">
-            <div class="profile-hero">
-              <span class="profile-avatar large" aria-hidden="true"></span>
-              <div>
-                <h2 class="view-title" id="profile-heading">Mark (Zeheng) Mu</h2>
-                <p class="profile-tagline">PQC Enthusiast | Systems Programmer | UofT CS</p>
-              </div>
+            <div class="profile-guest" id="profile-guest">
+              <p class="view-text">You are not signed in yet.</p>
+              <button type="button" class="profile-login-btn" id="profile-login-btn">Sign In / Sign Up</button>
             </div>
 
-            <section class="profile-section">
-              <h3 class="profile-section-title">About</h3>
-              <p class="profile-bio">
-                I build secure systems and tooling with a focus on post-quantum cryptography, low-level performance,
-                and human-friendly developer experiences.
-              </p>
-            </section>
-
-            <section class="profile-section">
-              <h3 class="profile-section-title">Skills</h3>
-              <div class="skill-tags">
-                <span class="skill-tag">Rust</span>
-                <span class="skill-tag">C/C++</span>
-                <span class="skill-tag">Go</span>
-                <span class="skill-tag">Python</span>
-                <span class="skill-tag">Cryptography</span>
-                <span class="skill-tag">Systems Design</span>
-                <span class="skill-tag">Web Security</span>
-              </div>
-            </section>
-
-            <section class="profile-section">
-              <h3 class="profile-section-title">Projects</h3>
-              <div class="project-cards">
-                <article class="project-card">
-                  <h4>PQC Terminal</h4>
-                  <p>Terminal-inspired portfolio experience with interactive commands and theming.</p>
-                  <a href="#terminal" class="project-link">View demo</a>
-                </article>
-                <article class="project-card">
-                  <h4>Crypto Playground</h4>
-                  <p>Explorations of lattice-based primitives with clean, annotated implementations.</p>
-                  <a href="#" class="project-link">Details soon</a>
-                </article>
-              </div>
-            </section>
-
-            <section class="profile-section">
-              <h3 class="profile-section-title">Experience</h3>
-              <div class="timeline">
-                <div class="timeline-item">
-                  <h4>Research Assistant</h4>
-                  <span class="timeline-meta">University of Toronto · 2024 - Present</span>
-                  <p>Exploring PQC protocols and evaluating implementation trade-offs.</p>
-                </div>
-                <div class="timeline-item">
-                  <h4>Software Engineering Intern</h4>
-                  <span class="timeline-meta">Security Lab · Summer 2023</span>
-                  <p>Built tooling for automated analysis of cryptographic implementations.</p>
+            <div class="profile-user hidden" id="profile-user">
+              <div class="profile-hero">
+                <button type="button" class="profile-avatar-upload" id="avatar-upload">
+                  <span class="profile-avatar large" aria-hidden="true"></span>
+                  <span class="avatar-upload-hint">Change</span>
+                </button>
+                <div>
+                  <input type="text" id="profile-name" class="profile-name-input" value="guest1" />
+                  <p class="profile-email" id="profile-email">guest@example.com</p>
                 </div>
               </div>
-            </section>
 
-            <section class="profile-section">
-              <h3 class="profile-section-title">Education</h3>
-              <div class="education-item">
-                <h4>University of Toronto</h4>
-                <p>BSc Computer Science · 2022 - 2026</p>
-              </div>
-            </section>
+              <section class="profile-section">
+                <h3 class="profile-section-title">Profile Details</h3>
+                <p class="profile-bio">
+                  Update your name and avatar here. More profile fields can be added once accounts are fully wired.
+                </p>
+              </section>
 
-            <section class="profile-section">
-              <h3 class="profile-section-title">Connect</h3>
-              <div class="social-links">
-                <a href="https://github.com/pqcnerd" target="_blank" rel="noreferrer">GitHub</a>
-                <a href="https://www.linkedin.com/in/mark-mu" target="_blank" rel="noreferrer">LinkedIn</a>
-                <a href="https://x.com/pqcnerd" target="_blank" rel="noreferrer">X</a>
-                <a href="mailto:pqcnerd@gmail.com">Email</a>
+              <div class="profile-actions">
+                <button type="button" class="profile-save">Save Changes</button>
+                <button type="button" class="profile-logout">Logout</button>
               </div>
-              <a href="Resume CV.pdf" class="resume-btn">Download Resume</a>
-            </section>
+            </div>
           </div>
         </section>
 
@@ -312,6 +287,19 @@
     <footer class="site-footer">
       <p class="copyright">pqcnerd 2025. All rights reserved.</p>
     </footer>
+
+    <dialog class="auth-modal" id="auth-modal">
+      <div class="auth-card">
+        <h3 class="auth-title">Sign In / Sign Up</h3>
+        <form class="auth-form" id="auth-form">
+          <label for="auth-email">Email</label>
+          <input type="email" id="auth-email" required placeholder="you@example.com" />
+          <button type="submit" class="auth-submit">Continue</button>
+        </form>
+        <p class="auth-note">Enter your email to sign in or create an account.</p>
+        <button type="button" class="auth-close" id="auth-close">Cancel</button>
+      </div>
+    </dialog>
 
     <script src="assets/js/main.js"></script>
   </body>

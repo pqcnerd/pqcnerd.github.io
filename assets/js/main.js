@@ -104,6 +104,12 @@ const DEFAULT_FORUM_POST = {
   content:
     "This is a placeholder discussion space for sharing ideas on post-quantum cryptography, system design, and tooling.\n\nUse the + New Post button to start a thread.",
 };
+const PROFILE_STATE = {
+  isLoggedIn: false,
+  email: "",
+  name: "",
+};
+const PROFILE_NAMES = new Set();
 
 const state = {
   nextIndex: 2,
@@ -190,6 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initSettings();
   initQuote();
   initForum();
+  initAuthProfile();
 });
 
 function registerSession({
@@ -942,6 +949,99 @@ function formatDate(date) {
     day: "2-digit",
     year: "numeric",
   });
+}
+
+function initAuthProfile() {
+  const loginButton = document.getElementById("profile-login-btn");
+  const authModal = document.getElementById("auth-modal");
+  const authForm = document.getElementById("auth-form");
+  const authClose = document.getElementById("auth-close");
+  const profileGuest = document.getElementById("profile-guest");
+  const profileUser = document.getElementById("profile-user");
+  const profileName = document.getElementById("profile-name");
+  const profileEmail = document.getElementById("profile-email");
+  const profileLogout = document.querySelector(".profile-logout");
+  const profileSave = document.querySelector(".profile-save");
+
+  if (!authModal || !authForm || !profileGuest || !profileUser) {
+    return;
+  }
+
+  loginButton?.addEventListener("click", () => authModal.showModal());
+  authClose?.addEventListener("click", () => authModal.close());
+  authModal.addEventListener("click", (event) => {
+    if (event.target === authModal) {
+      authModal.close();
+    }
+  });
+
+  authForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const emailInput = authForm.querySelector("#auth-email");
+    if (!emailInput) {
+      return;
+    }
+    const email = emailInput.value.trim();
+    if (!email) {
+      return;
+    }
+
+    if (!PROFILE_STATE.isLoggedIn) {
+      PROFILE_STATE.isLoggedIn = true;
+      PROFILE_STATE.email = email;
+      PROFILE_STATE.name = generateGuestName();
+    } else {
+      PROFILE_STATE.email = email;
+    }
+
+    updateProfileUI(profileGuest, profileUser, profileName, profileEmail);
+    authModal.close();
+    emailInput.value = "";
+  });
+
+  profileLogout?.addEventListener("click", () => {
+    PROFILE_STATE.isLoggedIn = false;
+    PROFILE_STATE.email = "";
+    PROFILE_STATE.name = "";
+    updateProfileUI(profileGuest, profileUser, profileName, profileEmail);
+  });
+
+  profileSave?.addEventListener("click", () => {
+    const newName = profileName?.value.trim();
+    if (newName) {
+      PROFILE_STATE.name = newName;
+      PROFILE_NAMES.add(newName.toLowerCase());
+    }
+  });
+
+  updateProfileUI(profileGuest, profileUser, profileName, profileEmail);
+}
+
+function updateProfileUI(profileGuest, profileUser, profileName, profileEmail) {
+  if (PROFILE_STATE.isLoggedIn) {
+    profileGuest.classList.add("hidden");
+    profileUser.classList.remove("hidden");
+    if (profileName) {
+      profileName.value = PROFILE_STATE.name;
+    }
+    if (profileEmail) {
+      profileEmail.textContent = PROFILE_STATE.email;
+    }
+  } else {
+    profileGuest.classList.remove("hidden");
+    profileUser.classList.add("hidden");
+  }
+}
+
+function generateGuestName() {
+  let index = 1;
+  let name = `guest${index}`;
+  while (PROFILE_NAMES.has(name.toLowerCase())) {
+    index += 1;
+    name = `guest${index}`;
+  }
+  PROFILE_NAMES.add(name.toLowerCase());
+  return name;
 }
 
 function createTab() {
