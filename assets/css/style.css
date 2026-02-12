@@ -377,6 +377,7 @@ body {
 }
 
 .terminal-view {
+  flex-wrap: wrap;
   align-items: stretch;
   justify-content: center;
   gap: clamp(1.5rem, 4vw, 3rem);
@@ -549,6 +550,7 @@ body {
 }
 
 .featured-projects {
+  flex: 0 0 100%;
   width: 100%;
   background: var(--terminal-bg);
   border: 1px solid var(--terminal-border);
