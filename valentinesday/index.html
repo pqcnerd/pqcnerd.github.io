@@ -105,6 +105,9 @@
         min-height: 320px;
         position: relative;
         overflow: hidden;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
       }
 
       .poem > * {
@@ -589,7 +592,7 @@
       const LINE_DELAY_MS = 300;
       const STANZA_CLASS_COUNT = 6;
       const MAX_VISIBLE_BLOCKS_DESKTOP = 12;
-      const MAX_VISIBLE_BLOCKS_MOBILE = 8;
+      const MAX_VISIBLE_BLOCKS_MOBILE = 6;
 
       const poemSequence = [
         { type: "line", text: "Across my lamplit desk I lingered, half in wonder, half in worry," },
@@ -749,7 +752,7 @@
         poemContainer.classList.add("focus-enabled");
         poemContainer.style.setProperty(
           "--focus-radius",
-          window.matchMedia("(max-width: 640px)").matches ? "220px" : "300px",
+          window.matchMedia("(max-width: 640px)").matches ? "280px" : "380px",
         );
         centerFocusLight();
 
