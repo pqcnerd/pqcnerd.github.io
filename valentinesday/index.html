@@ -102,19 +102,24 @@
         border-radius: 12px;
         padding: clamp(1rem, 2.8vw, 1.3rem);
         background: rgba(15, 23, 42, 0.5);
-        min-height: 320px;
+        height: clamp(320px, 58vh, 560px);
         position: relative;
         overflow-x: hidden;
         overflow-y: auto;
         -webkit-user-select: none;
         user-select: none;
         -webkit-touch-callout: none;
+        overscroll-behavior: contain;
         scrollbar-width: none;
       }
 
       .poem::-webkit-scrollbar {
         width: 0;
         height: 0;
+      }
+
+      .poem.scroll-locked {
+        touch-action: none;
       }
 
       .poem > * {
@@ -676,7 +681,7 @@
         }
 
         .poem {
-          min-height: 260px;
+          height: clamp(300px, 52vh, 430px);
         }
       }
     </style>
@@ -876,6 +881,7 @@
       const renderedPoem = [];
       let rewriteStarted = false;
       let fullPoemMode = false;
+      let poemScrollUnlocked = false;
       let demoFrameHandle = 0;
       let demoStartTime = 0;
 
@@ -898,6 +904,7 @@
       });
 
       initializeFocusLight();
+      initializePoemScrollLock();
 
       function wait(ms) {
         return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -946,6 +953,23 @@
           focusTutorial.hidden = false;
           startFocusDemo();
         }
+      }
+
+      function initializePoemScrollLock() {
+        poemContainer.classList.add("scroll-locked");
+        poemContainer.addEventListener("wheel", blockManualPoemScroll, {
+          passive: false,
+        });
+        poemContainer.addEventListener("touchmove", blockManualPoemScroll, {
+          passive: false,
+        });
+      }
+
+      function blockManualPoemScroll(event) {
+        if (poemScrollUnlocked) {
+          return;
+        }
+        event.preventDefault();
       }
 
       function centerFocusLight() {
@@ -1283,6 +1307,8 @@
 
       function renderFullPoem() {
         fullPoemMode = true;
+        poemScrollUnlocked = true;
+        poemContainer.classList.remove("scroll-locked");
         poemContainer.classList.remove("stage-lit");
         poemContainer.innerHTML = "";
 
