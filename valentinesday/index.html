@@ -305,7 +305,7 @@
       }
 
       .emph-twinkle::after {
-        content: "\u2728";
+        content: "\2728";
         animation: emojiSpark 1.7s ease-in-out infinite;
       }
 
@@ -1214,10 +1214,48 @@
         lineRemovalInProgress = true;
         node.classList.add("line-removing");
         window.setTimeout(() => {
+          animateReflowAfterRemoval(node);
           node.remove();
           lineRemovalInProgress = false;
           trimPoemWindow();
         }, 340);
+      }
+
+      function animateReflowAfterRemoval(removingNode) {
+        const movingNodes = Array.from(poemContainer.children).filter(
+          (entry) => entry !== removingNode && !entry.classList.contains("line-removing"),
+        );
+
+        const firstTop = new Map();
+        movingNodes.forEach((entry) => {
+          firstTop.set(entry, entry.getBoundingClientRect().top);
+        });
+
+        // Force layout before FLIP animation after node removal.
+        void poemContainer.offsetHeight;
+
+        movingNodes.forEach((entry) => {
+          const previousTop = firstTop.get(entry);
+          if (previousTop == null) {
+            return;
+          }
+          const currentTop = entry.getBoundingClientRect().top;
+          const delta = previousTop - currentTop;
+          if (Math.abs(delta) < 0.5) {
+            return;
+          }
+
+          entry.style.transform = `translateY(${delta}px)`;
+          entry.style.transition = "transform 0ms";
+          window.requestAnimationFrame(() => {
+            entry.style.transition = "transform 360ms ease";
+            entry.style.transform = "translateY(0)";
+            window.setTimeout(() => {
+              entry.style.transition = "";
+              entry.style.transform = "";
+            }, 380);
+          });
+        });
       }
 
       function waitForBlankChoice(options) {
