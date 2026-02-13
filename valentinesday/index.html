@@ -681,7 +681,7 @@
         }
 
         .poem {
-          height: clamp(300px, 52vh, 430px);
+          height: clamp(220px, 42vh, 320px);
         }
       }
     </style>
@@ -1229,14 +1229,12 @@
         if (fullPoemMode) {
           return;
         }
-        const latestLine = poemContainer.querySelector(".line:last-of-type");
-        if (!latestLine) {
-          return;
-        }
-        latestLine.scrollIntoView({
-          block: "end",
-          inline: "nearest",
-          behavior: "smooth",
+        scrollPoemToBottom();
+      }
+
+      function scrollPoemToBottom() {
+        window.requestAnimationFrame(() => {
+          poemContainer.scrollTop = poemContainer.scrollHeight;
         });
       }
 
