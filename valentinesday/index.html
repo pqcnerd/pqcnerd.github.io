@@ -125,6 +125,33 @@
         font-weight: 600;
       }
 
+      .rainbow-text {
+        background-image: linear-gradient(
+          90deg,
+          #ff4d4d,
+          #ff9f43,
+          #feca57,
+          #2ed573,
+          #1e90ff,
+          #a55eea,
+          #ff4d4d
+        );
+        background-size: 300% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: rainbowShift 2.8s linear infinite;
+      }
+
+      @keyframes rainbowShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        100% {
+          background-position: 100% 50%;
+        }
+      }
+
       .blank-panel {
         border: 1px dashed rgba(244, 114, 182, 0.45);
         border-radius: 12px;
@@ -169,6 +196,88 @@
         outline: none;
       }
 
+      .surprise {
+        border: 1px solid rgba(244, 114, 182, 0.45);
+        border-radius: 12px;
+        padding: 1rem;
+        background: rgba(30, 41, 59, 0.5);
+      }
+
+      .surprise[hidden] {
+        display: none;
+      }
+
+      .surprise-title {
+        margin: 0 0 0.45rem;
+        color: #fbcfe8;
+        font-size: 1rem;
+      }
+
+      .surprise-text {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .gift-button {
+        margin-top: 0.8rem;
+        border-radius: 999px;
+        border: 1px solid rgba(244, 114, 182, 0.6);
+        background: rgba(244, 114, 182, 0.2);
+        color: #fbcfe8;
+        font-family: inherit;
+        font-size: 0.9rem;
+        padding: 0.5rem 0.95rem;
+        cursor: pointer;
+      }
+
+      .gift-button:hover,
+      .gift-button:focus-visible {
+        background: rgba(244, 114, 182, 0.32);
+        outline: none;
+      }
+
+      .gift-message {
+        margin-top: 0.8rem;
+        padding: 0.75rem;
+        border-radius: 10px;
+        background: rgba(15, 23, 42, 0.65);
+        border: 1px solid rgba(148, 163, 184, 0.28);
+        line-height: 1.7;
+      }
+
+      .heart-burst {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 999;
+      }
+
+      .heart {
+        position: absolute;
+        bottom: -2rem;
+        color: #f472b6;
+        text-shadow: 0 0 10px rgba(244, 114, 182, 0.65);
+        animation-name: floatHeart;
+        animation-timing-function: ease-out;
+        animation-fill-mode: forwards;
+      }
+
+      @keyframes floatHeart {
+        0% {
+          transform: translateY(0) scale(0.8);
+          opacity: 0;
+        }
+        12% {
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-110vh) scale(1.2);
+          opacity: 0;
+        }
+      }
+
       @media (max-width: 640px) {
         body {
           padding: 0.75rem;
@@ -203,7 +312,19 @@
         <h2 class="blank-title">Fill the blank to continue</h2>
         <div id="blank-options" class="blank-options"></div>
       </section>
+
+      <section id="surprise-panel" class="surprise" hidden aria-label="A surprise for Annie">
+        <h2 class="surprise-title">You made it to the end.</h2>
+        <p class="surprise-text">
+          Thanks for making it this far. There is a little gift waiting.
+        </p>
+        <button type="button" id="gift-open" class="gift-button">Open surprise</button>
+        <p id="gift-message" class="gift-message" hidden>
+          For Annie: this page is your tiny constellation. Every line points back to you. Love always.
+        </p>
+      </section>
     </main>
+    <div id="heart-burst" class="heart-burst" aria-hidden="true"></div>
 
     <script>
       const CHAR_DELAY_MS = 26;
@@ -287,7 +408,12 @@
         { type: "line", text: "Let the world be complicated; we will answer without fear--" },
         { type: "line", text: "With a hand that does not tremble, with a heart that stays sincere." },
         { type: "line", text: "If forever is a country, I have packed and I am ready--" },
-        { type: "line", text: "Be my Valentine--be my always--my Annie." },
+        {
+          type: "blank",
+          pre: "Be my Valentine--be my always--my ",
+          post: ".",
+          options: ["Annie"],
+        },
       ];
 
       const startButton = document.getElementById("start-poem");
@@ -295,22 +421,62 @@
       const blankPanel = document.getElementById("blank-panel");
       const blankOptions = document.getElementById("blank-options");
       const statusText = document.getElementById("playback-status");
+      const surprisePanel = document.getElementById("surprise-panel");
+      const giftOpenButton = document.getElementById("gift-open");
+      const giftMessage = document.getElementById("gift-message");
+      const heartBurst = document.getElementById("heart-burst");
 
       startButton.addEventListener("click", async () => {
         startButton.disabled = true;
         statusText.textContent = "Writing...";
         await renderPoem();
-        statusText.textContent = "Done.";
+        statusText.textContent = "For Annie, with love.";
+        celebrateFinale();
+      });
+
+      giftOpenButton?.addEventListener("click", () => {
+        giftMessage.hidden = false;
+        giftOpenButton.disabled = true;
       });
 
       function wait(ms) {
         return new Promise((resolve) => window.setTimeout(resolve, ms));
       }
 
-      async function typeText(target, text) {
-        for (const character of text) {
-          target.textContent += character;
-          await wait(CHAR_DELAY_MS);
+      function splitRainbowSegments(text) {
+        return text
+          .split(/(Annie)/g)
+          .filter(Boolean)
+          .map((part) => ({
+            text: part,
+            isRainbow: part === "Annie",
+          }));
+      }
+
+      function appendRainbowText(target, text) {
+        const segments = splitRainbowSegments(text);
+        segments.forEach((segment) => {
+          const span = document.createElement("span");
+          if (segment.isRainbow) {
+            span.className = "rainbow-text";
+          }
+          span.textContent = segment.text;
+          target.append(span);
+        });
+      }
+
+      async function typeRichText(target, text) {
+        const segments = splitRainbowSegments(text);
+        for (const segment of segments) {
+          const span = document.createElement("span");
+          if (segment.isRainbow) {
+            span.className = "rainbow-text";
+          }
+          target.append(span);
+          for (const character of segment.text) {
+            span.textContent += character;
+            await wait(CHAR_DELAY_MS);
+          }
         }
       }
 
@@ -330,19 +496,19 @@
           line.scrollIntoView({ block: "nearest", behavior: "smooth" });
 
           if (segment.type === "line") {
-            await typeText(line, segment.text);
+            await typeRichText(line, segment.text);
             await wait(LINE_DELAY_MS);
             continue;
           }
 
           if (segment.type === "blank") {
-            await typeText(line, segment.pre);
+            await typeRichText(line, segment.pre);
             const selectedFill = await waitForBlankChoice(segment.options);
             const fill = document.createElement("span");
             fill.className = "chosen-fill";
-            fill.textContent = selectedFill;
             line.append(fill);
-            await typeText(line, segment.post);
+            appendRainbowText(fill, selectedFill);
+            await typeRichText(line, segment.post);
             await wait(LINE_DELAY_MS);
           }
         }
@@ -351,14 +517,17 @@
       function waitForBlankChoice(options) {
         blankOptions.innerHTML = "";
         blankPanel.hidden = false;
-        statusText.textContent = "Choose a line to fill the blank.";
+        statusText.textContent =
+          options.length === 1
+            ? "One final choice."
+            : "Choose a line to fill the blank.";
 
         return new Promise((resolve) => {
           options.forEach((optionText) => {
             const option = document.createElement("button");
             option.type = "button";
             option.className = "blank-option";
-            option.textContent = optionText;
+            appendRainbowText(option, optionText);
             option.addEventListener("click", () => {
               blankPanel.hidden = true;
               statusText.textContent = "Writing...";
@@ -367,6 +536,32 @@
             blankOptions.append(option);
           });
         });
+      }
+
+      function celebrateFinale() {
+        surprisePanel.hidden = false;
+        launchHearts(42);
+      }
+
+      function launchHearts(count) {
+        for (let index = 0; index < count; index += 1) {
+          window.setTimeout(() => {
+            spawnHeart();
+          }, index * 120);
+        }
+      }
+
+      function spawnHeart() {
+        const heart = document.createElement("span");
+        heart.className = "heart";
+        heart.textContent = "\u2665";
+        heart.style.left = `${Math.random() * 100}%`;
+        heart.style.fontSize = `${0.9 + Math.random() * 1.3}rem`;
+        heart.style.animationDuration = `${2.8 + Math.random() * 2.2}s`;
+        heartBurst.append(heart);
+        window.setTimeout(() => {
+          heart.remove();
+        }, 5200);
       }
     </script>
   </body>
