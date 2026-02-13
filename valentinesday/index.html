@@ -1205,8 +1205,13 @@
         if (fullPoemMode) {
           return;
         }
-        poemContainer.scrollTo({
-          top: poemContainer.scrollHeight,
+        const latestLine = poemContainer.querySelector(".line:last-of-type");
+        if (!latestLine) {
+          return;
+        }
+        latestLine.scrollIntoView({
+          block: "end",
+          inline: "nearest",
           behavior: "smooth",
         });
       }
