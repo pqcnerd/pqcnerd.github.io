@@ -8,14 +8,17 @@
       :root {
         color-scheme: dark;
         --bg: radial-gradient(circle at top, #1e1b4b, #0f172a 55%, #020617 100%);
-        --card-bg: rgba(15, 23, 42, 0.82);
+        --card-bg: rgba(15, 23, 42, 0.84);
         --border: rgba(148, 163, 184, 0.28);
         --text: #e2e8f0;
         --muted: #94a3b8;
         --accent: #f472b6;
+        --accent-soft: rgba(244, 114, 182, 0.22);
       }
 
-      * {
+      *,
+      *::before,
+      *::after {
         box-sizing: border-box;
       }
 
@@ -32,40 +35,153 @@
       }
 
       main {
-        width: min(760px, 100%);
+        width: min(860px, 100%);
         background: var(--card-bg);
         border: 1px solid var(--border);
         border-radius: 14px;
         padding: clamp(1.25rem, 3vw, 2rem);
         box-shadow: 0 20px 60px rgba(2, 6, 23, 0.5);
         backdrop-filter: blur(10px);
+        display: grid;
+        gap: 1rem;
       }
 
       h1 {
-        margin: 0 0 0.65rem;
+        margin: 0;
         font-size: clamp(1.35rem, 3.2vw, 2rem);
         color: var(--accent);
       }
 
-      p {
+      .intro {
         margin: 0;
+        color: var(--muted);
         line-height: 1.6;
       }
 
-      .intro {
-        color: var(--muted);
+      .controls {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
       }
 
-      .placeholder {
-        margin-top: 1.1rem;
-        padding: 1rem;
-        border: 1px dashed rgba(244, 114, 182, 0.5);
-        border-radius: 10px;
-        background: rgba(30, 41, 59, 0.45);
-      }
-
-      .placeholder strong {
+      .start-button {
+        border-radius: 999px;
+        border: 1px solid rgba(244, 114, 182, 0.55);
+        background: var(--accent-soft);
         color: var(--accent);
+        font-family: inherit;
+        font-size: 0.95rem;
+        font-weight: 600;
+        padding: 0.52rem 1.1rem;
+        cursor: pointer;
+        transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+      }
+
+      .start-button:hover,
+      .start-button:focus-visible {
+        background: rgba(244, 114, 182, 0.33);
+        border-color: rgba(244, 114, 182, 0.8);
+        color: #fbcfe8;
+        outline: none;
+      }
+
+      .start-button[disabled] {
+        opacity: 0.65;
+        cursor: default;
+      }
+
+      .status {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .poem {
+        border: 1px solid rgba(148, 163, 184, 0.22);
+        border-radius: 12px;
+        padding: clamp(1rem, 2.8vw, 1.3rem);
+        background: rgba(15, 23, 42, 0.5);
+        min-height: 320px;
+      }
+
+      .line {
+        margin: 0;
+        line-height: 1.9;
+        white-space: pre-wrap;
+      }
+
+      .line + .line {
+        margin-top: 0.2rem;
+      }
+
+      .line-gap {
+        display: block;
+        height: 0.95rem;
+      }
+
+      .chosen-fill {
+        color: #fbcfe8;
+        font-weight: 600;
+      }
+
+      .blank-panel {
+        border: 1px dashed rgba(244, 114, 182, 0.45);
+        border-radius: 12px;
+        padding: 0.95rem;
+        background: rgba(30, 41, 59, 0.42);
+      }
+
+      .blank-panel[hidden] {
+        display: none;
+      }
+
+      .blank-title {
+        margin: 0 0 0.7rem;
+        color: var(--accent);
+        font-size: 0.95rem;
+      }
+
+      .blank-options {
+        display: grid;
+        gap: 0.6rem;
+      }
+
+      .blank-option {
+        width: 100%;
+        text-align: left;
+        border-radius: 10px;
+        border: 1px solid rgba(148, 163, 184, 0.32);
+        background: rgba(15, 23, 42, 0.65);
+        color: var(--text);
+        font-family: inherit;
+        font-size: 0.9rem;
+        padding: 0.65rem 0.75rem;
+        cursor: pointer;
+        transition: border-color 140ms ease, box-shadow 140ms ease, background 140ms ease;
+      }
+
+      .blank-option:hover,
+      .blank-option:focus-visible {
+        border-color: rgba(244, 114, 182, 0.75);
+        background: rgba(30, 41, 59, 0.8);
+        box-shadow: 0 0 0 2px rgba(244, 114, 182, 0.22);
+        outline: none;
+      }
+
+      @media (max-width: 640px) {
+        body {
+          padding: 0.75rem;
+        }
+
+        main {
+          padding: 1rem;
+          gap: 0.85rem;
+        }
+
+        .poem {
+          min-height: 260px;
+        }
       }
     </style>
   </head>
@@ -73,14 +189,185 @@
     <main aria-label="Valentines Day page for Annie">
       <h1>For Annie</h1>
       <p class="intro">
-        This page is intentionally private-ish and not linked in the top bar.
+        A little poem that unfolds one line at a time.
       </p>
-      <section class="placeholder" aria-label="Placeholder content">
-        <p><strong>Placeholder:</strong> Valentines Day content goes here.</p>
-        <p>
-          You can tell me exactly what to add next, and I will drop it in.
-        </p>
+
+      <div class="controls">
+        <button type="button" id="start-poem" class="start-button">Start</button>
+        <p id="playback-status" class="status">Press Start when you are ready.</p>
+      </div>
+
+      <section id="poem" class="poem" aria-live="polite" aria-label="Poem output"></section>
+
+      <section id="blank-panel" class="blank-panel" hidden aria-label="Blank options">
+        <h2 class="blank-title">Fill the blank to continue</h2>
+        <div id="blank-options" class="blank-options"></div>
       </section>
     </main>
+
+    <script>
+      const CHAR_DELAY_MS = 26;
+      const LINE_DELAY_MS = 300;
+
+      const poemSequence = [
+        { type: "line", text: "Across the lamplit desk I lingered, half in wonder, half in worry," },
+        { type: "line", text: "Counting miles like minted hours--each a quiet, gilded story;" },
+        { type: "line", text: "While the kettle sighed its secrets, while the city's sirens yawned," },
+        { type: "line", text: "Came the scent of you--like comfort--through a thought I could not pawn;" },
+        { type: "line", text: "And my pulse began its pleading, and my pride became uncanny--" },
+        {
+          type: "blank",
+          pre: "Till my longing found its chorus at the edge of ",
+          post: ".",
+          options: ["Annie", "my Annie", "dearest Annie"],
+        },
+        { type: "break" },
+        { type: "line", text: "In Hong Kong you keep your harbor's glitter, in Cambridge I keep my river;" },
+        { type: "line", text: "Yet our evenings meet like swallows, stitching sea to sleepless quiver." },
+        { type: "line", text: "Constellations bend above us--patient, ancient, never panicked--" },
+        { type: "line", text: "Like a promise kept in silence, like a vow that can't be banked." },
+        { type: "line", text: "So I plot a gentler future, inked in courage, not in cranny--" },
+        {
+          type: "blank",
+          pre: "And I sign it, simply, surely, with the name ",
+          post: ".",
+          options: ["Annie", "dear Annie", "beloved Annie"],
+        },
+        { type: "break" },
+        { type: "line", text: "There is magic in your mercy--bright precision, tender candor--" },
+        { type: "line", text: "A philosophy of kindness with a scholar's steady sander;" },
+        { type: "line", text: "You turn chaos into meaning, you make ordinary holy," },
+        { type: "line", text: "As if love were not a lightning--more a lantern, warm and slowly." },
+        { type: "line", text: "And the world, that loves its cynics, grows--around you--less ungenerous," },
+        {
+          type: "blank",
+          pre: "When my faith begins to falter, I remember ",
+          post: ".",
+          options: ["Annie", "steady Annie", "radiant Annie"],
+        },
+        { type: "break" },
+        { type: "line", text: "Bring the pan; let eggs be velvet, let the rice be amber-glowing;" },
+        { type: "line", text: "Let the ketchup write its little, laughing comet-tails in flowing." },
+        { type: "line", text: "Call it simple, call it childish--no, call it art in earnest--" },
+        { type: "line", text: "For you make a humble hunger feel like kingdoms being furnished." },
+        { type: "line", text: "If I've learned what home can taste like, it is this: a sweetened rhapsody--" },
+        {
+          type: "blank",
+          pre: "Warm as sunrise on a plate, and spelled ",
+          post: ".",
+          options: ["Annie", "Chef Annie", "sweet Annie"],
+        },
+        { type: "break" },
+        {
+          type: "line",
+          text: "We will watch the galaxies fold (like Interstellar), and dance through streetlight rain (like La La Land),",
+        },
+        {
+          type: "line",
+          text: "We will stand where poets stand (like Dead Poets Society) and learn what joy can claim;",
+        },
+        {
+          type: "line",
+          text: "We will mend what memory smudges (like Eternal Sunshine of the Spotless Mind), keep what matters, let go gently--",
+        },
+        {
+          type: "line",
+          text: "Like a little robot learning love (like WALL-E), stubborn, bright, and oddly friendly.",
+        },
+        { type: "line", text: "And if the night grows loud with headlines, I will hold one truth, not many--" },
+        {
+          type: "blank",
+          pre: "That tomorrow has a center, and it's ",
+          post: ".",
+          options: ["Annie", "always Annie", "forever Annie"],
+        },
+        { type: "break" },
+        { type: "line", text: "So, hear me--dear and dearest--beyond the data, dust, and duty:" },
+        { type: "line", text: "I don't want a passing chapter; I want epochs made of beauty." },
+        { type: "line", text: "Let the world be complicated; we will answer without fear--" },
+        { type: "line", text: "With a hand that does not tremble, with a heart that stays sincere." },
+        { type: "line", text: "If forever is a country, I have packed and I am ready--" },
+        { type: "line", text: "Be my Valentine--be my always--my Annie." },
+      ];
+
+      const startButton = document.getElementById("start-poem");
+      const poemContainer = document.getElementById("poem");
+      const blankPanel = document.getElementById("blank-panel");
+      const blankOptions = document.getElementById("blank-options");
+      const statusText = document.getElementById("playback-status");
+
+      startButton.addEventListener("click", async () => {
+        startButton.disabled = true;
+        statusText.textContent = "Writing...";
+        await renderPoem();
+        statusText.textContent = "Done.";
+      });
+
+      function wait(ms) {
+        return new Promise((resolve) => window.setTimeout(resolve, ms));
+      }
+
+      async function typeText(target, text) {
+        for (const character of text) {
+          target.textContent += character;
+          await wait(CHAR_DELAY_MS);
+        }
+      }
+
+      async function renderPoem() {
+        for (const segment of poemSequence) {
+          if (segment.type === "break") {
+            const spacer = document.createElement("span");
+            spacer.className = "line-gap";
+            poemContainer.append(spacer);
+            await wait(200);
+            continue;
+          }
+
+          const line = document.createElement("p");
+          line.className = "line";
+          poemContainer.append(line);
+          line.scrollIntoView({ block: "nearest", behavior: "smooth" });
+
+          if (segment.type === "line") {
+            await typeText(line, segment.text);
+            await wait(LINE_DELAY_MS);
+            continue;
+          }
+
+          if (segment.type === "blank") {
+            await typeText(line, segment.pre);
+            const selectedFill = await waitForBlankChoice(segment.options);
+            const fill = document.createElement("span");
+            fill.className = "chosen-fill";
+            fill.textContent = selectedFill;
+            line.append(fill);
+            await typeText(line, segment.post);
+            await wait(LINE_DELAY_MS);
+          }
+        }
+      }
+
+      function waitForBlankChoice(options) {
+        blankOptions.innerHTML = "";
+        blankPanel.hidden = false;
+        statusText.textContent = "Choose a line to fill the blank.";
+
+        return new Promise((resolve) => {
+          options.forEach((optionText) => {
+            const option = document.createElement("button");
+            option.type = "button";
+            option.className = "blank-option";
+            option.textContent = optionText;
+            option.addEventListener("click", () => {
+              blankPanel.hidden = true;
+              statusText.textContent = "Writing...";
+              resolve(optionText);
+            });
+            blankOptions.append(option);
+          });
+        });
+      }
+    </script>
   </body>
 </html>
