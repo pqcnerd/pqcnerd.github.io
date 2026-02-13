@@ -805,9 +805,13 @@
       }
 
       function applyPlaybackTiming() {
-        const isMobile = window.matchMedia("(max-width: 640px)").matches;
+        const isMobile = isMobileViewport();
         CHAR_DELAY_MS = isMobile ? 42 : 26;
         LINE_DELAY_MS = isMobile ? 520 : 300;
+      }
+
+      function isMobileViewport() {
+        return window.matchMedia("(max-width: 640px)").matches;
       }
 
       function splitRainbowSegments(text) {
@@ -987,27 +991,17 @@
             });
             maybeTrimPoemWindow("blank", `${segment.pre}${selectedFill}${segment.post}`);
             await wait(LINE_DELAY_MS);
+            if (isMobileViewport()) {
+              await wait(260);
+              poemContainer.innerHTML = "";
+            }
           }
         }
       }
 
       function maybeTrimPoemWindow(segmentType, text) {
-        if (!window.matchMedia("(max-width: 640px)").matches) {
-          trimPoemWindow();
-          return;
-        }
-
-        // On mobile, keep key Annie/choice moments and stanza separators longer.
-        if (segmentType === "break") {
-          return;
-        }
-        if (segmentType === "blank") {
-          return;
-        }
-        if (typeof text === "string" && /Annie/i.test(text)) {
-          return;
-        }
-
+        void segmentType;
+        void text;
         trimPoemWindow();
       }
 
@@ -1022,19 +1016,38 @@
         if (fullPoemMode || lineRemovalInProgress) {
           return;
         }
-        const visibleLimit = window.matchMedia("(max-width: 640px)").matches
+        const visibleLimit = isMobileViewport()
           ? MAX_VISIBLE_BLOCKS_MOBILE
           : MAX_VISIBLE_BLOCKS_DESKTOP;
         const visibleBlocks = Array.from(poemContainer.children).filter(
           (node) => !node.classList.contains("line-removing"),
         );
-        const overflow = visibleBlocks.length - visibleLimit;
-        if (overflow <= 0) {
+        if (isMobileViewport()) {
+          const lineBlocks = visibleBlocks.filter((node) =>
+            node.classList.contains("line"),
+          );
+          const overflowLines = lineBlocks.length - visibleLimit;
+          if (overflowLines <= 0) {
+            return;
+          }
+
+          const node = lineBlocks[0];
+          const previous = node.previousElementSibling;
+          if (previous && previous.classList.contains("line-gap")) {
+            previous.remove();
+          }
+
+          lineRemovalInProgress = true;
+          animateNodeOutByWrappedLines(node).then(() => {
+            node.remove();
+            lineRemovalInProgress = false;
+            trimPoemWindow();
+          });
           return;
         }
 
-        const isMobile = window.matchMedia("(max-width: 640px)").matches;
-        if (isMobile && overflow < 2) {
+        const overflow = visibleBlocks.length - visibleLimit;
+        if (overflow <= 0) {
           return;
         }
 
