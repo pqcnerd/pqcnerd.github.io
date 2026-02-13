@@ -104,10 +104,17 @@
         background: rgba(15, 23, 42, 0.5);
         min-height: 320px;
         position: relative;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
         -webkit-user-select: none;
         user-select: none;
         -webkit-touch-callout: none;
+        scrollbar-width: none;
+      }
+
+      .poem::-webkit-scrollbar {
+        width: 0;
+        height: 0;
       }
 
       .poem > * {
@@ -300,17 +307,17 @@
       }
 
       .emph-flicker::after {
-        content: "\ud83c\udf1f";
+        content: "\1F31F";
         animation: emojiSpark 1.9s ease-in-out infinite;
       }
 
       .emph-twinkle::after {
-        content: "\u2728";
+        content: "\2728";
         animation: emojiSpark 1.7s ease-in-out infinite;
       }
 
       .emph-pulse::after {
-        content: "\ud83d\udc95";
+        content: "\1F495";
         animation: emojiSpark 2.2s ease-in-out infinite;
       }
 
@@ -1154,7 +1161,7 @@
           line.className = `line stanza-${stanzaIndex % STANZA_CLASS_COUNT}`;
           poemContainer.append(line);
           spotlightLine(line);
-          line.scrollIntoView({ block: "nearest", behavior: "smooth" });
+          trimPoemWindow();
 
           if (segment.type === "line") {
             await typeRichText(line, segment.text);
@@ -1198,23 +1205,10 @@
         if (fullPoemMode) {
           return;
         }
-        const visibleLimit = window.matchMedia("(max-width: 640px)").matches
-          ? MAX_VISIBLE_BLOCKS_MOBILE
-          : MAX_VISIBLE_BLOCKS_DESKTOP;
-        const visibleBlocks = Array.from(poemContainer.children).filter(
-          (node) => !node.classList.contains("line-removing"),
-        );
-        const overflow = visibleBlocks.length - visibleLimit;
-        if (overflow <= 0) {
-          return;
-        }
-        for (let index = 0; index < overflow; index += 1) {
-          const node = visibleBlocks[index];
-          node.classList.add("line-removing");
-          window.setTimeout(() => {
-            node.remove();
-          }, 340);
-        }
+        poemContainer.scrollTo({
+          top: poemContainer.scrollHeight,
+          behavior: "smooth",
+        });
       }
 
       function waitForBlankChoice(options) {
