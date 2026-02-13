@@ -102,36 +102,17 @@
         border-radius: 12px;
         padding: clamp(1rem, 2.8vw, 1.3rem);
         background: rgba(15, 23, 42, 0.5);
-        height: clamp(320px, 58vh, 560px);
+        min-height: 320px;
         position: relative;
-        overflow-x: hidden;
-        overflow-y: auto;
+        overflow: hidden;
         -webkit-user-select: none;
         user-select: none;
         -webkit-touch-callout: none;
-        overscroll-behavior: contain;
-        scrollbar-width: none;
-        scroll-behavior: smooth;
-      }
-
-      .poem::-webkit-scrollbar {
-        width: 0;
-        height: 0;
-      }
-
-      .poem.scroll-locked {
-        touch-action: none;
       }
 
       .poem > * {
         position: relative;
         z-index: 1;
-      }
-
-      .poem-content {
-        display: flex;
-        flex-direction: column;
-        min-height: 100%;
       }
 
       .poem.stage-lit::before {
@@ -319,17 +300,17 @@
       }
 
       .emph-flicker::after {
-        content: "\1F31F";
+        content: "\ud83c\udf1f";
         animation: emojiSpark 1.9s ease-in-out infinite;
       }
 
       .emph-twinkle::after {
-        content: "\2728";
+        content: "\u2728";
         animation: emojiSpark 1.7s ease-in-out infinite;
       }
 
       .emph-pulse::after {
-        content: "\1F495";
+        content: "\ud83d\udc95";
         animation: emojiSpark 2.2s ease-in-out infinite;
       }
 
@@ -688,7 +669,7 @@
         }
 
         .poem {
-          height: clamp(220px, 42vh, 320px);
+          min-height: 260px;
         }
       }
     </style>
@@ -714,9 +695,7 @@
         <button type="button" id="focus-tutorial-close">Got it</button>
       </section>
 
-      <section id="poem" class="poem" aria-live="polite" aria-label="Poem output">
-        <div id="poem-content" class="poem-content"></div>
-      </section>
+      <section id="poem" class="poem" aria-live="polite" aria-label="Poem output"></section>
 
       <section id="blank-panel" class="blank-panel" hidden aria-label="Blank options">
         <h2 class="blank-title">Fill the blank to continue</h2>
@@ -878,7 +857,6 @@
 
       const startButton = document.getElementById("start-poem");
       const poemContainer = document.getElementById("poem");
-      const poemContent = document.getElementById("poem-content");
       const blankPanel = document.getElementById("blank-panel");
       const blankOptions = document.getElementById("blank-options");
       const statusText = document.getElementById("playback-status");
@@ -891,17 +869,13 @@
       const renderedPoem = [];
       let rewriteStarted = false;
       let fullPoemMode = false;
-      let poemScrollUnlocked = false;
       let demoFrameHandle = 0;
       let demoStartTime = 0;
-      let autoScrollFrameHandle = 0;
-      let autoScrollLastTimestamp = 0;
 
       startButton.addEventListener("click", async () => {
         dismissFocusTutorial();
         startButton.disabled = true;
         poemContainer.classList.add("stage-lit");
-        startContinuousAutoScroll();
         statusText.textContent = "Writing...";
         await renderPoem();
         statusText.textContent = "For Annie, with love.";
@@ -917,7 +891,6 @@
       });
 
       initializeFocusLight();
-      initializePoemScrollLock();
 
       function wait(ms) {
         return new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -966,23 +939,6 @@
           focusTutorial.hidden = false;
           startFocusDemo();
         }
-      }
-
-      function initializePoemScrollLock() {
-        poemContainer.classList.add("scroll-locked");
-        poemContainer.addEventListener("wheel", blockManualPoemScroll, {
-          passive: false,
-        });
-        poemContainer.addEventListener("touchmove", blockManualPoemScroll, {
-          passive: false,
-        });
-      }
-
-      function blockManualPoemScroll(event) {
-        if (poemScrollUnlocked) {
-          return;
-        }
-        event.preventDefault();
       }
 
       function centerFocusLight() {
@@ -1186,7 +1142,7 @@
           if (segment.type === "break") {
             const spacer = document.createElement("span");
             spacer.className = "line-gap";
-            poemContent.append(spacer);
+            poemContainer.append(spacer);
             renderedPoem.push({ type: "break" });
             trimPoemWindow();
             stanzaIndex += 1;
@@ -1196,9 +1152,9 @@
 
           const line = document.createElement("p");
           line.className = `line stanza-${stanzaIndex % STANZA_CLASS_COUNT}`;
-          poemContent.append(line);
+          poemContainer.append(line);
           spotlightLine(line);
-          trimPoemWindow();
+          line.scrollIntoView({ block: "nearest", behavior: "smooth" });
 
           if (segment.type === "line") {
             await typeRichText(line, segment.text);
@@ -1242,44 +1198,22 @@
         if (fullPoemMode) {
           return;
         }
-        // Keep this hook for compatibility with existing render flow.
-        // Continuous auto-scroll handles movement now.
-      }
-
-      function startContinuousAutoScroll() {
-        stopContinuousAutoScroll();
-        autoScrollLastTimestamp = performance.now();
-
-        const step = (timestamp) => {
-          const elapsedMs = timestamp - autoScrollLastTimestamp;
-          autoScrollLastTimestamp = timestamp;
-
-          const maxScrollTop = Math.max(
-            0,
-            poemContainer.scrollHeight - poemContainer.clientHeight,
-          );
-
-          if (maxScrollTop > 0) {
-            const remaining = maxScrollTop - poemContainer.scrollTop;
-            const isMobile = window.matchMedia("(max-width: 640px)").matches;
-            const basePxPerSecond = isMobile ? 10 : 14;
-            // Smoothly speed up if content gets too far ahead.
-            const catchUpPxPerSecond = Math.min(130, Math.max(0, remaining - 24) * 0.45);
-            const pxPerSecond = basePxPerSecond + catchUpPxPerSecond;
-            const delta = (elapsedMs / 1000) * pxPerSecond;
-            poemContainer.scrollTop = Math.min(maxScrollTop, poemContainer.scrollTop + delta);
-          }
-
-          autoScrollFrameHandle = window.requestAnimationFrame(step);
-        };
-
-        autoScrollFrameHandle = window.requestAnimationFrame(step);
-      }
-
-      function stopContinuousAutoScroll() {
-        if (autoScrollFrameHandle) {
-          window.cancelAnimationFrame(autoScrollFrameHandle);
-          autoScrollFrameHandle = 0;
+        const visibleLimit = window.matchMedia("(max-width: 640px)").matches
+          ? MAX_VISIBLE_BLOCKS_MOBILE
+          : MAX_VISIBLE_BLOCKS_DESKTOP;
+        const visibleBlocks = Array.from(poemContainer.children).filter(
+          (node) => !node.classList.contains("line-removing"),
+        );
+        const overflow = visibleBlocks.length - visibleLimit;
+        if (overflow <= 0) {
+          return;
+        }
+        for (let index = 0; index < overflow; index += 1) {
+          const node = visibleBlocks[index];
+          node.classList.add("line-removing");
+          window.setTimeout(() => {
+            node.remove();
+          }, 340);
         }
       }
 
@@ -1308,7 +1242,6 @@
       }
 
       function celebrateFinale() {
-        stopContinuousAutoScroll();
         surprisePanel.hidden = false;
         showFullPoemButton.hidden = false;
         launchHearts(120);
@@ -1350,24 +1283,21 @@
       }
 
       function renderFullPoem() {
-        stopContinuousAutoScroll();
         fullPoemMode = true;
-        poemScrollUnlocked = true;
-        poemContainer.classList.remove("scroll-locked");
         poemContainer.classList.remove("stage-lit");
-        poemContent.innerHTML = "";
+        poemContainer.innerHTML = "";
 
         renderedPoem.forEach((entry) => {
           if (entry.type === "break") {
             const spacer = document.createElement("span");
             spacer.className = "line-gap";
-            poemContent.append(spacer);
+            poemContainer.append(spacer);
             return;
           }
           const line = document.createElement("p");
           line.className = `line stanza-${entry.stanza ?? 0}`;
           appendStyledText(line, entry.text);
-          poemContent.append(line);
+          poemContainer.append(line);
         });
 
         blankPanel.hidden = true;
