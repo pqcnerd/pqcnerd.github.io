@@ -125,6 +125,65 @@
         animation: stageSweep 8.5s ease-in-out infinite alternate;
       }
 
+      .poem.focus-enabled::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        background: rgba(2, 6, 23, 0.62);
+        -webkit-mask-image: radial-gradient(
+          circle var(--focus-radius, 150px) at var(--focus-x, 50%) var(--focus-y, 50%),
+          transparent 0%,
+          transparent 36%,
+          black 76%
+        );
+        mask-image: radial-gradient(
+          circle var(--focus-radius, 150px) at var(--focus-x, 50%) var(--focus-y, 50%),
+          transparent 0%,
+          transparent 36%,
+          black 76%
+        );
+      }
+
+      .focus-tutorial {
+        border: 1px dashed rgba(148, 163, 184, 0.38);
+        border-radius: 12px;
+        background: rgba(15, 23, 42, 0.6);
+        padding: 0.8rem 0.95rem;
+        display: grid;
+        gap: 0.55rem;
+      }
+
+      .focus-tutorial[hidden] {
+        display: none;
+      }
+
+      .focus-tutorial p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.55;
+        font-size: 0.88rem;
+      }
+
+      .focus-tutorial button {
+        justify-self: start;
+        border-radius: 999px;
+        border: 1px solid rgba(244, 114, 182, 0.6);
+        background: rgba(244, 114, 182, 0.2);
+        color: #fbcfe8;
+        font-family: inherit;
+        font-size: 0.85rem;
+        padding: 0.45rem 0.9rem;
+        cursor: pointer;
+      }
+
+      .focus-tutorial button:hover,
+      .focus-tutorial button:focus-visible {
+        background: rgba(244, 114, 182, 0.32);
+        outline: none;
+      }
+
       @keyframes stageSweep {
         0% {
           transform: translateX(-6%) translateY(-2%);
@@ -434,32 +493,6 @@
         z-index: 999;
       }
 
-      .focus-overlay {
-        position: fixed;
-        inset: 0;
-        pointer-events: none;
-        z-index: 500;
-        opacity: 0;
-        transition: opacity 220ms ease;
-        background: rgba(2, 6, 23, 0.74);
-        -webkit-mask-image: radial-gradient(
-          circle var(--focus-size, 130px) at var(--focus-x, 50vw) var(--focus-y, 50vh),
-          transparent 0,
-          transparent 58%,
-          black 100%
-        );
-        mask-image: radial-gradient(
-          circle var(--focus-size, 130px) at var(--focus-x, 50vw) var(--focus-y, 50vh),
-          transparent 0,
-          transparent 58%,
-          black 100%
-        );
-      }
-
-      .focus-overlay.active {
-        opacity: 1;
-      }
-
       .heart {
         position: absolute;
         bottom: -2rem;
@@ -511,6 +544,15 @@
         <p id="playback-status" class="status">Press Start when you are ready.</p>
       </div>
 
+      <section id="focus-tutorial" class="focus-tutorial" hidden aria-label="Focus light tutorial">
+        <p>
+          Move your cursor to steer the focus light.
+          On mobile, drag your finger across the poem to guide it.
+        </p>
+        <p>A quick demo runs the first time you open this page.</p>
+        <button type="button" id="focus-tutorial-close">Got it</button>
+      </section>
+
       <section id="poem" class="poem" aria-live="polite" aria-label="Poem output"></section>
 
       <section id="blank-panel" class="blank-panel" hidden aria-label="Blank options">
@@ -535,7 +577,6 @@
       </section>
     </main>
     <div id="heart-burst" class="heart-burst" aria-hidden="true"></div>
-    <div id="focus-overlay" class="focus-overlay" aria-hidden="true"></div>
 
     <script>
       const CHAR_DELAY_MS = 26;
@@ -663,22 +704,23 @@
       const statusText = document.getElementById("playback-status");
       const surprisePanel = document.getElementById("surprise-panel");
       const heartBurst = document.getElementById("heart-burst");
-      const focusOverlay = document.getElementById("focus-overlay");
       const showFullPoemButton = document.getElementById("show-full-poem");
+      const focusTutorial = document.getElementById("focus-tutorial");
+      const focusTutorialClose = document.getElementById("focus-tutorial-close");
+      const FOCUS_TUTORIAL_KEY = "pqcnerd-focus-tutorial-seen-v1";
       const renderedPoem = [];
       let rewriteStarted = false;
       let fullPoemMode = false;
+      let demoFrameHandle = 0;
+      let demoStartTime = 0;
 
       startButton.addEventListener("click", async () => {
+        dismissFocusTutorial();
         startButton.disabled = true;
         poemContainer.classList.add("stage-lit");
-        setFocusOverlayActive(true);
         statusText.textContent = "Writing...";
         await renderPoem();
         statusText.textContent = "For Annie, with love.";
-        window.setTimeout(() => {
-          setFocusOverlayActive(false);
-        }, 900);
         celebrateFinale();
       });
 
@@ -686,26 +728,111 @@
         renderFullPoem();
       });
 
+      focusTutorialClose?.addEventListener("click", () => {
+        dismissFocusTutorial();
+      });
+
+      initializeFocusLight();
+
       function wait(ms) {
         return new Promise((resolve) => window.setTimeout(resolve, ms));
       }
 
-      function setFocusOverlayActive(isActive) {
-        if (!focusOverlay) {
-          return;
+      function initializeFocusLight() {
+        poemContainer.classList.add("focus-enabled");
+        poemContainer.style.setProperty("--focus-radius", "148px");
+        centerFocusLight();
+
+        poemContainer.addEventListener("pointermove", (event) => {
+          stopFocusDemo();
+          updateFocusFromClientPoint(event.clientX, event.clientY);
+        });
+
+        poemContainer.addEventListener(
+          "touchmove",
+          (event) => {
+            const touch = event.touches[0];
+            if (!touch) {
+              return;
+            }
+            stopFocusDemo();
+            updateFocusFromClientPoint(touch.clientX, touch.clientY);
+          },
+          { passive: true },
+        );
+
+        window.addEventListener("resize", centerFocusLight);
+
+        let seenTutorial = false;
+        try {
+          seenTutorial = window.localStorage.getItem(FOCUS_TUTORIAL_KEY) === "1";
+        } catch (error) {
+          seenTutorial = false;
         }
-        focusOverlay.classList.toggle("active", isActive);
+
+        if (!seenTutorial && focusTutorial) {
+          focusTutorial.hidden = false;
+          startFocusDemo();
+        }
       }
 
-      function updateFocusOverlayFromChar(charElement) {
-        if (!focusOverlay || !charElement) {
+      function centerFocusLight() {
+        poemContainer.style.setProperty("--focus-x", "50%");
+        poemContainer.style.setProperty("--focus-y", "50%");
+      }
+
+      function updateFocusFromClientPoint(clientX, clientY) {
+        const rect = poemContainer.getBoundingClientRect();
+        if (rect.width <= 0 || rect.height <= 0) {
           return;
         }
-        const rect = charElement.getBoundingClientRect();
-        const x = rect.left + rect.width * 0.5;
-        const y = rect.top + rect.height * 0.5;
-        focusOverlay.style.setProperty("--focus-x", `${x}px`);
-        focusOverlay.style.setProperty("--focus-y", `${y}px`);
+
+        const localX = Math.min(Math.max(clientX - rect.left, 0), rect.width);
+        const localY = Math.min(Math.max(clientY - rect.top, 0), rect.height);
+        poemContainer.style.setProperty("--focus-x", `${localX}px`);
+        poemContainer.style.setProperty("--focus-y", `${localY}px`);
+      }
+
+      function startFocusDemo() {
+        stopFocusDemo();
+        demoStartTime = performance.now();
+        const animateDemo = (now) => {
+          const elapsed = now - demoStartTime;
+          if (elapsed > 6500) {
+            centerFocusLight();
+            demoFrameHandle = 0;
+            return;
+          }
+
+          const rect = poemContainer.getBoundingClientRect();
+          const t = elapsed / 1000;
+          const x = rect.width * (0.2 + 0.6 * ((Math.sin(t * 1.4) + 1) / 2));
+          const y = rect.height * (0.25 + 0.45 * ((Math.cos(t * 1.05) + 1) / 2));
+          poemContainer.style.setProperty("--focus-x", `${x}px`);
+          poemContainer.style.setProperty("--focus-y", `${y}px`);
+          demoFrameHandle = window.requestAnimationFrame(animateDemo);
+        };
+        demoFrameHandle = window.requestAnimationFrame(animateDemo);
+      }
+
+      function stopFocusDemo() {
+        if (demoFrameHandle) {
+          window.cancelAnimationFrame(demoFrameHandle);
+          demoFrameHandle = 0;
+        }
+      }
+
+      function dismissFocusTutorial() {
+        stopFocusDemo();
+        centerFocusLight();
+        if (focusTutorial) {
+          focusTutorial.hidden = true;
+        }
+        try {
+          window.localStorage.setItem(FOCUS_TUTORIAL_KEY, "1");
+        } catch (error) {
+          // Ignore localStorage write failures.
+        }
       }
 
       function splitRainbowSegments(text) {
@@ -740,7 +867,6 @@
               : "typed-char";
             charSpan.textContent = character === " " ? "\u00A0" : character;
             target.append(charSpan);
-            updateFocusOverlayFromChar(charSpan);
             await wait(CHAR_DELAY_MS);
           }
         }
@@ -892,7 +1018,6 @@
       function renderFullPoem() {
         fullPoemMode = true;
         poemContainer.classList.remove("stage-lit");
-        setFocusOverlayActive(false);
         poemContainer.innerHTML = "";
 
         renderedPoem.forEach((entry) => {

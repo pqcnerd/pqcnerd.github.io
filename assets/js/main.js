@@ -3,20 +3,17 @@ const ABOUT_TEXT = [
   "About Mark (Zeheng) Mu",
   "----------------",
   "Passionate about post-quantum cryptography, low-level systems, and building delightful developer tooling.",
-  "I am a student at the University of Toronto, pursuing a Bachelor's degree in Computer Science.",
 ].join("\n");
 const CONTACT_TEXT = [
   "Contact",
   "-------",
   "email: pqcnerd@gmail.com",
   "github: https://github.com/pqcnerd",
-  "linkedin: https://www.linkedin.com/in/mark-mu",
   "x: https://x.com/pqcnerd",
 ].join("\n");
 const RESUME_TEXT = [
   "Resume",
   "------",
-  "PDF: https://pqcnerd.github.io/Resume%20CV.pdf",
 ].join("\n");
 const PROJECTS_TEXT = [
   "Projects",
