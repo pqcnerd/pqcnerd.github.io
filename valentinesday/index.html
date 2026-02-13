@@ -116,6 +116,27 @@
         z-index: 1;
       }
 
+      .poem.choice-focus-active::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        pointer-events: none;
+        background: rgba(2, 6, 23, 0.76);
+        -webkit-mask-image: radial-gradient(
+          circle var(--choice-focus-radius, 240px) at var(--choice-focus-x, 50%) var(--choice-focus-y, 50%),
+          transparent 0%,
+          transparent 42%,
+          black 82%
+        );
+        mask-image: radial-gradient(
+          circle var(--choice-focus-radius, 240px) at var(--choice-focus-x, 50%) var(--choice-focus-y, 50%),
+          transparent 0%,
+          transparent 42%,
+          black 82%
+        );
+      }
+
       .line {
         margin: 0;
         line-height: 1.9;
@@ -992,11 +1013,37 @@
             maybeTrimPoemWindow("blank", `${segment.pre}${selectedFill}${segment.post}`);
             await wait(LINE_DELAY_MS);
             if (isMobileViewport()) {
-              await wait(260);
+              await showChoiceSpotlight(fill);
               poemContainer.innerHTML = "";
+              clearChoiceSpotlight();
             }
           }
         }
+      }
+
+      async function showChoiceSpotlight(targetElement) {
+        if (!targetElement || !isMobileViewport()) {
+          return;
+        }
+
+        const containerRect = poemContainer.getBoundingClientRect();
+        const targetRect = targetElement.getBoundingClientRect();
+        const focusX = targetRect.left - containerRect.left + targetRect.width / 2;
+        const focusY = targetRect.top - containerRect.top + targetRect.height / 2;
+        const radius = Math.max(220, containerRect.width * 0.62);
+
+        poemContainer.style.setProperty("--choice-focus-x", `${focusX}px`);
+        poemContainer.style.setProperty("--choice-focus-y", `${focusY}px`);
+        poemContainer.style.setProperty("--choice-focus-radius", `${radius}px`);
+        poemContainer.classList.add("choice-focus-active");
+        await wait(780);
+      }
+
+      function clearChoiceSpotlight() {
+        poemContainer.classList.remove("choice-focus-active");
+        poemContainer.style.removeProperty("--choice-focus-x");
+        poemContainer.style.removeProperty("--choice-focus-y");
+        poemContainer.style.removeProperty("--choice-focus-radius");
       }
 
       function maybeTrimPoemWindow(segmentType, text) {
