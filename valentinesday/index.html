@@ -300,7 +300,7 @@
       }
 
       .emph-flicker::after {
-        content: "\ud83c\udf1f";
+        content: "\01F31F";
         animation: emojiSpark 1.9s ease-in-out infinite;
       }
 
@@ -310,7 +310,7 @@
       }
 
       .emph-pulse::after {
-        content: "\ud83d\udc95";
+        content: "\01F495";
         animation: emojiSpark 2.2s ease-in-out infinite;
       }
 
@@ -871,6 +871,7 @@
       let fullPoemMode = false;
       let demoFrameHandle = 0;
       let demoStartTime = 0;
+      let lineRemovalInProgress = false;
 
       startButton.addEventListener("click", async () => {
         dismissFocusTutorial();
@@ -1195,7 +1196,7 @@
       }
 
       function trimPoemWindow() {
-        if (fullPoemMode) {
+        if (fullPoemMode || lineRemovalInProgress) {
           return;
         }
         const visibleLimit = window.matchMedia("(max-width: 640px)").matches
@@ -1208,13 +1209,15 @@
         if (overflow <= 0) {
           return;
         }
-        for (let index = 0; index < overflow; index += 1) {
-          const node = visibleBlocks[index];
-          node.classList.add("line-removing");
-          window.setTimeout(() => {
-            node.remove();
-          }, 340);
-        }
+
+        const node = visibleBlocks[0];
+        lineRemovalInProgress = true;
+        node.classList.add("line-removing");
+        window.setTimeout(() => {
+          node.remove();
+          lineRemovalInProgress = false;
+          trimPoemWindow();
+        }, 340);
       }
 
       function waitForBlankChoice(options) {
