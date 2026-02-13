@@ -265,22 +265,53 @@
       .emph-word {
         display: inline-block;
         will-change: filter, opacity, transform, text-shadow;
+        position: relative;
+        font-weight: 600;
       }
 
       .emph-flicker {
         animation: lampFlicker 2.8s steps(1, end) infinite;
+        color: #fde68a;
       }
 
       .emph-glow {
         animation: softGlow 2.6s ease-in-out infinite alternate;
+        color: #bae6fd;
       }
 
       .emph-twinkle {
         animation: starTwinkle 2.1s ease-in-out infinite;
+        color: #fef08a;
       }
 
       .emph-pulse {
         animation: heartPulse 2.4s ease-in-out infinite;
+        color: #f9a8d4;
+      }
+
+      .emph-word::after {
+        position: absolute;
+        right: -0.9em;
+        top: -0.52em;
+        font-size: 0.6em;
+        line-height: 1;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .emph-flicker::after {
+        content: "\ud83c\udf1f";
+        animation: emojiSpark 1.9s ease-in-out infinite;
+      }
+
+      .emph-twinkle::after {
+        content: "\u2728";
+        animation: emojiSpark 1.7s ease-in-out infinite;
+      }
+
+      .emph-pulse::after {
+        content: "\ud83d\udc95";
+        animation: emojiSpark 2.2s ease-in-out infinite;
       }
 
       @keyframes lampFlicker {
@@ -334,6 +365,19 @@
         45% {
           transform: scale(1.045);
           filter: brightness(1.15);
+        }
+      }
+
+      @keyframes emojiSpark {
+        0%,
+        100% {
+          opacity: 0;
+          transform: translateY(0.2em) scale(0.85);
+        }
+        35%,
+        65% {
+          opacity: 0.88;
+          transform: translateY(0) scale(1);
         }
       }
 
@@ -607,6 +651,7 @@
         .heart,
         .rainbow-text,
         .emph-word,
+        .emph-word::after,
         .surprise.rewrite-active .rewrite-scribble {
           animation: none !important;
           transition: none !important;
