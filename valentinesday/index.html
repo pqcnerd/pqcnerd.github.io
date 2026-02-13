@@ -1149,39 +1149,22 @@
         const visibleBlocks = Array.from(poemContainer.children).filter(
           (node) => !node.classList.contains("line-removing"),
         );
-        if (isMobileViewport()) {
-          const lineBlocks = visibleBlocks.filter((node) =>
-            node.classList.contains("line"),
-          );
-          const overflowLines = lineBlocks.length - visibleLimit;
-          if (overflowLines <= 0) {
-            return;
-          }
+        const lineBlocks = visibleBlocks.filter((node) =>
+          node.classList.contains("line"),
+        );
+        const overflowLines = lineBlocks.length - visibleLimit;
+        if (overflowLines <= 0) {
+          return;
+        }
 
-          const node = lineBlocks[0];
+        const node = lineBlocks[0];
+        lineRemovalInProgress = true;
+        animateNodeOutByWrappedLines(node).then(() => {
+          node.remove();
           const previous = node.previousElementSibling;
           if (previous && previous.classList.contains("line-gap")) {
             previous.remove();
           }
-
-          lineRemovalInProgress = true;
-          animateNodeOutByWrappedLines(node).then(() => {
-            node.remove();
-            lineRemovalInProgress = false;
-            trimPoemWindow();
-          });
-          return;
-        }
-
-        const overflow = visibleBlocks.length - visibleLimit;
-        if (overflow <= 0) {
-          return;
-        }
-
-        const node = visibleBlocks[0];
-        lineRemovalInProgress = true;
-        animateNodeOutByWrappedLines(node).then(() => {
-          node.remove();
           lineRemovalInProgress = false;
           trimPoemWindow();
         });
