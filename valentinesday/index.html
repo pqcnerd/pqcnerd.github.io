@@ -201,6 +201,8 @@
         margin: 0;
         line-height: 1.9;
         white-space: pre-wrap;
+        word-break: keep-all;
+        overflow-wrap: normal;
         color: #d7e0ee;
       }
 
@@ -251,6 +253,10 @@
         display: inline-block;
         animation: charPop 220ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
         will-change: transform;
+      }
+
+      .typed-word {
+        display: inline-block;
       }
 
       @keyframes charPop {
@@ -582,7 +588,8 @@
       const CHAR_DELAY_MS = 26;
       const LINE_DELAY_MS = 300;
       const STANZA_CLASS_COUNT = 6;
-      const MAX_VISIBLE_BLOCKS = 16;
+      const MAX_VISIBLE_BLOCKS_DESKTOP = 12;
+      const MAX_VISIBLE_BLOCKS_MOBILE = 8;
 
       const poemSequence = [
         { type: "line", text: "Across my lamplit desk I lingered, half in wonder, half in worry," },
@@ -740,7 +747,10 @@
 
       function initializeFocusLight() {
         poemContainer.classList.add("focus-enabled");
-        poemContainer.style.setProperty("--focus-radius", "148px");
+        poemContainer.style.setProperty(
+          "--focus-radius",
+          window.matchMedia("(max-width: 640px)").matches ? "220px" : "300px",
+        );
         centerFocusLight();
 
         poemContainer.addEventListener("pointermove", (event) => {
@@ -860,14 +870,35 @@
       async function typeRichText(target, text) {
         const segments = splitRainbowSegments(text);
         for (const segment of segments) {
-          for (const character of segment.text) {
-            const charSpan = document.createElement("span");
-            charSpan.className = segment.isRainbow
-              ? "typed-char rainbow-text"
-              : "typed-char";
-            charSpan.textContent = character === " " ? "\u00A0" : character;
-            target.append(charSpan);
-            await wait(CHAR_DELAY_MS);
+          const chunks = segment.text.split(/(\s+)/);
+          for (const chunk of chunks) {
+            if (!chunk) {
+              continue;
+            }
+
+            if (/^\s+$/.test(chunk)) {
+              for (const spaceChar of chunk) {
+                target.append(
+                  document.createTextNode(spaceChar === " " ? "\u00A0" : spaceChar),
+                );
+                await wait(CHAR_DELAY_MS);
+              }
+              continue;
+            }
+
+            const wordSpan = document.createElement("span");
+            wordSpan.className = "typed-word";
+            target.append(wordSpan);
+
+            for (const character of chunk) {
+              const charSpan = document.createElement("span");
+              charSpan.className = segment.isRainbow
+                ? "typed-char rainbow-text"
+                : "typed-char";
+              charSpan.textContent = character;
+              wordSpan.append(charSpan);
+              await wait(CHAR_DELAY_MS);
+            }
           }
         }
       }
@@ -934,10 +965,13 @@
         if (fullPoemMode) {
           return;
         }
+        const visibleLimit = window.matchMedia("(max-width: 640px)").matches
+          ? MAX_VISIBLE_BLOCKS_MOBILE
+          : MAX_VISIBLE_BLOCKS_DESKTOP;
         const visibleBlocks = Array.from(poemContainer.children).filter(
           (node) => !node.classList.contains("line-removing"),
         );
-        const overflow = visibleBlocks.length - MAX_VISIBLE_BLOCKS;
+        const overflow = visibleBlocks.length - visibleLimit;
         if (overflow <= 0) {
           return;
         }
