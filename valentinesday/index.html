@@ -108,6 +108,7 @@
         -webkit-user-select: none;
         user-select: none;
         -webkit-touch-callout: none;
+        overflow-anchor: none;
       }
 
       .poem > * {
@@ -224,6 +225,11 @@
         animation: emojiSpark 1.7s ease-in-out infinite;
       }
 
+      .emph-glow::after {
+        content: "\01F4AB";
+        animation: emojiSpark 2s ease-in-out infinite;
+      }
+
       .emph-pulse::after {
         content: "\01F495";
         animation: emojiSpark 2.2s ease-in-out infinite;
@@ -318,6 +324,13 @@
 
       .line-removing {
         overflow: hidden;
+        transition: height 140ms linear, margin 140ms linear, padding 140ms linear, opacity 180ms linear;
+      }
+
+      .line-removal-wrap {
+        display: block;
+        transition: transform 140ms linear;
+        will-change: transform;
       }
 
       .chosen-fill {
@@ -622,12 +635,19 @@
       const MAX_VISIBLE_BLOCKS_MOBILE = 2;
       const EMPHASIS_RULES = [
         { phrase: "lamplit desk", effect: "flicker" },
+        { phrase: "your name", effect: "flicker" },
+        { phrase: "midnight", effect: "flicker" },
         { phrase: "Hong Kong", effect: "glow" },
-        { phrase: "harbor", effect: "glow" },
+        { phrase: "harbor's shimmer", effect: "glow" },
         { phrase: "moon", effect: "glow" },
+        { phrase: "goodnight", effect: "glow" },
+        { phrase: "miss you", effect: "glow" },
+        { phrase: "sunrise", effect: "glow" },
+        { phrase: "laughter", effect: "glow" },
+        { phrase: "home", effect: "glow" },
         { phrase: "north-star", effect: "twinkle" },
         { phrase: "galaxies", effect: "twinkle" },
-        { phrase: "star", effect: "twinkle" },
+        { phrase: "Valentine", effect: "twinkle" },
         { phrase: "heart", effect: "pulse" },
         { phrase: "love", effect: "pulse" },
       ];
@@ -935,7 +955,7 @@
           line.className = `line stanza-${stanzaIndex % STANZA_CLASS_COUNT}`;
           poemContainer.append(line);
           spotlightLine(line);
-          line.scrollIntoView({ block: "nearest", behavior: "smooth" });
+          line.scrollIntoView({ block: "nearest", behavior: "auto" });
 
           if (segment.type === "line") {
             await typeRichText(line, segment.text);
@@ -992,27 +1012,68 @@
 
         const node = visibleBlocks[0];
         lineRemovalInProgress = true;
-        const nodeHeight = node.getBoundingClientRect().height;
-        node.style.height = `${nodeHeight}px`;
-        node.style.opacity = "1";
-        node.style.transform = "translateY(0)";
-        node.style.overflow = "hidden";
-        node.style.transition = "height 420ms ease, opacity 300ms ease, transform 420ms ease, margin 420ms ease, padding 420ms ease";
-        node.classList.add("line-removing");
-        window.requestAnimationFrame(() => {
-          node.style.height = "0px";
-          node.style.opacity = "0";
-          node.style.transform = "translateY(-0.35rem)";
-          node.style.marginTop = "0";
-          node.style.marginBottom = "0";
-          node.style.paddingTop = "0";
-          node.style.paddingBottom = "0";
-        });
-        window.setTimeout(() => {
+        animateNodeOutByWrappedLines(node).then(() => {
           node.remove();
           lineRemovalInProgress = false;
           trimPoemWindow();
-        }, 430);
+        });
+      }
+
+      function animateNodeOutByWrappedLines(node) {
+        const computed = window.getComputedStyle(node);
+        const originalHeight = node.getBoundingClientRect().height;
+        if (!Number.isFinite(originalHeight) || originalHeight <= 0.5) {
+          return Promise.resolve();
+        }
+
+        const marginTop = parseFloat(computed.marginTop) || 0;
+        const marginBottom = parseFloat(computed.marginBottom) || 0;
+        const paddingTop = parseFloat(computed.paddingTop) || 0;
+        const paddingBottom = parseFloat(computed.paddingBottom) || 0;
+        const lineHeightRaw = parseFloat(computed.lineHeight);
+        const stepHeight = Number.isFinite(lineHeightRaw) && lineHeightRaw > 0
+          ? Math.max(10, Math.round(lineHeightRaw))
+          : Math.max(12, Math.round(originalHeight / 2));
+
+        const wrapper = document.createElement("span");
+        wrapper.className = "line-removal-wrap";
+        while (node.firstChild) {
+          wrapper.append(node.firstChild);
+        }
+        node.append(wrapper);
+
+        node.style.height = `${originalHeight}px`;
+        node.style.marginTop = `${marginTop}px`;
+        node.style.marginBottom = `${marginBottom}px`;
+        node.style.paddingTop = `${paddingTop}px`;
+        node.style.paddingBottom = `${paddingBottom}px`;
+        node.style.opacity = "1";
+        node.classList.add("line-removing");
+
+        let removedHeight = 0;
+        return new Promise((resolve) => {
+          const tick = () => {
+            removedHeight = Math.min(originalHeight, removedHeight + stepHeight);
+            const remaining = Math.max(0, originalHeight - removedHeight);
+            const ratio = originalHeight > 0 ? remaining / originalHeight : 0;
+
+            node.style.height = `${remaining}px`;
+            node.style.marginTop = `${marginTop * ratio}px`;
+            node.style.marginBottom = `${marginBottom * ratio}px`;
+            node.style.paddingTop = `${paddingTop * ratio}px`;
+            node.style.paddingBottom = `${paddingBottom * ratio}px`;
+            node.style.opacity = `${Math.max(0, Math.min(1, ratio + 0.08))}`;
+            wrapper.style.transform = `translateY(-${removedHeight}px)`;
+
+            if (remaining <= 0.5) {
+              resolve();
+              return;
+            }
+            window.setTimeout(tick, 115);
+          };
+
+          window.setTimeout(tick, 20);
+        });
       }
 
       function waitForBlankChoice(options) {
