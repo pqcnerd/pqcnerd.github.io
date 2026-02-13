@@ -111,6 +111,7 @@
         -webkit-touch-callout: none;
         overscroll-behavior: contain;
         scrollbar-width: none;
+        scroll-behavior: smooth;
       }
 
       .poem::-webkit-scrollbar {
@@ -125,6 +126,12 @@
       .poem > * {
         position: relative;
         z-index: 1;
+      }
+
+      .poem-content {
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
       }
 
       .poem.stage-lit::before {
@@ -707,7 +714,9 @@
         <button type="button" id="focus-tutorial-close">Got it</button>
       </section>
 
-      <section id="poem" class="poem" aria-live="polite" aria-label="Poem output"></section>
+      <section id="poem" class="poem" aria-live="polite" aria-label="Poem output">
+        <div id="poem-content" class="poem-content"></div>
+      </section>
 
       <section id="blank-panel" class="blank-panel" hidden aria-label="Blank options">
         <h2 class="blank-title">Fill the blank to continue</h2>
@@ -869,6 +878,7 @@
 
       const startButton = document.getElementById("start-poem");
       const poemContainer = document.getElementById("poem");
+      const poemContent = document.getElementById("poem-content");
       const blankPanel = document.getElementById("blank-panel");
       const blankOptions = document.getElementById("blank-options");
       const statusText = document.getElementById("playback-status");
@@ -1173,7 +1183,7 @@
           if (segment.type === "break") {
             const spacer = document.createElement("span");
             spacer.className = "line-gap";
-            poemContainer.append(spacer);
+            poemContent.append(spacer);
             renderedPoem.push({ type: "break" });
             trimPoemWindow();
             stanzaIndex += 1;
@@ -1183,7 +1193,7 @@
 
           const line = document.createElement("p");
           line.className = `line stanza-${stanzaIndex % STANZA_CLASS_COUNT}`;
-          poemContainer.append(line);
+          poemContent.append(line);
           spotlightLine(line);
           trimPoemWindow();
 
@@ -1229,12 +1239,23 @@
         if (fullPoemMode) {
           return;
         }
-        scrollPoemToBottom();
+        scrollPoemToLatestLine();
       }
 
-      function scrollPoemToBottom() {
+      function scrollPoemToLatestLine() {
         window.requestAnimationFrame(() => {
-          poemContainer.scrollTop = poemContainer.scrollHeight;
+          const latestLine = poemContent.querySelector(".line:last-of-type");
+          if (!latestLine) {
+            return;
+          }
+          const targetTop = Math.max(
+            0,
+            latestLine.offsetTop + latestLine.offsetHeight - poemContainer.clientHeight + 8,
+          );
+          poemContainer.scrollTo({
+            top: targetTop,
+            behavior: "smooth",
+          });
         });
       }
 
@@ -1308,19 +1329,19 @@
         poemScrollUnlocked = true;
         poemContainer.classList.remove("scroll-locked");
         poemContainer.classList.remove("stage-lit");
-        poemContainer.innerHTML = "";
+        poemContent.innerHTML = "";
 
         renderedPoem.forEach((entry) => {
           if (entry.type === "break") {
             const spacer = document.createElement("span");
             spacer.className = "line-gap";
-            poemContainer.append(spacer);
+            poemContent.append(spacer);
             return;
           }
           const line = document.createElement("p");
           line.className = `line stanza-${entry.stanza ?? 0}`;
           appendStyledText(line, entry.text);
-          poemContainer.append(line);
+          poemContent.append(line);
         });
 
         blankPanel.hidden = true;
