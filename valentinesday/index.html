@@ -124,17 +124,45 @@
         pointer-events: none;
         background: rgba(2, 6, 23, 0.76);
         -webkit-mask-image: radial-gradient(
-          circle var(--choice-focus-radius, 240px) at var(--choice-focus-x, 50%) var(--choice-focus-y, 50%),
+          circle var(--choice-focus-radius, 110px) at var(--choice-focus-x, 50%) var(--choice-focus-y, 50%),
           transparent 0%,
           transparent 42%,
           black 82%
         );
         mask-image: radial-gradient(
-          circle var(--choice-focus-radius, 240px) at var(--choice-focus-x, 50%) var(--choice-focus-y, 50%),
+          circle var(--choice-focus-radius, 110px) at var(--choice-focus-x, 50%) var(--choice-focus-y, 50%),
           transparent 0%,
           transparent 42%,
           black 82%
         );
+      }
+
+      .choice-heart {
+        position: absolute;
+        z-index: 4;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        animation: choiceHeartBurst 1200ms ease-out forwards;
+        filter: drop-shadow(0 0 6px rgba(244, 114, 182, 0.6));
+      }
+
+      @keyframes choiceHeartBurst {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.55);
+        }
+        18% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform:
+            translate(
+              calc(-50% + var(--burst-x, 0px)),
+              calc(-50% + var(--burst-y, 0px))
+            )
+            scale(1.25);
+        }
       }
 
       .line {
@@ -1014,8 +1042,6 @@
             await wait(LINE_DELAY_MS);
             if (isMobileViewport()) {
               await showChoiceSpotlight(fill);
-              poemContainer.innerHTML = "";
-              clearChoiceSpotlight();
             }
           }
         }
@@ -1030,13 +1056,15 @@
         const targetRect = targetElement.getBoundingClientRect();
         const focusX = targetRect.left - containerRect.left + targetRect.width / 2;
         const focusY = targetRect.top - containerRect.top + targetRect.height / 2;
-        const radius = Math.max(220, containerRect.width * 0.62);
+        const radius = Math.max(90, Math.min(130, containerRect.width * 0.28));
 
         poemContainer.style.setProperty("--choice-focus-x", `${focusX}px`);
         poemContainer.style.setProperty("--choice-focus-y", `${focusY}px`);
         poemContainer.style.setProperty("--choice-focus-radius", `${radius}px`);
         poemContainer.classList.add("choice-focus-active");
-        await wait(780);
+        launchChoiceHearts(focusX, focusY);
+        await wait(2200);
+        clearChoiceSpotlight();
       }
 
       function clearChoiceSpotlight() {
@@ -1044,6 +1072,30 @@
         poemContainer.style.removeProperty("--choice-focus-x");
         poemContainer.style.removeProperty("--choice-focus-y");
         poemContainer.style.removeProperty("--choice-focus-radius");
+      }
+
+      function launchChoiceHearts(centerX, centerY) {
+        const hearts = ["\u2764\ufe0f", "\ud83d\udc95", "\ud83d\udc96"];
+        const count = 12;
+
+        for (let index = 0; index < count; index += 1) {
+          const heart = document.createElement("span");
+          heart.className = "choice-heart";
+          heart.textContent = hearts[index % hearts.length];
+          heart.style.left = `${centerX}px`;
+          heart.style.top = `${centerY}px`;
+          heart.style.fontSize = `${0.72 + Math.random() * 0.45}rem`;
+
+          const angle = (Math.PI * 2 * index) / count + (Math.random() - 0.5) * 0.35;
+          const distance = 24 + Math.random() * 62;
+          heart.style.setProperty("--burst-x", `${Math.cos(angle) * distance}px`);
+          heart.style.setProperty("--burst-y", `${Math.sin(angle) * distance}px`);
+
+          poemContainer.append(heart);
+          window.setTimeout(() => {
+            heart.remove();
+          }, 1300);
+        }
       }
 
       function maybeTrimPoemWindow(segmentType, text) {
