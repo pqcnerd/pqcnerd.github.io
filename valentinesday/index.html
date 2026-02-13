@@ -317,18 +317,7 @@
       }
 
       .line-removing {
-        animation: lineExit 340ms ease forwards;
-      }
-
-      @keyframes lineExit {
-        0% {
-          opacity: 1;
-          transform: translateY(0);
-        }
-        100% {
-          opacity: 0;
-          transform: translateY(-0.5rem);
-        }
+        overflow: hidden;
       }
 
       .chosen-fill {
@@ -1003,50 +992,27 @@
 
         const node = visibleBlocks[0];
         lineRemovalInProgress = true;
+        const nodeHeight = node.getBoundingClientRect().height;
+        node.style.height = `${nodeHeight}px`;
+        node.style.opacity = "1";
+        node.style.transform = "translateY(0)";
+        node.style.overflow = "hidden";
+        node.style.transition = "height 420ms ease, opacity 300ms ease, transform 420ms ease, margin 420ms ease, padding 420ms ease";
         node.classList.add("line-removing");
+        window.requestAnimationFrame(() => {
+          node.style.height = "0px";
+          node.style.opacity = "0";
+          node.style.transform = "translateY(-0.35rem)";
+          node.style.marginTop = "0";
+          node.style.marginBottom = "0";
+          node.style.paddingTop = "0";
+          node.style.paddingBottom = "0";
+        });
         window.setTimeout(() => {
-          animateReflowAfterRemoval(node);
           node.remove();
           lineRemovalInProgress = false;
           trimPoemWindow();
-        }, 340);
-      }
-
-      function animateReflowAfterRemoval(removingNode) {
-        const movingNodes = Array.from(poemContainer.children).filter(
-          (entry) => entry !== removingNode && !entry.classList.contains("line-removing"),
-        );
-
-        const firstTop = new Map();
-        movingNodes.forEach((entry) => {
-          firstTop.set(entry, entry.getBoundingClientRect().top);
-        });
-
-        // Force layout before FLIP animation after node removal.
-        void poemContainer.offsetHeight;
-
-        movingNodes.forEach((entry) => {
-          const previousTop = firstTop.get(entry);
-          if (previousTop == null) {
-            return;
-          }
-          const currentTop = entry.getBoundingClientRect().top;
-          const delta = previousTop - currentTop;
-          if (Math.abs(delta) < 0.5) {
-            return;
-          }
-
-          entry.style.transform = `translateY(${delta}px)`;
-          entry.style.transition = "transform 0ms";
-          window.requestAnimationFrame(() => {
-            entry.style.transition = "transform 360ms ease";
-            entry.style.transform = "translateY(0)";
-            window.setTimeout(() => {
-              entry.style.transition = "";
-              entry.style.transform = "";
-            }, 380);
-          });
-        });
+        }, 430);
       }
 
       function waitForBlankChoice(options) {
