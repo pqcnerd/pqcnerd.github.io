@@ -1040,15 +1040,13 @@
             });
             maybeTrimPoemWindow("blank", `${segment.pre}${selectedFill}${segment.post}`);
             await wait(LINE_DELAY_MS);
-            if (isMobileViewport()) {
-              await showChoiceSpotlight(fill);
-            }
+            await showChoiceSpotlight(fill);
           }
         }
       }
 
       async function showChoiceSpotlight(targetElement) {
-        if (!targetElement || !isMobileViewport()) {
+        if (!targetElement) {
           return;
         }
 
@@ -1056,7 +1054,9 @@
         const targetRect = targetElement.getBoundingClientRect();
         const focusX = targetRect.left - containerRect.left + targetRect.width / 2;
         const focusY = targetRect.top - containerRect.top + targetRect.height / 2;
-        const radius = Math.max(90, Math.min(130, containerRect.width * 0.28));
+        const radius = isMobileViewport()
+          ? Math.max(90, Math.min(130, containerRect.width * 0.28))
+          : Math.max(130, Math.min(190, containerRect.width * 0.22));
 
         poemContainer.style.setProperty("--choice-focus-x", `${focusX}px`);
         poemContainer.style.setProperty("--choice-focus-y", `${focusY}px`);
