@@ -632,7 +632,7 @@
       let LINE_DELAY_MS = 300;
       const STANZA_CLASS_COUNT = 6;
       const MAX_VISIBLE_BLOCKS_DESKTOP = 16;
-      const MAX_VISIBLE_BLOCKS_MOBILE = 2;
+      const MAX_VISIBLE_BLOCKS_MOBILE = 4;
       const EMPHASIS_RULES = [
         { phrase: "lamplit desk", effect: "flicker" },
         { phrase: "your name", effect: "flicker" },
@@ -945,7 +945,7 @@
             spacer.className = "line-gap";
             poemContainer.append(spacer);
             renderedPoem.push({ type: "break" });
-            trimPoemWindow();
+            maybeTrimPoemWindow("break", "");
             stanzaIndex += 1;
             await wait(200);
             continue;
@@ -964,7 +964,7 @@
               text: segment.text,
               stanza: stanzaIndex % STANZA_CLASS_COUNT,
             });
-            trimPoemWindow();
+            maybeTrimPoemWindow("line", segment.text);
             await wait(LINE_DELAY_MS);
             continue;
           }
@@ -982,10 +982,30 @@
               text: `${segment.pre}${selectedFill}${segment.post}`,
               stanza: stanzaIndex % STANZA_CLASS_COUNT,
             });
-            trimPoemWindow();
+            maybeTrimPoemWindow("blank", `${segment.pre}${selectedFill}${segment.post}`);
             await wait(LINE_DELAY_MS);
           }
         }
+      }
+
+      function maybeTrimPoemWindow(segmentType, text) {
+        if (!window.matchMedia("(max-width: 640px)").matches) {
+          trimPoemWindow();
+          return;
+        }
+
+        // On mobile, keep key Annie/choice moments and stanza separators longer.
+        if (segmentType === "break") {
+          return;
+        }
+        if (segmentType === "blank") {
+          return;
+        }
+        if (typeof text === "string" && /Annie/i.test(text)) {
+          return;
+        }
+
+        trimPoemWindow();
       }
 
       function spotlightLine(lineElement) {
@@ -1007,6 +1027,11 @@
         );
         const overflow = visibleBlocks.length - visibleLimit;
         if (overflow <= 0) {
+          return;
+        }
+
+        const isMobile = window.matchMedia("(max-width: 640px)").matches;
+        if (isMobile && overflow < 2) {
           return;
         }
 
