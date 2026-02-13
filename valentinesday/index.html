@@ -262,6 +262,81 @@
         display: inline-block;
       }
 
+      .emph-word {
+        display: inline-block;
+        will-change: filter, opacity, transform, text-shadow;
+      }
+
+      .emph-flicker {
+        animation: lampFlicker 2.8s steps(1, end) infinite;
+      }
+
+      .emph-glow {
+        animation: softGlow 2.6s ease-in-out infinite alternate;
+      }
+
+      .emph-twinkle {
+        animation: starTwinkle 2.1s ease-in-out infinite;
+      }
+
+      .emph-pulse {
+        animation: heartPulse 2.4s ease-in-out infinite;
+      }
+
+      @keyframes lampFlicker {
+        0%,
+        18%,
+        38%,
+        62%,
+        100% {
+          filter: brightness(1);
+          text-shadow: none;
+        }
+        9%,
+        34%,
+        58% {
+          filter: brightness(1.16);
+          text-shadow: 0 0 8px rgba(250, 204, 21, 0.26);
+        }
+      }
+
+      @keyframes softGlow {
+        0% {
+          filter: brightness(1);
+          text-shadow: 0 0 0 rgba(125, 211, 252, 0);
+        }
+        100% {
+          filter: brightness(1.12);
+          text-shadow: 0 0 10px rgba(125, 211, 252, 0.28);
+        }
+      }
+
+      @keyframes starTwinkle {
+        0%,
+        100% {
+          opacity: 0.94;
+          transform: translateY(0);
+          text-shadow: 0 0 0 rgba(255, 255, 255, 0);
+        }
+        50% {
+          opacity: 1;
+          transform: translateY(-0.01em);
+          text-shadow: 0 0 10px rgba(253, 230, 138, 0.36);
+        }
+      }
+
+      @keyframes heartPulse {
+        0%,
+        100% {
+          transform: scale(1);
+          filter: brightness(1);
+        }
+        45% {
+          transform: scale(1.045);
+          filter: brightness(1.15);
+        }
+      }
+
       @keyframes charPop {
         0% {
           transform: scale(0.72);
@@ -525,6 +600,19 @@
         }
       }
 
+      @media (prefers-reduced-motion: reduce) {
+        .typed-char,
+        .line-spotlight,
+        .poem.stage-lit::before,
+        .heart,
+        .rainbow-text,
+        .emph-word,
+        .surprise.rewrite-active .rewrite-scribble {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+
       @media (max-width: 640px) {
         body {
           padding: 0.75rem;
@@ -588,11 +676,26 @@
     <div id="heart-burst" class="heart-burst" aria-hidden="true"></div>
 
     <script>
-      const CHAR_DELAY_MS = 26;
-      const LINE_DELAY_MS = 300;
+      let CHAR_DELAY_MS = 26;
+      let LINE_DELAY_MS = 300;
       const STANZA_CLASS_COUNT = 6;
       const MAX_VISIBLE_BLOCKS_DESKTOP = 16;
       const MAX_VISIBLE_BLOCKS_MOBILE = 2;
+      const EMPHASIS_RULES = [
+        { phrase: "lamplit desk", effect: "flicker" },
+        { phrase: "Hong Kong", effect: "glow" },
+        { phrase: "harbor", effect: "glow" },
+        { phrase: "moon", effect: "glow" },
+        { phrase: "north-star", effect: "twinkle" },
+        { phrase: "galaxies", effect: "twinkle" },
+        { phrase: "star", effect: "twinkle" },
+        { phrase: "heart", effect: "pulse" },
+        { phrase: "love", effect: "pulse" },
+      ];
+      const EMPHASIS_MATCHERS = EMPHASIS_RULES.map((rule) => ({
+        ...rule,
+        phraseLower: rule.phrase.toLowerCase(),
+      })).sort((a, b) => b.phrase.length - a.phrase.length);
 
       const poemSequence = [
         { type: "line", text: "Across my lamplit desk I lingered, half in wonder, half in worry," },
@@ -750,6 +853,7 @@
 
       function initializeFocusLight() {
         poemContainer.classList.add("focus-enabled");
+        applyPlaybackTiming();
         poemContainer.style.setProperty(
           "--focus-radius",
           window.matchMedia("(max-width: 640px)").matches ? "280px" : "380px",
@@ -774,7 +878,10 @@
           { passive: true },
         );
 
-        window.addEventListener("resize", centerFocusLight);
+        window.addEventListener("resize", () => {
+          centerFocusLight();
+          applyPlaybackTiming();
+        });
 
         let seenTutorial = false;
         try {
@@ -792,6 +899,12 @@
       function centerFocusLight() {
         poemContainer.style.setProperty("--focus-x", "50%");
         poemContainer.style.setProperty("--focus-y", "50%");
+      }
+
+      function applyPlaybackTiming() {
+        const isMobile = window.matchMedia("(max-width: 640px)").matches;
+        CHAR_DELAY_MS = isMobile ? 42 : 26;
+        LINE_DELAY_MS = isMobile ? 520 : 300;
       }
 
       function updateFocusFromClientPoint(clientX, clientY) {
@@ -858,20 +971,88 @@
           }));
       }
 
-      function appendRainbowText(target, text) {
-        const segments = splitRainbowSegments(text);
-        segments.forEach((segment) => {
-          const span = document.createElement("span");
-          if (segment.isRainbow) {
-            span.className = "rainbow-text";
+      function splitEmphasisSegments(text) {
+        const lowerText = text.toLowerCase();
+        const segments = [];
+        let index = 0;
+
+        while (index < text.length) {
+          const matchedRule = EMPHASIS_MATCHERS.find((rule) =>
+            lowerText.startsWith(rule.phraseLower, index),
+          );
+
+          if (!matchedRule) {
+            let nextBoundary = text.length;
+            for (const rule of EMPHASIS_MATCHERS) {
+              const nextIndex = lowerText.indexOf(rule.phraseLower, index);
+              if (nextIndex !== -1 && nextIndex < nextBoundary) {
+                nextBoundary = nextIndex;
+              }
+            }
+
+            segments.push({
+              text: text.slice(index, nextBoundary),
+              effect: null,
+            });
+            index = nextBoundary;
+            continue;
           }
-          span.textContent = segment.text;
-          target.append(span);
+
+          segments.push({
+            text: text.slice(index, index + matchedRule.phrase.length),
+            effect: matchedRule.effect,
+          });
+          index += matchedRule.phrase.length;
+        }
+
+        return segments.filter((segment) => segment.text.length > 0);
+      }
+
+      function buildStyledSegments(text) {
+        const styledSegments = [];
+        const emphasisSegments = splitEmphasisSegments(text);
+        emphasisSegments.forEach((segment) => {
+          const rainbowSegments = splitRainbowSegments(segment.text);
+          rainbowSegments.forEach((rainbowSegment) => {
+            styledSegments.push({
+              text: rainbowSegment.text,
+              isRainbow: rainbowSegment.isRainbow,
+              effect: rainbowSegment.isRainbow ? null : segment.effect,
+            });
+          });
+        });
+        return styledSegments;
+      }
+
+      function appendStyledText(target, text) {
+        const segments = buildStyledSegments(text);
+        segments.forEach((segment) => {
+          if (!segment.text) {
+            return;
+          }
+
+          if (segment.isRainbow) {
+            const rainbowSpan = document.createElement("span");
+            rainbowSpan.className = "rainbow-text";
+            rainbowSpan.textContent = segment.text;
+            target.append(rainbowSpan);
+            return;
+          }
+
+          if (segment.effect) {
+            const emphSpan = document.createElement("span");
+            emphSpan.className = `emph-word emph-${segment.effect}`;
+            emphSpan.textContent = segment.text;
+            target.append(emphSpan);
+            return;
+          }
+
+          target.append(document.createTextNode(segment.text));
         });
       }
 
       async function typeRichText(target, text) {
-        const segments = splitRainbowSegments(text);
+        const segments = buildStyledSegments(text);
         for (const segment of segments) {
           const chunks = segment.text.split(/(\s+)/);
           for (const chunk of chunks) {
@@ -890,7 +1071,11 @@
             }
 
             const wordSpan = document.createElement("span");
-            wordSpan.className = "typed-word";
+            if (segment.effect) {
+              wordSpan.className = `typed-word emph-word emph-${segment.effect}`;
+            } else {
+              wordSpan.className = "typed-word";
+            }
             target.append(wordSpan);
 
             for (const character of chunk) {
@@ -944,7 +1129,7 @@
             const fill = document.createElement("span");
             fill.className = "chosen-fill";
             line.append(fill);
-            appendRainbowText(fill, selectedFill);
+            appendStyledText(fill, selectedFill);
             await typeRichText(line, segment.post);
             renderedPoem.push({
               type: "line",
@@ -1000,7 +1185,7 @@
             const option = document.createElement("button");
             option.type = "button";
             option.className = "blank-option";
-            appendRainbowText(option, optionText);
+            appendStyledText(option, optionText);
             option.addEventListener("click", () => {
               blankPanel.hidden = true;
               statusText.textContent = "Writing...";
@@ -1066,7 +1251,7 @@
           }
           const line = document.createElement("p");
           line.className = `line stanza-${entry.stanza ?? 0}`;
-          appendRainbowText(line, entry.text);
+          appendStyledText(line, entry.text);
           poemContainer.append(line);
         });
 
