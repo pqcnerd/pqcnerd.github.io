@@ -103,6 +103,39 @@
         padding: clamp(1rem, 2.8vw, 1.3rem);
         background: rgba(15, 23, 42, 0.5);
         min-height: 320px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .poem > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .poem.stage-lit::before {
+        content: "";
+        position: absolute;
+        inset: -30%;
+        z-index: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(circle at var(--spot-x, 30%) var(--spot-y, 30%), rgba(255, 255, 255, 0.16), transparent 33%),
+          radial-gradient(circle at 70% 80%, rgba(244, 114, 182, 0.14), transparent 36%);
+        mix-blend-mode: screen;
+        animation: stageSweep 8.5s ease-in-out infinite alternate;
+      }
+
+      @keyframes stageSweep {
+        0% {
+          transform: translateX(-6%) translateY(-2%);
+          --spot-x: 18%;
+          --spot-y: 20%;
+        }
+        100% {
+          transform: translateX(8%) translateY(4%);
+          --spot-x: 82%;
+          --spot-y: 52%;
+        }
       }
 
       .line {
@@ -140,6 +173,21 @@
         margin-top: 0.2rem;
       }
 
+      .line-spotlight {
+        animation: lineGlow 760ms ease;
+      }
+
+      @keyframes lineGlow {
+        0% {
+          filter: brightness(1.18);
+          text-shadow: 0 0 8px rgba(248, 250, 252, 0.22);
+        }
+        100% {
+          filter: brightness(1);
+          text-shadow: none;
+        }
+      }
+
       .typed-char {
         display: inline-block;
         animation: charPop 220ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
@@ -164,6 +212,21 @@
       .line-gap {
         display: block;
         height: 0.95rem;
+      }
+
+      .line-removing {
+        animation: lineExit 340ms ease forwards;
+      }
+
+      @keyframes lineExit {
+        0% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-0.5rem);
+        }
       }
 
       .chosen-fill {
@@ -263,6 +326,29 @@
         margin: 0;
         color: var(--muted);
         line-height: 1.6;
+      }
+
+      .full-poem-button {
+        margin-top: 0.95rem;
+        border-radius: 999px;
+        border: 1px solid rgba(244, 114, 182, 0.6);
+        background: rgba(244, 114, 182, 0.18);
+        color: #fbcfe8;
+        font-family: inherit;
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+      }
+
+      .full-poem-button:hover,
+      .full-poem-button:focus-visible {
+        background: rgba(244, 114, 182, 0.3);
+        outline: none;
+      }
+
+      .full-poem-button[disabled] {
+        opacity: 0.7;
+        cursor: default;
       }
 
       .rewrite-prefix {
@@ -417,6 +503,9 @@
           </span>
           said I love you because you are love.
         </p>
+        <button type="button" id="show-full-poem" class="full-poem-button" hidden>
+          Show Full Poem
+        </button>
       </section>
     </main>
     <div id="heart-burst" class="heart-burst" aria-hidden="true"></div>
@@ -425,6 +514,7 @@
       const CHAR_DELAY_MS = 26;
       const LINE_DELAY_MS = 300;
       const STANZA_CLASS_COUNT = 6;
+      const MAX_VISIBLE_BLOCKS = 16;
 
       const poemSequence = [
         { type: "line", text: "Across my lamplit desk I lingered, half in wonder, half in worry," },
@@ -546,14 +636,22 @@
       const statusText = document.getElementById("playback-status");
       const surprisePanel = document.getElementById("surprise-panel");
       const heartBurst = document.getElementById("heart-burst");
+      const showFullPoemButton = document.getElementById("show-full-poem");
+      const renderedPoem = [];
       let rewriteStarted = false;
+      let fullPoemMode = false;
 
       startButton.addEventListener("click", async () => {
         startButton.disabled = true;
+        poemContainer.classList.add("stage-lit");
         statusText.textContent = "Writing...";
         await renderPoem();
         statusText.textContent = "For Annie, with love.";
         celebrateFinale();
+      });
+
+      showFullPoemButton?.addEventListener("click", () => {
+        renderFullPoem();
       });
 
       function wait(ms) {
@@ -604,6 +702,8 @@
             const spacer = document.createElement("span");
             spacer.className = "line-gap";
             poemContainer.append(spacer);
+            renderedPoem.push({ type: "break" });
+            trimPoemWindow();
             stanzaIndex += 1;
             await wait(200);
             continue;
@@ -612,10 +712,17 @@
           const line = document.createElement("p");
           line.className = `line stanza-${stanzaIndex % STANZA_CLASS_COUNT}`;
           poemContainer.append(line);
+          spotlightLine(line);
           line.scrollIntoView({ block: "nearest", behavior: "smooth" });
 
           if (segment.type === "line") {
             await typeRichText(line, segment.text);
+            renderedPoem.push({
+              type: "line",
+              text: segment.text,
+              stanza: stanzaIndex % STANZA_CLASS_COUNT,
+            });
+            trimPoemWindow();
             await wait(LINE_DELAY_MS);
             continue;
           }
@@ -628,8 +735,41 @@
             line.append(fill);
             appendRainbowText(fill, selectedFill);
             await typeRichText(line, segment.post);
+            renderedPoem.push({
+              type: "line",
+              text: `${segment.pre}${selectedFill}${segment.post}`,
+              stanza: stanzaIndex % STANZA_CLASS_COUNT,
+            });
+            trimPoemWindow();
             await wait(LINE_DELAY_MS);
           }
+        }
+      }
+
+      function spotlightLine(lineElement) {
+        lineElement.classList.add("line-spotlight");
+        window.setTimeout(() => {
+          lineElement.classList.remove("line-spotlight");
+        }, 800);
+      }
+
+      function trimPoemWindow() {
+        if (fullPoemMode) {
+          return;
+        }
+        const visibleBlocks = Array.from(poemContainer.children).filter(
+          (node) => !node.classList.contains("line-removing"),
+        );
+        const overflow = visibleBlocks.length - MAX_VISIBLE_BLOCKS;
+        if (overflow <= 0) {
+          return;
+        }
+        for (let index = 0; index < overflow; index += 1) {
+          const node = visibleBlocks[index];
+          node.classList.add("line-removing");
+          window.setTimeout(() => {
+            node.remove();
+          }, 340);
         }
       }
 
@@ -659,6 +799,7 @@
 
       function celebrateFinale() {
         surprisePanel.hidden = false;
+        showFullPoemButton.hidden = false;
         launchHearts(120);
         window.setTimeout(() => {
           runRewriteAnimation();
@@ -695,6 +836,30 @@
         }
         rewriteStarted = true;
         surprisePanel.classList.add("rewrite-active");
+      }
+
+      function renderFullPoem() {
+        fullPoemMode = true;
+        poemContainer.classList.remove("stage-lit");
+        poemContainer.innerHTML = "";
+
+        renderedPoem.forEach((entry) => {
+          if (entry.type === "break") {
+            const spacer = document.createElement("span");
+            spacer.className = "line-gap";
+            poemContainer.append(spacer);
+            return;
+          }
+          const line = document.createElement("p");
+          line.className = `line stanza-${entry.stanza ?? 0}`;
+          appendRainbowText(line, entry.text);
+          poemContainer.append(line);
+        });
+
+        blankPanel.hidden = true;
+        statusText.textContent = "Full poem displayed.";
+        showFullPoemButton.disabled = true;
+        showFullPoemButton.textContent = "Full Poem Displayed";
       }
     </script>
   </body>
