@@ -1054,16 +1054,19 @@
         const targetRect = targetElement.getBoundingClientRect();
         const focusX = targetRect.left - containerRect.left + targetRect.width / 2;
         const focusY = targetRect.top - containerRect.top + targetRect.height / 2;
-        const radius = isMobileViewport()
+        const targetRadius = isMobileViewport()
           ? Math.max(90, Math.min(130, containerRect.width * 0.28))
           : Math.max(130, Math.min(190, containerRect.width * 0.22));
+        const maxRadius = Math.max(containerRect.width, containerRect.height) * 1.15;
 
         poemContainer.style.setProperty("--choice-focus-x", `${focusX}px`);
         poemContainer.style.setProperty("--choice-focus-y", `${focusY}px`);
-        poemContainer.style.setProperty("--choice-focus-radius", `${radius}px`);
+        poemContainer.style.setProperty("--choice-focus-radius", `${maxRadius}px`);
         poemContainer.classList.add("choice-focus-active");
         launchChoiceHearts(focusX, focusY);
-        await wait(2200);
+        await animateChoiceFocusRadius(maxRadius, targetRadius, 500, "easeInOutCubic");
+        await wait(700);
+        await animateChoiceFocusRadius(targetRadius, maxRadius, 520, "easeInOutCubic");
         clearChoiceSpotlight();
       }
 
@@ -1096,6 +1099,31 @@
             heart.remove();
           }, 1300);
         }
+      }
+
+      function animateChoiceFocusRadius(fromRadius, toRadius, durationMs, easingName) {
+        return new Promise((resolve) => {
+          const start = performance.now();
+          const easingFn = easingName === "easeInOutCubic"
+            ? (t) => (t < 0.5 ? 4 * t * t * t : 1 - ((-2 * t + 2) ** 3) / 2)
+            : (t) => t;
+
+          const tick = (now) => {
+            const elapsed = now - start;
+            const progress = Math.max(0, Math.min(1, elapsed / durationMs));
+            const eased = easingFn(progress);
+            const current = fromRadius + (toRadius - fromRadius) * eased;
+            poemContainer.style.setProperty("--choice-focus-radius", `${current}px`);
+
+            if (progress >= 1) {
+              resolve();
+              return;
+            }
+            window.requestAnimationFrame(tick);
+          };
+
+          window.requestAnimationFrame(tick);
+        });
       }
 
       function maybeTrimPoemWindow(segmentType, text) {
