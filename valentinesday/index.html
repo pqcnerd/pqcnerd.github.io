@@ -140,6 +140,27 @@
         margin-top: 0.2rem;
       }
 
+      .typed-char {
+        display: inline-block;
+        animation: charPop 220ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+        will-change: transform;
+      }
+
+      @keyframes charPop {
+        0% {
+          transform: scale(0.72);
+          opacity: 0.55;
+        }
+        65% {
+          transform: scale(1.22);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
       .line-gap {
         display: block;
         height: 0.95rem;
@@ -480,19 +501,19 @@
         { type: "break" },
         {
           type: "line",
-          text: "We will watch the galaxies fold (like Interstellar) and dance through streetlight rain (like La La Land),",
+          text: "We will watch the galaxies fold and dance through streetlight rain,",
         },
         {
           type: "line",
-          text: "We will stand where poets dare (like Dead Poets Society) and learn what brave can claim;",
+          text: "We will stand where poets dare and learn what brave can claim;",
         },
         {
           type: "line",
-          text: "We will mend what memory smudges (like Eternal Sunshine of the Spotless Mind), keep what matters, let go gently--",
+          text: "We will mend what memory smudges, keep what matters, let go gently--",
         },
         {
           type: "line",
-          text: "Like a little robot learning love (like WALL-E), stubborn, bright, and oddly friendly.",
+          text: "Like a little robot learning love, stubborn, bright, and oddly friendly.",
         },
         { type: "line", text: "And if the night grows loud with headlines, I will hold one truth, not many:" },
         {
@@ -564,13 +585,13 @@
       async function typeRichText(target, text) {
         const segments = splitRainbowSegments(text);
         for (const segment of segments) {
-          const span = document.createElement("span");
-          if (segment.isRainbow) {
-            span.className = "rainbow-text";
-          }
-          target.append(span);
           for (const character of segment.text) {
-            span.textContent += character;
+            const charSpan = document.createElement("span");
+            charSpan.className = segment.isRainbow
+              ? "typed-char rainbow-text"
+              : "typed-char";
+            charSpan.textContent = character === " " ? "\u00A0" : character;
+            target.append(charSpan);
             await wait(CHAR_DELAY_MS);
           }
         }
