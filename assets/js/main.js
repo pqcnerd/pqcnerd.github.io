@@ -248,6 +248,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initQuote();
   initForum();
   initAuthProfile();
+  initPersonalSection();
+  initDirectContactSection();
 });
 
 function registerSession({
@@ -1190,6 +1192,56 @@ function updateProfileUI(profileGuest, profileUser, profileName, profileEmail) {
     profileGuest.classList.remove("hidden");
     profileUser.classList.add("hidden");
   }
+}
+
+function initPersonalSection() {
+  const form = document.getElementById("personal-form");
+  const messengerInput = document.getElementById("messenger-input");
+  const status = document.getElementById("personal-status");
+  const linksSection = document.getElementById("personal-links");
+  const placeholderLinks = Array.from(
+    document.querySelectorAll(".file-link.placeholder"),
+  );
+
+  if (!form || !messengerInput || !status || !linksSection) {
+    return;
+  }
+
+  placeholderLinks.forEach((link) => {
+    link.addEventListener("click", (event) => event.preventDefault());
+  });
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const guess = messengerInput.value.trim().toLowerCase();
+    const isCorrect = guess === "signal";
+
+    status.classList.remove("success", "error");
+    if (isCorrect) {
+      linksSection.classList.remove("hidden");
+      status.classList.add("success");
+      status.textContent = "Correct. Access granted.";
+      return;
+    }
+
+    linksSection.classList.add("hidden");
+    status.classList.add("error");
+    status.textContent = "Access denied. Hint: secure and private messenger.";
+  });
+}
+
+function initDirectContactSection() {
+  const form = document.getElementById("direct-contact-form");
+  const status = document.getElementById("direct-contact-status");
+  if (!form || !status) {
+    return;
+  }
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    status.textContent =
+      "Message captured in placeholder mode. Backend delivery will be added later.";
+  });
 }
 
 function generateGuestName() {
