@@ -40,6 +40,15 @@
           </svg>
           <span class="nav-label">Forum</span>
         </a>
+        <a class="nav-item" href="#files" data-view="files">
+          <svg class="nav-icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M3 6.75A2.75 2.75 0 0 1 5.75 4h4.1c.55 0 1.08.2 1.48.56l1.35 1.2c.15.13.34.2.54.2h5.03A2.75 2.75 0 0 1 21 8.71v8.54A2.75 2.75 0 0 1 18.25 20H5.75A2.75 2.75 0 0 1 3 17.25V6.75Zm5.5 5.5a1 1 0 1 0 0 2h7a1 1 0 1 0 0-2h-7Z"
+              fill="currentColor"
+            />
+          </svg>
+          <span class="nav-label">Files</span>
+        </a>
       </div>
     </nav>
     <div class="quote-card" aria-label="Daily quote">
@@ -264,6 +273,35 @@
                 </div>
               </form>
             </dialog>
+          </div>
+        </section>
+
+        <section class="view-panel" data-view-id="files" aria-labelledby="files-heading">
+          <div class="view-content">
+            <h2 class="view-title" id="files-heading">Files</h2>
+            <p class="view-text">Placeholder section for future downloadable files and resources.</p>
+            <div class="files-grid" role="list" aria-label="File download placeholders">
+              <article class="file-card" role="listitem">
+                <h3 class="file-title">Resume (PDF)</h3>
+                <p class="file-description">Placeholder for the latest resume download.</p>
+                <button type="button" class="file-download" disabled>Download (placeholder)</button>
+              </article>
+              <article class="file-card" role="listitem">
+                <h3 class="file-title">CTF Writeups Pack</h3>
+                <p class="file-description">Placeholder for bundled challenge writeups.</p>
+                <button type="button" class="file-download" disabled>Download (placeholder)</button>
+              </article>
+              <article class="file-card" role="listitem">
+                <h3 class="file-title">Research Notes</h3>
+                <p class="file-description">Placeholder for cryptography note archives.</p>
+                <button type="button" class="file-download" disabled>Download (placeholder)</button>
+              </article>
+              <article class="file-card" role="listitem">
+                <h3 class="file-title">Slides and Talks</h3>
+                <p class="file-description">Placeholder for presentation decks and recordings.</p>
+                <button type="button" class="file-download" disabled>Download (placeholder)</button>
+              </article>
+            </div>
           </div>
         </section>
       </div>

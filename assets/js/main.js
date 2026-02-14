@@ -93,14 +93,68 @@ const quoteHistory = [];
 let currentQuoteIndex = -1;
 
 const FORUM_KEY = "pqcnerd-forum-posts";
-const DEFAULT_FORUM_POST = {
-  id: "welcome-post",
-  title: "Welcome to the PQC Forum",
-  author: "guest",
-  date: "Jan 24, 2026",
-  content:
-    "This is a placeholder discussion space for sharing ideas on post-quantum cryptography, system design, and tooling.\n\nUse the + New Post button to start a thread.",
-};
+const DEFAULT_FORUM_POSTS = [
+  {
+    id: "ctf-win-lattice-lockdown",
+    title: "CTF Win: Lattice Lockdown Finals",
+    author: "cipher_monk",
+    date: "Jan 24, 2026",
+    likes: 42,
+    dislikes: 6,
+    content:
+      "Our team cleared the final 'Lattice Lockdown' chain by recovering a noisy secret key from malformed Kyber ciphertext samples.\n\nThe winning move was building a quick distinguisher to separate valid and tampered encapsulations, then using that signal to rank candidate coefficients. We took first place with 18 minutes left on the clock.",
+  },
+  {
+    id: "ctf-win-heap-hydra",
+    title: "CTF Win: Heap Hydra Pwn Challenge",
+    author: "stacksmash87",
+    date: "Jan 28, 2026",
+    likes: 31,
+    dislikes: 3,
+    content:
+      "Just won Heap Hydra after chaining a tcache poisoning bug into a controlled GOT overwrite.\n\nThe binary used partial RELRO and an awkward menu parser, so we wrote a tiny script to spray predictable chunks before triggering a double-free path. Remote shell popped on the third attempt.",
+  },
+  {
+    id: "ctf-win-rsa-relay",
+    title: "CTF Win: RSA Relay Race",
+    author: "modexp_mage",
+    date: "Feb 01, 2026",
+    likes: 18,
+    dislikes: 9,
+    content:
+      "The RSA Relay challenge looked impossible at first, but the service reused primes across supposedly independent keypairs.\n\nOnce we fingerprinted shared factors with a batch GCD sweep, we reconstructed private keys for two relay nodes and decrypted the final token. Sneaky challenge design, great fun.",
+  },
+  {
+    id: "ctf-win-sidechannel-sprint",
+    title: "CTF Win: Side-Channel Sprint",
+    author: "timing_oracle",
+    date: "Feb 04, 2026",
+    likes: 27,
+    dislikes: 2,
+    content:
+      "Won Side-Channel Sprint by exploiting tiny timing leaks in an HMAC comparison endpoint.\n\nNetwork jitter was rough, so we used median-of-medians sampling and adaptive request windows to stabilize measurements. Took a while, but byte-by-byte recovery worked and the flag dropped.",
+  },
+  {
+    id: "ctf-win-kernel-escape",
+    title: "CTF Win: Sandbox Kernel Escape",
+    author: "ring0_runner",
+    date: "Feb 07, 2026",
+    likes: 39,
+    dislikes: 11,
+    content:
+      "Big win today: escaped the challenge sandbox by abusing an out-of-bounds write in a custom kernel module.\n\nAfter leaking kernel base through an info disclosure bug, we crafted a small ROP chain to swap credentials and read `/root/flag`. This one definitely earned the points.",
+  },
+  {
+    id: "ctf-win-rev-quantum-vault",
+    title: "CTF Win: Reverse Quantum Vault",
+    author: "rev_hopper",
+    date: "Feb 10, 2026",
+    likes: 24,
+    dislikes: 5,
+    content:
+      "Closed out Reverse Quantum Vault by unpacking a heavily obfuscated VM-based binary and reimplementing its bytecode interpreter.\n\nThe key check mixed fake PQC references with classic bit-twiddling traps. Once we mirrored opcode semantics in Python, generating a valid license string was straightforward.",
+  },
+];
 const PROFILE_STATE = {
   isLoggedIn: false,
   email: "",
@@ -846,21 +900,49 @@ function initForum() {
   bindForumEvents();
 }
 
+function cloneDefaultPosts() {
+  return DEFAULT_FORUM_POSTS.map((post) => ({ ...post }));
+}
+
+function normalizeForumPost(post, index) {
+  return {
+    id: post?.id || `post-seeded-${Date.now()}-${index}`,
+    title: post?.title || "Untitled Post",
+    author: post?.author || "guest",
+    date: post?.date || formatDate(new Date()),
+    content: post?.content || "",
+    likes: Number.isFinite(post?.likes) ? post.likes : 0,
+    dislikes: Number.isFinite(post?.dislikes) ? post.dislikes : 0,
+  };
+}
+
 function loadOrSeedPosts() {
+  const seeded = cloneDefaultPosts();
   if (!window.localStorage) {
-    return [DEFAULT_FORUM_POST];
+    return seeded;
   }
 
   try {
     const raw = localStorage.getItem(FORUM_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
     if (!Array.isArray(parsed) || parsed.length === 0) {
-      localStorage.setItem(FORUM_KEY, JSON.stringify([DEFAULT_FORUM_POST]));
-      return [DEFAULT_FORUM_POST];
+      localStorage.setItem(FORUM_KEY, JSON.stringify(seeded));
+      return seeded;
     }
-    return parsed;
+
+    const hasLegacyWelcomeOnly =
+      parsed.length === 1 &&
+      (parsed[0]?.id === "welcome-post" || parsed[0]?.title === "Welcome to the PQC Forum");
+    if (hasLegacyWelcomeOnly) {
+      localStorage.setItem(FORUM_KEY, JSON.stringify(seeded));
+      return seeded;
+    }
+
+    const normalized = parsed.map(normalizeForumPost);
+    localStorage.setItem(FORUM_KEY, JSON.stringify(normalized));
+    return normalized;
   } catch (error) {
-    return [DEFAULT_FORUM_POST];
+    return seeded;
   }
 }
 
@@ -895,7 +977,21 @@ function renderForumPosts(posts) {
     preview.className = "forum-preview";
     preview.textContent = getPreview(post.content);
 
-    card.append(title, meta, preview);
+    const actions = document.createElement("div");
+    actions.className = "forum-actions";
+
+    const likeButton = document.createElement("button");
+    likeButton.type = "button";
+    likeButton.className = "forum-reaction";
+    likeButton.textContent = `Like (${post.likes ?? 0})`;
+
+    const dislikeButton = document.createElement("button");
+    dislikeButton.type = "button";
+    dislikeButton.className = "forum-reaction";
+    dislikeButton.textContent = `Dislike (${post.dislikes ?? 0})`;
+
+    actions.append(likeButton, dislikeButton);
+    card.append(title, meta, preview, actions);
     container.append(card);
 
     card.addEventListener("click", () => togglePost(card, post));
@@ -905,7 +1001,32 @@ function renderForumPosts(posts) {
         togglePost(card, post);
       }
     });
+
+    likeButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      applyReaction(post.id, "like");
+    });
+
+    dislikeButton.addEventListener("click", (event) => {
+      event.stopPropagation();
+      applyReaction(post.id, "dislike");
+    });
   });
+}
+
+function applyReaction(postId, reaction) {
+  const posts = loadOrSeedPosts();
+  const updated = posts.map((post) => {
+    if (post.id !== postId) {
+      return post;
+    }
+    if (reaction === "like") {
+      return { ...post, likes: (post.likes ?? 0) + 1 };
+    }
+    return { ...post, dislikes: (post.dislikes ?? 0) + 1 };
+  });
+  savePosts(updated);
+  renderForumPosts(updated);
 }
 
 function togglePost(card, post) {
@@ -969,6 +1090,8 @@ function handlePostSubmit(form, modal) {
     author: "guest",
     date: formatDate(new Date()),
     content,
+    likes: 0,
+    dislikes: 0,
   };
   const updated = [newPost, ...posts];
   savePosts(updated);
