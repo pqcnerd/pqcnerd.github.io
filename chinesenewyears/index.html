@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Chinese New Year | pqcnerd</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg-deep: #220013;
+        --bg-mid: #450018;
+        --bg-soft: #7a0021;
+        --gold: #ffd56a;
+        --gold-soft: #ffedb4;
+        --red-main: #d11a2a;
+        --red-bright: #ff3c45;
+        --paper: #ffe8bf;
+        --ink: #6b1124;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: clamp(1rem, 2.8vw, 2rem);
+        font-family: "Segoe UI", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+        color: #fff7e8;
+        background:
+          radial-gradient(120% 90% at 50% -15%, #ac1236 0%, transparent 56%),
+          radial-gradient(75% 75% at 90% 15%, #7f0826 0%, transparent 62%),
+          linear-gradient(160deg, var(--bg-deep), var(--bg-mid) 50%, var(--bg-soft));
+        overflow: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: -20vmax;
+        background:
+          radial-gradient(circle at 30% 20%, rgba(255, 214, 122, 0.08), transparent 35%),
+          radial-gradient(circle at 70% 75%, rgba(255, 214, 122, 0.12), transparent 34%),
+          radial-gradient(circle at 80% 20%, rgba(255, 120, 120, 0.1), transparent 35%);
+        filter: blur(22px);
+        z-index: -2;
+        animation: hazeMove 20s ease-in-out infinite alternate;
+      }
+
+      .wrap {
+        width: min(920px, 100%);
+        border-radius: 24px;
+        border: 1px solid rgba(255, 213, 106, 0.34);
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.01)),
+          rgba(45, 3, 17, 0.78);
+        box-shadow:
+          0 20px 80px rgba(0, 0, 0, 0.45),
+          inset 0 0 0 1px rgba(255, 240, 210, 0.08);
+        padding: clamp(1rem, 2.6vw, 1.8rem);
+        backdrop-filter: blur(8px);
+      }
+
+      .title {
+        margin: 0;
+        text-align: center;
+        font-size: clamp(1.35rem, 3.6vw, 2.2rem);
+        letter-spacing: 0.04em;
+        color: var(--gold);
+        text-shadow: 0 0 12px rgba(255, 213, 106, 0.35);
+      }
+
+      .subtitle {
+        margin: 0.45rem auto 0;
+        text-align: center;
+        max-width: 44rem;
+        color: rgba(255, 242, 220, 0.84);
+      }
+
+      .controls {
+        margin-top: 0.95rem;
+        display: flex;
+        justify-content: center;
+      }
+
+      .replay {
+        border: 1px solid rgba(255, 213, 106, 0.75);
+        background: linear-gradient(180deg, rgba(255, 220, 145, 0.16), rgba(255, 178, 70, 0.07));
+        color: #ffe9bd;
+        border-radius: 999px;
+        padding: 0.42rem 1rem;
+        font-size: 0.94rem;
+        cursor: pointer;
+        transition: transform 150ms ease, box-shadow 180ms ease, background 180ms ease;
+      }
+
+      .replay:hover,
+      .replay:focus-visible {
+        outline: none;
+        transform: translateY(-1px);
+        box-shadow: 0 0 16px rgba(255, 213, 106, 0.32);
+        background: linear-gradient(180deg, rgba(255, 220, 145, 0.28), rgba(255, 178, 70, 0.13));
+      }
+
+      .stage {
+        margin-top: 1rem;
+        min-height: 500px;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 200, 110, 0.25);
+        background:
+          radial-gradient(110% 92% at 50% -5%, rgba(255, 126, 126, 0.24), transparent 58%),
+          linear-gradient(180deg, rgba(71, 5, 27, 0.82), rgba(36, 3, 15, 0.88));
+        position: relative;
+        overflow: hidden;
+      }
+
+      .lantern-layer {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .sparkle-layer {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .lantern {
+        --lantern-size: 70px;
+        --delay: 0s;
+        position: absolute;
+        width: var(--lantern-size);
+        height: calc(var(--lantern-size) * 1.2);
+        border-radius: 45% 45% 40% 40%;
+        background:
+          linear-gradient(90deg, rgba(255, 102, 102, 0.15), rgba(255, 220, 170, 0.3), rgba(255, 85, 85, 0.15)),
+          linear-gradient(180deg, #ff4550, #e71f2f 45%, #bf1226);
+        border: 1px solid rgba(255, 216, 160, 0.45);
+        box-shadow:
+          0 0 18px rgba(255, 77, 77, 0.4),
+          0 0 48px rgba(255, 192, 112, 0.26);
+        animation:
+          lanternSway 5.6s ease-in-out var(--delay) infinite,
+          lanternGlow 2.8s ease-in-out var(--delay) infinite;
+        transform-origin: top center;
+      }
+
+      .lantern::before {
+        content: "";
+        position: absolute;
+        width: 2px;
+        height: 56px;
+        top: -54px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: linear-gradient(180deg, rgba(255, 220, 160, 0.95), rgba(255, 220, 160, 0.2));
+      }
+
+      .lantern::after {
+        content: "";
+        position: absolute;
+        width: 44%;
+        height: 28%;
+        left: 28%;
+        bottom: -12%;
+        background: repeating-linear-gradient(
+          90deg,
+          rgba(255, 206, 129, 0.88),
+          rgba(255, 206, 129, 0.88) 2px,
+          rgba(255, 50, 50, 0.9) 2px,
+          rgba(255, 50, 50, 0.9) 4px
+        );
+        border-radius: 0 0 8px 8px;
+        filter: drop-shadow(0 0 6px rgba(255, 200, 122, 0.42));
+      }
+
+      .sparkle {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 244, 211, 0.9), rgba(255, 213, 106, 0.2) 72%, transparent 74%);
+        animation: sparkleFloat var(--duration, 6.5s) linear infinite;
+        animation-delay: var(--delay, 0s);
+        opacity: 0;
+      }
+
+      .letter-scene {
+        position: absolute;
+        left: 50%;
+        bottom: 16px;
+        width: min(460px, calc(100% - 1.25rem));
+        transform: translateX(-50%);
+        height: 405px;
+        pointer-events: none;
+      }
+
+      .envelope-wrap {
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        width: min(360px, 92%);
+        height: 250px;
+        transform: translateX(-50%);
+        animation: envelopeEnter 860ms cubic-bezier(0.21, 1.16, 0.34, 1) both;
+      }
+
+      .envelope {
+        position: absolute;
+        inset: 0;
+      }
+
+      .envelope-back {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 176px;
+        border-radius: 14px 14px 20px 20px;
+        background:
+          linear-gradient(160deg, rgba(255, 88, 88, 0.92), rgba(211, 26, 42, 0.98)),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+        border: 1px solid rgba(255, 214, 145, 0.5);
+        box-shadow:
+          inset 0 8px 28px rgba(255, 133, 133, 0.35),
+          0 14px 30px rgba(0, 0, 0, 0.35);
+      }
+
+      .envelope-front {
+        position: absolute;
+        left: 50%;
+        bottom: 0;
+        width: 96%;
+        height: 158px;
+        transform: translateX(-50%);
+        clip-path: polygon(0 100%, 50% 28%, 100% 100%);
+        background: linear-gradient(180deg, rgba(255, 116, 116, 0.9), rgba(190, 21, 38, 0.95));
+        border: 1px solid rgba(255, 214, 145, 0.42);
+      }
+
+      .flap {
+        position: absolute;
+        left: 50%;
+        top: 40px;
+        width: 96%;
+        height: 122px;
+        transform: translateX(-50%) rotateX(0deg);
+        transform-origin: top center;
+        clip-path: polygon(0 0, 50% 88%, 100% 0);
+        background: linear-gradient(180deg, rgba(255, 78, 78, 0.96), rgba(198, 22, 37, 0.98));
+        border: 1px solid rgba(255, 214, 145, 0.45);
+        z-index: 4;
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25);
+      }
+
+      .seal {
+        position: absolute;
+        left: 50%;
+        top: 118px;
+        width: 54px;
+        height: 54px;
+        transform: translateX(-50%);
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        color: #a20f25;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        background: radial-gradient(circle at 35% 30%, #fff2be, #ffcf5f 55%, #dd9f2f);
+        border: 2px solid rgba(255, 235, 176, 0.7);
+        box-shadow: 0 0 15px rgba(255, 209, 82, 0.36);
+        z-index: 5;
+        font-size: 1rem;
+      }
+
+      .letter {
+        position: absolute;
+        left: 50%;
+        bottom: 44px;
+        width: min(290px, 85%);
+        min-height: 220px;
+        padding: 1.2rem 1.05rem 1rem;
+        transform: translateX(-50%) translateY(105px);
+        border-radius: 14px;
+        background:
+          linear-gradient(180deg, #fff4d9 0%, #ffe9bf 100%);
+        color: var(--ink);
+        box-shadow:
+          0 14px 30px rgba(0, 0, 0, 0.28),
+          inset 0 0 0 1px rgba(166, 47, 40, 0.18);
+        z-index: 2;
+      }
+
+      .letter::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 14px;
+        background: repeating-linear-gradient(
+          0deg,
+          rgba(143, 27, 35, 0.07),
+          rgba(143, 27, 35, 0.07) 1px,
+          transparent 1px,
+          transparent 30px
+        );
+        pointer-events: none;
+      }
+
+      .letter-main {
+        margin: 0.45rem 0 0;
+        text-align: center;
+        font-size: clamp(1.38rem, 4vw, 1.78rem);
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      .letter-sub {
+        margin: 1rem 0 0;
+        text-align: center;
+        font-size: clamp(0.94rem, 2.5vw, 1.03rem);
+        opacity: 0;
+        color: #7f182e;
+        transform: translateY(8px);
+      }
+
+      .spark-ring {
+        position: absolute;
+        left: 50%;
+        top: 118px;
+        width: 54px;
+        height: 54px;
+        transform: translateX(-50%) scale(0.4);
+        border-radius: 50%;
+        border: 2px solid rgba(255, 218, 135, 0.8);
+        opacity: 0;
+        z-index: 3;
+      }
+
+      .play .flap {
+        animation: flapOpen 900ms cubic-bezier(0.22, 1, 0.36, 1) 720ms forwards;
+      }
+
+      .play .seal {
+        animation:
+          sealFade 520ms ease 740ms forwards,
+          sealGlow 2.2s ease-in-out 1500ms infinite;
+      }
+
+      .play .spark-ring {
+        animation: sparkRing 720ms ease-out 680ms forwards;
+      }
+
+      .play .letter {
+        animation: letterRise 1180ms cubic-bezier(0.2, 1.08, 0.35, 1) 1120ms forwards;
+      }
+
+      .play .letter-main {
+        animation: textReveal 850ms ease 2050ms forwards;
+      }
+
+      .play .letter-sub {
+        animation: textReveal 850ms ease 2420ms forwards;
+      }
+
+      .stage.ready .envelope-wrap {
+        animation: envelopeIdle 5.4s ease-in-out 3.2s infinite;
+      }
+
+      .footer-note {
+        margin: 0.85rem 0 0;
+        text-align: center;
+        color: rgba(255, 242, 218, 0.74);
+        font-size: 0.9rem;
+      }
+
+      @keyframes hazeMove {
+        from {
+          transform: translate3d(-2%, -1%, 0) scale(1);
+        }
+        to {
+          transform: translate3d(2%, 2%, 0) scale(1.05);
+        }
+      }
+
+      @keyframes lanternSway {
+        0%,
+        100% {
+          transform: rotate(-5deg) translateY(0);
+        }
+        50% {
+          transform: rotate(5deg) translateY(4px);
+        }
+      }
+
+      @keyframes lanternGlow {
+        0%,
+        100% {
+          filter: saturate(1) brightness(1);
+        }
+        50% {
+          filter: saturate(1.12) brightness(1.14);
+        }
+      }
+
+      @keyframes sparkleFloat {
+        0% {
+          transform: translateY(20px) scale(0.6);
+          opacity: 0;
+        }
+        12% {
+          opacity: 0.9;
+        }
+        100% {
+          transform: translateY(-360px) scale(1);
+          opacity: 0;
+        }
+      }
+
+      @keyframes envelopeEnter {
+        0% {
+          opacity: 0;
+          transform: translateX(-50%) translateY(26px) scale(0.94);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0) scale(1);
+        }
+      }
+
+      @keyframes flapOpen {
+        0% {
+          transform: translateX(-50%) rotateX(0deg);
+        }
+        100% {
+          transform: translateX(-50%) rotateX(168deg);
+        }
+      }
+
+      @keyframes sealFade {
+        0% {
+          opacity: 1;
+          transform: translateX(-50%) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translateX(-50%) scale(0.7);
+        }
+      }
+
+      @keyframes sealGlow {
+        0%,
+        100% {
+          box-shadow: 0 0 12px rgba(255, 209, 82, 0.24);
+        }
+        50% {
+          box-shadow: 0 0 22px rgba(255, 223, 142, 0.35);
+        }
+      }
+
+      @keyframes sparkRing {
+        from {
+          opacity: 0.9;
+          transform: translateX(-50%) scale(0.35);
+        }
+        to {
+          opacity: 0;
+          transform: translateX(-50%) scale(1.9);
+        }
+      }
+
+      @keyframes letterRise {
+        0% {
+          transform: translateX(-50%) translateY(105px) rotate(0deg);
+        }
+        70% {
+          transform: translateX(-50%) translateY(-12px) rotate(-1.2deg);
+        }
+        100% {
+          transform: translateX(-50%) translateY(-4px) rotate(0deg);
+        }
+      }
+
+      @keyframes textReveal {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+          text-shadow: none;
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+          text-shadow: 0 0 14px rgba(255, 215, 135, 0.18);
+        }
+      }
+
+      @keyframes envelopeIdle {
+        0%,
+        100% {
+          transform: translateX(-50%) translateY(0);
+        }
+        50% {
+          transform: translateX(-50%) translateY(-3px);
+        }
+      }
+
+      @media (max-width: 640px) {
+        .stage {
+          min-height: 450px;
+        }
+
+        .letter-scene {
+          height: 368px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+          animation: none !important;
+          transition: none !important;
+        }
+
+        .flap {
+          transform: translateX(-50%) rotateX(168deg);
+        }
+
+        .seal {
+          opacity: 0;
+        }
+
+        .letter {
+          transform: translateX(-50%) translateY(-4px);
+        }
+
+        .letter-main,
+        .letter-sub {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <h1 class="title">Happy Chinese New Year</h1>
+      <p class="subtitle">A hongbao opens to reveal a special message.</p>
+
+      <div class="controls">
+        <button class="replay" type="button" id="replay-button">Replay Animation</button>
+      </div>
+
+      <section class="stage play" id="stage" aria-label="Hongbao animation">
+        <div class="lantern-layer" aria-hidden="true">
+          <div class="lantern" style="left: 10%; top: 10%; --lantern-size: 74px; --delay: 0.1s;"></div>
+          <div class="lantern" style="left: 27%; top: 4%; --lantern-size: 60px; --delay: 0.6s;"></div>
+          <div class="lantern" style="left: 72%; top: 8%; --lantern-size: 72px; --delay: 0.25s;"></div>
+          <div class="lantern" style="left: 86%; top: 14%; --lantern-size: 58px; --delay: 0.95s;"></div>
+        </div>
+
+        <div class="sparkle-layer" aria-hidden="true">
+          <span class="sparkle" style="left: 8%; bottom: -2%; --duration: 7.4s; --delay: 0.4s;"></span>
+          <span class="sparkle" style="left: 18%; bottom: -6%; --duration: 6.8s; --delay: 1.1s;"></span>
+          <span class="sparkle" style="left: 31%; bottom: -4%; --duration: 7.1s; --delay: 0.6s;"></span>
+          <span class="sparkle" style="left: 46%; bottom: -3%; --duration: 6.3s; --delay: 1.5s;"></span>
+          <span class="sparkle" style="left: 57%; bottom: -8%; --duration: 6.9s; --delay: 0.2s;"></span>
+          <span class="sparkle" style="left: 68%; bottom: -1%; --duration: 7.6s; --delay: 1.2s;"></span>
+          <span class="sparkle" style="left: 79%; bottom: -7%; --duration: 6.5s; --delay: 0.9s;"></span>
+          <span class="sparkle" style="left: 91%; bottom: -2%; --duration: 7.2s; --delay: 0.5s;"></span>
+        </div>
+
+        <div class="letter-scene">
+          <div class="envelope-wrap">
+            <div class="envelope">
+              <div class="envelope-back"></div>
+              <div class="letter">
+                <p class="letter-main">知音，新年快乐!</p>
+                <p class="letter-sub">To Annie, Love Mark</p>
+              </div>
+              <div class="envelope-front"></div>
+              <div class="spark-ring" aria-hidden="true"></div>
+              <div class="flap"></div>
+              <div class="seal" aria-hidden="true">福</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <p class="footer-note">Wishing you brightness, joy, and good fortune in the new year.</p>
+    </main>
+
+    <script>
+      (() => {
+        const stage = document.getElementById("stage");
+        const replayButton = document.getElementById("replay-button");
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+        const longAnimationMs = 4200;
+
+        const play = () => {
+          if (!stage || reduceMotion.matches) {
+            return;
+          }
+
+          stage.classList.remove("ready");
+          stage.classList.remove("play");
+
+          requestAnimationFrame(() => {
+            stage.classList.add("play");
+            window.setTimeout(() => {
+              stage.classList.add("ready");
+            }, longAnimationMs);
+          });
+        };
+
+        if (!reduceMotion.matches) {
+          play();
+        } else if (stage) {
+          stage.classList.add("ready");
+        }
+
+        if (replayButton) {
+          replayButton.addEventListener("click", play);
+        }
+      })();
+    </script>
+  </body>
+</html>
