@@ -80,6 +80,13 @@
         color: rgba(255, 242, 220, 0.84);
       }
 
+      .hint {
+        margin: 0.38rem 0 0;
+        text-align: center;
+        color: rgba(255, 225, 170, 0.9);
+        font-size: 0.92rem;
+      }
+
       .controls {
         margin-top: 0.95rem;
         display: flex;
@@ -192,37 +199,43 @@
       .letter-scene {
         position: absolute;
         left: 50%;
-        bottom: 16px;
-        width: min(460px, calc(100% - 1.25rem));
+        bottom: 12px;
+        width: min(360px, calc(100% - 1.25rem));
         transform: translateX(-50%);
-        height: 405px;
-        pointer-events: none;
+        height: 430px;
+        pointer-events: auto;
       }
 
       .envelope-wrap {
         position: absolute;
         left: 50%;
         bottom: 0;
-        width: min(360px, 92%);
-        height: 250px;
+        width: min(240px, 88%);
+        height: 330px;
         transform: translateX(-50%);
         animation: envelopeEnter 860ms cubic-bezier(0.21, 1.16, 0.34, 1) both;
+        border: 0;
+        padding: 0;
+        background: transparent;
+        cursor: pointer;
       }
 
       .envelope {
         position: absolute;
         inset: 0;
+        perspective: 1200px;
+        transform-style: preserve-3d;
       }
 
       .envelope-back {
         position: absolute;
-        left: 0;
-        right: 0;
+        left: 8px;
+        right: 8px;
         bottom: 0;
-        height: 176px;
-        border-radius: 14px 14px 20px 20px;
+        top: 48px;
+        border-radius: 12px 12px 18px 18px;
         background:
-          linear-gradient(160deg, rgba(255, 88, 88, 0.92), rgba(211, 26, 42, 0.98)),
+          linear-gradient(160deg, rgba(255, 88, 88, 0.96), rgba(205, 20, 40, 0.99)),
           linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
         border: 1px solid rgba(255, 214, 145, 0.5);
         box-shadow:
@@ -232,37 +245,60 @@
 
       .envelope-front {
         position: absolute;
-        left: 50%;
+        left: 8px;
+        right: 8px;
         bottom: 0;
-        width: 96%;
-        height: 158px;
-        transform: translateX(-50%);
-        clip-path: polygon(0 100%, 50% 28%, 100% 100%);
-        background: linear-gradient(180deg, rgba(255, 116, 116, 0.9), rgba(190, 21, 38, 0.95));
+        top: 48px;
+        border-radius: 12px 12px 18px 18px;
+        background:
+          linear-gradient(180deg, rgba(255, 104, 104, 0.95), rgba(186, 20, 38, 0.98));
         border: 1px solid rgba(255, 214, 145, 0.42);
+        z-index: 3;
+      }
+
+      .envelope-front::before {
+        content: "";
+        position: absolute;
+        inset: 12px;
+        border-radius: 9px;
+        border: 1px solid rgba(255, 230, 176, 0.32);
+        pointer-events: none;
+      }
+
+      .envelope-front::after {
+        content: "";
+        position: absolute;
+        left: 20%;
+        right: 20%;
+        top: 18%;
+        height: 10px;
+        border-top: 1px solid rgba(255, 218, 152, 0.35);
+        border-bottom: 1px solid rgba(255, 218, 152, 0.22);
+        pointer-events: none;
       }
 
       .flap {
         position: absolute;
-        left: 50%;
-        top: 40px;
-        width: 96%;
-        height: 122px;
-        transform: translateX(-50%) rotateX(0deg);
+        left: 8px;
+        right: 8px;
+        top: 0;
+        height: 86px;
+        transform: rotateX(0deg) translateZ(2px);
         transform-origin: top center;
-        clip-path: polygon(0 0, 50% 88%, 100% 0);
-        background: linear-gradient(180deg, rgba(255, 78, 78, 0.96), rgba(198, 22, 37, 0.98));
+        clip-path: polygon(5% 0, 95% 0, 70% 100%, 30% 100%);
+        background: linear-gradient(180deg, rgba(255, 78, 78, 0.98), rgba(195, 20, 36, 0.99));
         border: 1px solid rgba(255, 214, 145, 0.45);
-        z-index: 4;
-        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25);
+        z-index: 6;
+        box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+        backface-visibility: hidden;
       }
 
       .seal {
         position: absolute;
         left: 50%;
-        top: 118px;
-        width: 54px;
-        height: 54px;
+        top: 74px;
+        width: 50px;
+        height: 50px;
         transform: translateX(-50%);
         border-radius: 50%;
         display: grid;
@@ -273,19 +309,19 @@
         background: radial-gradient(circle at 35% 30%, #fff2be, #ffcf5f 55%, #dd9f2f);
         border: 2px solid rgba(255, 235, 176, 0.7);
         box-shadow: 0 0 15px rgba(255, 209, 82, 0.36);
-        z-index: 5;
+        z-index: 7;
         font-size: 1rem;
       }
 
       .letter {
         position: absolute;
         left: 50%;
-        bottom: 44px;
-        width: min(290px, 85%);
-        min-height: 220px;
-        padding: 1.2rem 1.05rem 1rem;
-        transform: translateX(-50%) translateY(105px);
-        border-radius: 14px;
+        bottom: 24px;
+        width: min(176px, 74%);
+        min-height: 246px;
+        padding: 1rem 0.8rem 0.9rem;
+        transform: translateX(-50%) translateY(142px);
+        border-radius: 10px;
         background:
           linear-gradient(180deg, #fff4d9 0%, #ffe9bf 100%);
         color: var(--ink);
@@ -311,19 +347,19 @@
       }
 
       .letter-main {
-        margin: 0.45rem 0 0;
+        margin: 0.35rem 0 0;
         text-align: center;
-        font-size: clamp(1.38rem, 4vw, 1.78rem);
+        font-size: clamp(1.12rem, 3vw, 1.42rem);
         font-weight: 700;
-        letter-spacing: 0.04em;
+        letter-spacing: 0.01em;
         opacity: 0;
         transform: translateY(10px);
       }
 
       .letter-sub {
-        margin: 1rem 0 0;
+        margin: 0.86rem 0 0;
         text-align: center;
-        font-size: clamp(0.94rem, 2.5vw, 1.03rem);
+        font-size: clamp(0.82rem, 2vw, 0.94rem);
         opacity: 0;
         color: #7f182e;
         transform: translateY(8px);
@@ -332,40 +368,40 @@
       .spark-ring {
         position: absolute;
         left: 50%;
-        top: 118px;
-        width: 54px;
-        height: 54px;
+        top: 74px;
+        width: 50px;
+        height: 50px;
         transform: translateX(-50%) scale(0.4);
         border-radius: 50%;
         border: 2px solid rgba(255, 218, 135, 0.8);
         opacity: 0;
-        z-index: 3;
+        z-index: 5;
       }
 
       .play .flap {
-        animation: flapOpen 900ms cubic-bezier(0.22, 1, 0.36, 1) 720ms forwards;
+        animation: flapOpen 900ms cubic-bezier(0.22, 1, 0.36, 1) 420ms forwards;
       }
 
       .play .seal {
         animation:
-          sealFade 520ms ease 740ms forwards,
-          sealGlow 2.2s ease-in-out 1500ms infinite;
+          sealFade 520ms ease 420ms forwards,
+          sealGlow 2.2s ease-in-out 1300ms infinite;
       }
 
       .play .spark-ring {
-        animation: sparkRing 720ms ease-out 680ms forwards;
+        animation: sparkRing 720ms ease-out 380ms forwards;
       }
 
       .play .letter {
-        animation: letterRise 1180ms cubic-bezier(0.2, 1.08, 0.35, 1) 1120ms forwards;
+        animation: letterRise 1160ms cubic-bezier(0.2, 1.08, 0.35, 1) 870ms forwards;
       }
 
       .play .letter-main {
-        animation: textReveal 850ms ease 2050ms forwards;
+        animation: textReveal 780ms ease 1760ms forwards;
       }
 
       .play .letter-sub {
-        animation: textReveal 850ms ease 2420ms forwards;
+        animation: textReveal 760ms ease 2040ms forwards;
       }
 
       .stage.ready .envelope-wrap {
@@ -435,21 +471,21 @@
 
       @keyframes flapOpen {
         0% {
-          transform: translateX(-50%) rotateX(0deg);
+          transform: rotateX(0deg) translateZ(2px);
         }
         100% {
-          transform: translateX(-50%) rotateX(168deg);
+          transform: rotateX(-176deg) translateY(-4px) translateZ(2px);
         }
       }
 
       @keyframes sealFade {
         0% {
           opacity: 1;
-          transform: translateX(-50%) scale(1);
+          transform: translateX(-50%) scale(1) translateY(0);
         }
         100% {
           opacity: 0;
-          transform: translateX(-50%) scale(0.7);
+          transform: translateX(-50%) scale(0.7) translateY(-8px);
         }
       }
 
@@ -476,13 +512,13 @@
 
       @keyframes letterRise {
         0% {
-          transform: translateX(-50%) translateY(105px) rotate(0deg);
+          transform: translateX(-50%) translateY(142px) rotate(0deg);
         }
         70% {
-          transform: translateX(-50%) translateY(-12px) rotate(-1.2deg);
+          transform: translateX(-50%) translateY(-98px) rotate(-1deg);
         }
         100% {
-          transform: translateX(-50%) translateY(-4px) rotate(0deg);
+          transform: translateX(-50%) translateY(-82px) rotate(0deg);
         }
       }
 
@@ -515,7 +551,7 @@
         }
 
         .letter-scene {
-          height: 368px;
+          height: 396px;
         }
       }
 
@@ -525,20 +561,20 @@
           transition: none !important;
         }
 
-        .flap {
-          transform: translateX(-50%) rotateX(168deg);
+        .play .flap {
+          transform: rotateX(-176deg) translateY(-4px) translateZ(2px);
         }
 
-        .seal {
+        .play .seal {
           opacity: 0;
         }
 
-        .letter {
-          transform: translateX(-50%) translateY(-4px);
+        .play .letter {
+          transform: translateX(-50%) translateY(-82px) rotate(0deg);
         }
 
-        .letter-main,
-        .letter-sub {
+        .play .letter-main,
+        .play .letter-sub {
           opacity: 1;
           transform: translateY(0);
         }
@@ -549,12 +585,13 @@
     <main class="wrap">
       <h1 class="title">Happy Chinese New Year</h1>
       <p class="subtitle">A hongbao opens to reveal a special message.</p>
+      <p class="hint">Click the hongbao to open it.</p>
 
       <div class="controls">
         <button class="replay" type="button" id="replay-button">Replay Animation</button>
       </div>
 
-      <section class="stage play" id="stage" aria-label="Hongbao animation">
+      <section class="stage" id="stage" aria-label="Hongbao animation">
         <div class="lantern-layer" aria-hidden="true">
           <div class="lantern" style="left: 10%; top: 10%; --lantern-size: 74px; --delay: 0.1s;"></div>
           <div class="lantern" style="left: 27%; top: 4%; --lantern-size: 60px; --delay: 0.6s;"></div>
@@ -574,7 +611,7 @@
         </div>
 
         <div class="letter-scene">
-          <div class="envelope-wrap">
+          <button class="envelope-wrap" id="hongbao-button" type="button" aria-label="Open hongbao">
             <div class="envelope">
               <div class="envelope-back"></div>
               <div class="letter">
@@ -586,7 +623,7 @@
               <div class="flap"></div>
               <div class="seal" aria-hidden="true">福</div>
             </div>
-          </div>
+          </button>
         </div>
       </section>
 
@@ -596,30 +633,37 @@
     <script>
       (() => {
         const stage = document.getElementById("stage");
+        const hongbaoButton = document.getElementById("hongbao-button");
         const replayButton = document.getElementById("replay-button");
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-        const longAnimationMs = 4200;
+        const longAnimationMs = 3400;
+        let isPlaying = false;
 
         const play = () => {
-          if (!stage || reduceMotion.matches) {
+          if (!stage || isPlaying) {
             return;
           }
 
+          isPlaying = true;
           stage.classList.remove("ready");
           stage.classList.remove("play");
 
           requestAnimationFrame(() => {
             stage.classList.add("play");
+            if (reduceMotion.matches) {
+              stage.classList.add("ready");
+              isPlaying = false;
+              return;
+            }
             window.setTimeout(() => {
               stage.classList.add("ready");
+              isPlaying = false;
             }, longAnimationMs);
           });
         };
 
-        if (!reduceMotion.matches) {
-          play();
-        } else if (stage) {
-          stage.classList.add("ready");
+        if (hongbaoButton) {
+          hongbaoButton.addEventListener("click", play);
         }
 
         if (replayButton) {
