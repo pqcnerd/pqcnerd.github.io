@@ -196,6 +196,35 @@
         opacity: 0;
       }
 
+      .celebration-layer {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 10;
+      }
+
+      .burst-particle,
+      .float-particle {
+        position: absolute;
+        left: 50%;
+        top: 60%;
+        width: var(--size, 8px);
+        height: var(--size, 8px);
+        border-radius: 50%;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+
+      .burst-particle {
+        background: radial-gradient(circle, rgba(255, 242, 205, 0.95), rgba(255, 214, 106, 0.58) 70%, transparent 72%);
+        transform: translate(-50%, -50%) scale(0.25);
+      }
+
+      .float-particle {
+        background: radial-gradient(circle, rgba(255, 244, 226, 0.9), rgba(255, 126, 126, 0.68) 55%, rgba(255, 213, 106, 0.5));
+        transform: translate(-50%, -50%) scale(0.5);
+      }
+
       .letter-scene {
         position: absolute;
         left: 50%;
@@ -422,6 +451,42 @@
         z-index: 8;
       }
 
+      .stage.ready .lantern {
+        animation:
+          lanternSway 5.6s ease-in-out var(--delay) infinite,
+          lanternGlowReady 3s ease-in-out var(--delay) infinite;
+      }
+
+      .stage.ready .burst-particle {
+        animation: confettiBurst 1200ms cubic-bezier(0.2, 0.86, 0.32, 1) var(--delay, 0ms) forwards;
+      }
+
+      .stage.ready .float-particle {
+        animation: floatRise var(--duration, 2600ms) ease-out var(--delay, 0ms) forwards;
+      }
+
+      .letter::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 10px;
+        background: linear-gradient(
+          120deg,
+          transparent 18%,
+          rgba(255, 255, 255, 0.22) 48%,
+          rgba(255, 255, 255, 0.38) 52%,
+          transparent 82%
+        );
+        background-size: 220% 100%;
+        background-position: -160% 0;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .stage.ready .letter::after {
+        animation: letterShimmer 2300ms ease-in-out 300ms 2;
+      }
+
       .footer-note {
         margin: 0.85rem 0 0;
         text-align: center;
@@ -458,6 +523,22 @@
         }
       }
 
+      @keyframes lanternGlowReady {
+        0%,
+        100% {
+          filter: saturate(1.12) brightness(1.08);
+          box-shadow:
+            0 0 24px rgba(255, 77, 77, 0.52),
+            0 0 72px rgba(255, 204, 122, 0.38);
+        }
+        50% {
+          filter: saturate(1.25) brightness(1.2);
+          box-shadow:
+            0 0 32px rgba(255, 98, 98, 0.62),
+            0 0 88px rgba(255, 214, 146, 0.44);
+        }
+      }
+
       @keyframes sparkleFloat {
         0% {
           transform: translateY(20px) scale(0.6);
@@ -468,6 +549,58 @@
         }
         100% {
           transform: translateY(-360px) scale(1);
+          opacity: 0;
+        }
+      }
+
+      @keyframes confettiBurst {
+        0% {
+          transform: translate(-50%, -50%) scale(0.25);
+          opacity: 0;
+        }
+        16% {
+          opacity: 1;
+        }
+        100% {
+          transform:
+            translate(
+              calc(-50% + var(--tx, 0px)),
+              calc(-50% + var(--ty, 0px))
+            )
+            scale(1);
+          opacity: 0;
+        }
+      }
+
+      @keyframes floatRise {
+        0% {
+          transform: translate(-50%, -50%) scale(0.48);
+          opacity: 0;
+        }
+        14% {
+          opacity: 0.92;
+        }
+        100% {
+          transform:
+            translate(
+              calc(-50% + var(--tx, 0px)),
+              calc(-50% - var(--lift, 220px))
+            )
+            scale(1.18);
+          opacity: 0;
+        }
+      }
+
+      @keyframes letterShimmer {
+        0% {
+          background-position: -160% 0;
+          opacity: 0;
+        }
+        20% {
+          opacity: 0.75;
+        }
+        100% {
+          background-position: 180% 0;
           opacity: 0;
         }
       }
@@ -592,6 +725,17 @@
           opacity: 1;
           transform: translateY(0);
         }
+
+        .play .burst-particle,
+        .play .float-particle {
+          opacity: 0;
+          transform: translate(-50%, -50%) scale(0.4);
+        }
+
+        .play .letter::after {
+          opacity: 0.2;
+          background-position: 0 0;
+        }
       }
     </style>
   </head>
@@ -622,6 +766,23 @@
           <span class="sparkle" style="left: 68%; bottom: -1%; --duration: 7.6s; --delay: 1.2s;"></span>
           <span class="sparkle" style="left: 79%; bottom: -7%; --duration: 6.5s; --delay: 0.9s;"></span>
           <span class="sparkle" style="left: 91%; bottom: -2%; --duration: 7.2s; --delay: 0.5s;"></span>
+        </div>
+
+        <div class="celebration-layer" aria-hidden="true">
+          <span class="burst-particle" style="--delay: 0ms; --size: 10px; --tx: -8px; --ty: -148px;"></span>
+          <span class="burst-particle" style="--delay: 40ms; --size: 8px; --tx: 42px; --ty: -136px;"></span>
+          <span class="burst-particle" style="--delay: 80ms; --size: 7px; --tx: -56px; --ty: -124px;"></span>
+          <span class="burst-particle" style="--delay: 120ms; --size: 9px; --tx: 72px; --ty: -118px;"></span>
+          <span class="burst-particle" style="--delay: 160ms; --size: 7px; --tx: -84px; --ty: -108px;"></span>
+          <span class="burst-particle" style="--delay: 200ms; --size: 8px; --tx: 18px; --ty: -162px;"></span>
+          <span class="burst-particle" style="--delay: 260ms; --size: 6px; --tx: -22px; --ty: -176px;"></span>
+
+          <span class="float-particle" style="--delay: 480ms; --duration: 2500ms; --size: 8px; --tx: -112px; --lift: 240px;"></span>
+          <span class="float-particle" style="--delay: 620ms; --duration: 2800ms; --size: 7px; --tx: -72px; --lift: 270px;"></span>
+          <span class="float-particle" style="--delay: 760ms; --duration: 3000ms; --size: 9px; --tx: -28px; --lift: 300px;"></span>
+          <span class="float-particle" style="--delay: 900ms; --duration: 2600ms; --size: 8px; --tx: 24px; --lift: 260px;"></span>
+          <span class="float-particle" style="--delay: 1040ms; --duration: 3000ms; --size: 10px; --tx: 70px; --lift: 310px;"></span>
+          <span class="float-particle" style="--delay: 1180ms; --duration: 2800ms; --size: 7px; --tx: 114px; --lift: 280px;"></span>
         </div>
 
         <div class="letter-scene">
