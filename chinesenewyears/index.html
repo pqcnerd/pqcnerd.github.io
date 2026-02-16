@@ -136,6 +136,22 @@
         pointer-events: none;
       }
 
+      .flower-layer,
+      .dragon-layer {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+      }
+
+      .flower-layer {
+        z-index: 6;
+      }
+
+      .dragon-layer {
+        z-index: 11;
+        overflow: hidden;
+      }
+
       .lantern {
         --lantern-size: 70px;
         --delay: 0s;
@@ -223,6 +239,104 @@
       .float-particle {
         background: radial-gradient(circle, rgba(255, 244, 226, 0.9), rgba(255, 126, 126, 0.68) 55%, rgba(255, 213, 106, 0.5));
         transform: translate(-50%, -50%) scale(0.5);
+      }
+
+      .flower {
+        position: absolute;
+        width: var(--size, 30px);
+        height: var(--size, 30px);
+        opacity: 0;
+        transform: translateY(14px) scale(0.75) rotate(0deg);
+        will-change: transform, opacity;
+      }
+
+      .flower::before,
+      .flower::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+      }
+
+      .flower::before {
+        background:
+          radial-gradient(circle at 50% 20%, rgba(255, 214, 226, 0.94) 0 22%, transparent 23%),
+          radial-gradient(circle at 80% 48%, rgba(255, 188, 214, 0.9) 0 20%, transparent 21%),
+          radial-gradient(circle at 62% 82%, rgba(255, 176, 204, 0.88) 0 20%, transparent 21%),
+          radial-gradient(circle at 38% 82%, rgba(255, 188, 214, 0.9) 0 20%, transparent 21%),
+          radial-gradient(circle at 20% 48%, rgba(255, 214, 226, 0.94) 0 20%, transparent 21%);
+      }
+
+      .flower::after {
+        inset: 36%;
+        background: radial-gradient(circle, #ffd56a 0%, #ffb34a 65%, #df8f2a 100%);
+        box-shadow: 0 0 8px rgba(255, 194, 88, 0.55);
+      }
+
+      .dragon {
+        position: absolute;
+        top: var(--top, 36%);
+        width: 230px;
+        height: 48px;
+        opacity: 0;
+        will-change: transform, opacity;
+      }
+
+      .dragon-body {
+        position: absolute;
+        inset: 8px 30px 8px 16px;
+        border-radius: 999px;
+        background:
+          repeating-linear-gradient(
+            90deg,
+            rgba(255, 210, 102, 0.95) 0 12px,
+            rgba(204, 28, 48, 0.95) 12px 24px
+          );
+        box-shadow:
+          0 0 16px rgba(255, 202, 96, 0.48),
+          0 0 28px rgba(200, 22, 44, 0.32);
+      }
+
+      .dragon-head {
+        position: absolute;
+        right: 0;
+        top: 8px;
+        width: 42px;
+        height: 32px;
+        border-radius: 48% 58% 50% 50%;
+        background: linear-gradient(180deg, #ffd97b, #ffb84f 62%, #df8f2f);
+        box-shadow: 0 0 12px rgba(255, 209, 103, 0.5);
+      }
+
+      .dragon-head::before,
+      .dragon-head::after {
+        content: "";
+        position: absolute;
+        top: -8px;
+        width: 8px;
+        height: 12px;
+        border-radius: 999px 999px 0 0;
+        background: linear-gradient(180deg, #ffe4a6, #ffb85a);
+      }
+
+      .dragon-head::before {
+        left: 8px;
+        transform: rotate(-14deg);
+      }
+
+      .dragon-head::after {
+        right: 8px;
+        transform: rotate(14deg);
+      }
+
+      .dragon-tail {
+        position: absolute;
+        left: 0;
+        top: 17px;
+        width: 20px;
+        height: 14px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #ffd266, #cf1d3a);
       }
 
       .letter-scene {
@@ -478,6 +592,14 @@
         animation: beamBlast 1120ms cubic-bezier(0.23, 0.96, 0.37, 1) 1260ms forwards;
       }
 
+      .play .dragon-left {
+        animation: dragonFlyLeftToRight 2900ms cubic-bezier(0.18, 0.72, 0.27, 0.99) 1780ms forwards;
+      }
+
+      .play .dragon-right {
+        animation: dragonFlyRightToLeft 2800ms cubic-bezier(0.2, 0.68, 0.3, 0.98) 2220ms forwards;
+      }
+
       .stage.ready .letter {
         z-index: 12;
         opacity: 1;
@@ -495,6 +617,10 @@
 
       .stage.ready .float-particle {
         animation: floatRise var(--duration, 2600ms) ease-out var(--delay, 0ms) forwards;
+      }
+
+      .stage.ready .flower {
+        animation: blossomFloat var(--duration, 4200ms) ease-out var(--delay, 0ms) forwards;
       }
 
       .letter::after {
@@ -634,6 +760,60 @@
         100% {
           background-position: 180% 0;
           opacity: 0;
+        }
+      }
+
+      @keyframes blossomFloat {
+        0% {
+          opacity: 0;
+          transform: translateY(18px) scale(0.72) rotate(0deg);
+        }
+        22% {
+          opacity: 0.92;
+        }
+        100% {
+          opacity: 0;
+          transform:
+            translate(
+              var(--drift-x, 0px),
+              calc(-1 * var(--rise, 190px))
+            )
+            scale(1.1)
+            rotate(var(--spin, 18deg));
+        }
+      }
+
+      @keyframes dragonFlyLeftToRight {
+        0% {
+          opacity: 0;
+          transform: translateX(-280px) translateY(0) scale(0.9);
+        }
+        15% {
+          opacity: 1;
+        }
+        50% {
+          transform: translateX(48vw) translateY(-22px) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translateX(112vw) translateY(-42px) scale(0.96);
+        }
+      }
+
+      @keyframes dragonFlyRightToLeft {
+        0% {
+          opacity: 0;
+          transform: translateX(112vw) translateY(0) scaleX(-1) scale(0.88);
+        }
+        18% {
+          opacity: 1;
+        }
+        52% {
+          transform: translateX(46vw) translateY(20px) scaleX(-1) scale(1);
+        }
+        100% {
+          opacity: 0;
+          transform: translateX(-290px) translateY(42px) scaleX(-1) scale(0.95);
         }
       }
 
@@ -802,6 +982,12 @@
           opacity: 0;
           transform: translateX(-50%) scaleY(0.02);
         }
+
+        .play .dragon,
+        .play .flower {
+          opacity: 0;
+          transform: none;
+        }
       }
     </style>
   </head>
@@ -832,6 +1018,26 @@
           <span class="sparkle" style="left: 68%; bottom: -1%; --duration: 7.6s; --delay: 1.2s;"></span>
           <span class="sparkle" style="left: 79%; bottom: -7%; --duration: 6.5s; --delay: 0.9s;"></span>
           <span class="sparkle" style="left: 91%; bottom: -2%; --duration: 7.2s; --delay: 0.5s;"></span>
+        </div>
+
+        <div class="flower-layer" aria-hidden="true">
+          <span class="flower" style="left: 16%; bottom: 30%; --size: 30px; --delay: 260ms; --duration: 4200ms; --drift-x: -36px; --rise: 210px; --spin: -30deg;"></span>
+          <span class="flower" style="left: 25%; bottom: 24%; --size: 24px; --delay: 520ms; --duration: 4100ms; --drift-x: 30px; --rise: 180px; --spin: 24deg;"></span>
+          <span class="flower" style="left: 74%; bottom: 28%; --size: 28px; --delay: 380ms; --duration: 4300ms; --drift-x: 34px; --rise: 220px; --spin: 28deg;"></span>
+          <span class="flower" style="left: 84%; bottom: 22%; --size: 22px; --delay: 680ms; --duration: 3900ms; --drift-x: -24px; --rise: 170px; --spin: -22deg;"></span>
+        </div>
+
+        <div class="dragon-layer" aria-hidden="true">
+          <div class="dragon dragon-left" style="--top: 24%;">
+            <span class="dragon-tail"></span>
+            <span class="dragon-body"></span>
+            <span class="dragon-head"></span>
+          </div>
+          <div class="dragon dragon-right" style="--top: 44%;">
+            <span class="dragon-tail"></span>
+            <span class="dragon-body"></span>
+            <span class="dragon-head"></span>
+          </div>
         </div>
 
         <div class="celebration-layer" aria-hidden="true">
