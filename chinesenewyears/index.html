@@ -276,67 +276,14 @@
       .dragon {
         position: absolute;
         top: var(--top, 36%);
-        width: 230px;
-        height: 48px;
+        font-size: var(--dragon-size, 2.35rem);
+        line-height: 1;
+        letter-spacing: 0.14em;
+        white-space: nowrap;
+        transform-origin: center;
+        filter: drop-shadow(0 0 10px rgba(255, 214, 120, 0.36));
         opacity: 0;
         will-change: transform, opacity;
-      }
-
-      .dragon-body {
-        position: absolute;
-        inset: 8px 30px 8px 16px;
-        border-radius: 999px;
-        background:
-          repeating-linear-gradient(
-            90deg,
-            rgba(255, 210, 102, 0.95) 0 12px,
-            rgba(204, 28, 48, 0.95) 12px 24px
-          );
-        box-shadow:
-          0 0 16px rgba(255, 202, 96, 0.48),
-          0 0 28px rgba(200, 22, 44, 0.32);
-      }
-
-      .dragon-head {
-        position: absolute;
-        right: 0;
-        top: 8px;
-        width: 42px;
-        height: 32px;
-        border-radius: 48% 58% 50% 50%;
-        background: linear-gradient(180deg, #ffd97b, #ffb84f 62%, #df8f2f);
-        box-shadow: 0 0 12px rgba(255, 209, 103, 0.5);
-      }
-
-      .dragon-head::before,
-      .dragon-head::after {
-        content: "";
-        position: absolute;
-        top: -8px;
-        width: 8px;
-        height: 12px;
-        border-radius: 999px 999px 0 0;
-        background: linear-gradient(180deg, #ffe4a6, #ffb85a);
-      }
-
-      .dragon-head::before {
-        left: 8px;
-        transform: rotate(-14deg);
-      }
-
-      .dragon-head::after {
-        right: 8px;
-        transform: rotate(14deg);
-      }
-
-      .dragon-tail {
-        position: absolute;
-        left: 0;
-        top: 17px;
-        width: 20px;
-        height: 14px;
-        border-radius: 999px;
-        background: linear-gradient(180deg, #ffd266, #cf1d3a);
       }
 
       .letter-scene {
@@ -993,9 +940,9 @@
   </head>
   <body>
     <main class="wrap">
-      <h1 class="title">Happy Chinese New Year</h1>
-      <p class="subtitle">A hongbao opens to reveal a special message.</p>
-      <p class="hint">Click the hongbao to open it.</p>
+      <h1 class="title">Happy Chinese New Year Annie</h1>
+      <p class="subtitle">I love you so much</p>
+      <p class="hint">Click the hongbao to open it</p>
 
       <div class="controls">
         <button class="replay" type="button" id="replay-button">Replay Animation</button>
@@ -1028,16 +975,8 @@
         </div>
 
         <div class="dragon-layer" aria-hidden="true">
-          <div class="dragon dragon-left" style="--top: 24%;">
-            <span class="dragon-tail"></span>
-            <span class="dragon-body"></span>
-            <span class="dragon-head"></span>
-          </div>
-          <div class="dragon dragon-right" style="--top: 44%;">
-            <span class="dragon-tail"></span>
-            <span class="dragon-body"></span>
-            <span class="dragon-head"></span>
-          </div>
+          <div class="dragon dragon-left" style="--top: 24%; --dragon-size: 2.5rem;">🐉🐉🐉</div>
+          <div class="dragon dragon-right" style="--top: 44%; --dragon-size: 2.25rem;">🐉🐉🐉</div>
         </div>
 
         <div class="celebration-layer" aria-hidden="true">
