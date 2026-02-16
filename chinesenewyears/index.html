@@ -281,11 +281,11 @@
         position: absolute;
         left: 8px;
         right: 8px;
-        top: 0;
-        height: 86px;
+        top: 47px;
+        height: 98px;
         transform: rotateX(0deg) translateZ(2px);
         transform-origin: top center;
-        clip-path: polygon(5% 0, 95% 0, 70% 100%, 30% 100%);
+        clip-path: polygon(0 0, 100% 0, 68% 100%, 32% 100%);
         background: linear-gradient(180deg, rgba(255, 78, 78, 0.98), rgba(195, 20, 36, 0.99));
         border: 1px solid rgba(255, 214, 145, 0.45);
         z-index: 6;
@@ -293,10 +293,20 @@
         backface-visibility: hidden;
       }
 
+      .flap::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: -1px;
+        height: 2px;
+        background: rgba(255, 218, 152, 0.42);
+      }
+
       .seal {
         position: absolute;
         left: 50%;
-        top: 74px;
+        top: 103px;
         width: 50px;
         height: 50px;
         transform: translateX(-50%);
@@ -368,7 +378,7 @@
       .spark-ring {
         position: absolute;
         left: 50%;
-        top: 74px;
+        top: 103px;
         width: 50px;
         height: 50px;
         transform: translateX(-50%) scale(0.4);
@@ -474,7 +484,7 @@
           transform: rotateX(0deg) translateZ(2px);
         }
         100% {
-          transform: rotateX(-176deg) translateY(-4px) translateZ(2px);
+          transform: rotateX(-176deg) translateY(-2px) translateZ(2px);
         }
       }
 
@@ -562,7 +572,7 @@
         }
 
         .play .flap {
-          transform: rotateX(-176deg) translateY(-4px) translateZ(2px);
+          transform: rotateX(-176deg) translateY(-2px) translateZ(2px);
         }
 
         .play .seal {
