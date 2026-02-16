@@ -137,7 +137,8 @@
       }
 
       .flower-layer,
-      .dragon-layer {
+      .dragon-layer,
+      .firework-layer {
         position: absolute;
         inset: 0;
         pointer-events: none;
@@ -149,6 +150,11 @@
 
       .dragon-layer {
         z-index: 11;
+        overflow: hidden;
+      }
+
+      .firework-layer {
+        z-index: 9;
         overflow: hidden;
       }
 
@@ -284,6 +290,41 @@
         filter: drop-shadow(0 0 10px rgba(255, 214, 120, 0.36));
         opacity: 0;
         will-change: transform, opacity;
+      }
+
+      .firework {
+        position: absolute;
+        left: var(--x, 50%);
+        top: var(--y, 36%);
+        width: 0;
+        height: 0;
+        opacity: 0;
+      }
+
+      .firework-core {
+        position: absolute;
+        left: -7px;
+        top: -7px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 248, 222, 0.98) 0%, rgba(255, 220, 112, 0.82) 58%, transparent 68%);
+        opacity: 0;
+        transform: scale(0.2);
+      }
+
+      .firework-spark {
+        position: absolute;
+        left: -2px;
+        top: -2px;
+        width: 4px;
+        height: 30px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, rgba(255, 248, 214, 0.96), rgba(255, 172, 92, 0.92) 56%, rgba(222, 56, 75, 0.86));
+        opacity: 0;
+        transform: rotate(var(--angle, 0deg)) translateY(0) scaleY(0.16);
+        transform-origin: center 2px;
+        filter: drop-shadow(0 0 6px rgba(255, 206, 116, 0.4));
       }
 
       .letter-scene {
@@ -547,6 +588,18 @@
         animation: dragonFlyRightToLeft 2800ms cubic-bezier(0.2, 0.68, 0.3, 0.98) 2220ms forwards;
       }
 
+      .play .firework {
+        animation: fireworkPop 140ms ease-out var(--delay, 0ms) forwards;
+      }
+
+      .play .firework-core {
+        animation: fireworkCore 780ms ease-out var(--delay, 0ms) forwards;
+      }
+
+      .play .firework-spark {
+        animation: fireworkSpark 950ms cubic-bezier(0.2, 0.74, 0.27, 0.98) var(--delay, 0ms) forwards;
+      }
+
       .stage.ready .letter {
         z-index: 12;
         opacity: 1;
@@ -764,6 +817,44 @@
         }
       }
 
+      @keyframes fireworkPop {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes fireworkCore {
+        0% {
+          opacity: 0;
+          transform: scale(0.2);
+        }
+        24% {
+          opacity: 1;
+          transform: scale(1.25);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(0.4);
+        }
+      }
+
+      @keyframes fireworkSpark {
+        0% {
+          opacity: 0;
+          transform: rotate(var(--angle, 0deg)) translateY(0) scaleY(0.16);
+        }
+        16% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform: rotate(var(--angle, 0deg)) translateY(-86px) scaleY(1);
+        }
+      }
+
       @keyframes hongbaoRiseIn {
         0% {
           transform: translateX(-50%) translateY(170px) scale(0.92);
@@ -931,7 +1022,10 @@
         }
 
         .play .dragon,
-        .play .flower {
+        .play .flower,
+        .play .firework,
+        .play .firework-core,
+        .play .firework-spark {
           opacity: 0;
           transform: none;
         }
@@ -977,6 +1071,42 @@
         <div class="dragon-layer" aria-hidden="true">
           <div class="dragon dragon-left" style="--top: 24%; --dragon-size: 2.5rem;">🐉🐉🐉</div>
           <div class="dragon dragon-right" style="--top: 44%; --dragon-size: 2.25rem;">🐉🐉🐉</div>
+        </div>
+
+        <div class="firework-layer" aria-hidden="true">
+          <div class="firework" style="--x: 18%; --y: 30%; --delay: 1800ms;">
+            <span class="firework-core"></span>
+            <span class="firework-spark" style="--angle: 0deg;"></span>
+            <span class="firework-spark" style="--angle: 45deg;"></span>
+            <span class="firework-spark" style="--angle: 90deg;"></span>
+            <span class="firework-spark" style="--angle: 135deg;"></span>
+            <span class="firework-spark" style="--angle: 180deg;"></span>
+            <span class="firework-spark" style="--angle: 225deg;"></span>
+            <span class="firework-spark" style="--angle: 270deg;"></span>
+            <span class="firework-spark" style="--angle: 315deg;"></span>
+          </div>
+          <div class="firework" style="--x: 78%; --y: 24%; --delay: 2200ms;">
+            <span class="firework-core"></span>
+            <span class="firework-spark" style="--angle: 0deg;"></span>
+            <span class="firework-spark" style="--angle: 45deg;"></span>
+            <span class="firework-spark" style="--angle: 90deg;"></span>
+            <span class="firework-spark" style="--angle: 135deg;"></span>
+            <span class="firework-spark" style="--angle: 180deg;"></span>
+            <span class="firework-spark" style="--angle: 225deg;"></span>
+            <span class="firework-spark" style="--angle: 270deg;"></span>
+            <span class="firework-spark" style="--angle: 315deg;"></span>
+          </div>
+          <div class="firework" style="--x: 48%; --y: 18%; --delay: 2640ms;">
+            <span class="firework-core"></span>
+            <span class="firework-spark" style="--angle: 0deg;"></span>
+            <span class="firework-spark" style="--angle: 45deg;"></span>
+            <span class="firework-spark" style="--angle: 90deg;"></span>
+            <span class="firework-spark" style="--angle: 135deg;"></span>
+            <span class="firework-spark" style="--angle: 180deg;"></span>
+            <span class="firework-spark" style="--angle: 225deg;"></span>
+            <span class="firework-spark" style="--angle: 270deg;"></span>
+            <span class="firework-spark" style="--angle: 315deg;"></span>
+          </div>
         </div>
 
         <div class="celebration-layer" aria-hidden="true">
