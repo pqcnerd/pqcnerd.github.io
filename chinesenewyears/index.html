@@ -241,12 +241,12 @@
         bottom: 0;
         width: min(240px, 88%);
         height: 330px;
-        transform: translateX(-50%);
-        animation: envelopeEnter 860ms cubic-bezier(0.21, 1.16, 0.34, 1) both;
+        transform: translateX(-50%) translateY(150px);
         border: 0;
         padding: 0;
         background: transparent;
         cursor: pointer;
+        z-index: 7;
       }
 
       .envelope {
@@ -355,11 +355,11 @@
       .letter {
         position: absolute;
         left: 50%;
-        bottom: 24px;
+        bottom: 38px;
         width: min(176px, 74%);
         min-height: 246px;
         padding: 1rem 0.8rem 0.9rem;
-        transform: translateX(-50%) translateY(24px);
+        transform: translateX(-50%) translateY(78px);
         border-radius: 10px;
         background:
           linear-gradient(180deg, #fff4d9 0%, #ffe9bf 100%);
@@ -367,7 +367,8 @@
         box-shadow:
           0 14px 30px rgba(0, 0, 0, 0.28),
           inset 0 0 0 1px rgba(166, 47, 40, 0.18);
-        z-index: 2;
+        z-index: 4;
+        opacity: 0;
       }
 
       .letter::before {
@@ -417,38 +418,69 @@
         z-index: 5;
       }
 
+      .reveal-beam {
+        position: absolute;
+        left: 50%;
+        bottom: 132px;
+        width: 34px;
+        height: 360px;
+        transform: translateX(-50%) scaleY(0.02);
+        transform-origin: bottom center;
+        opacity: 0;
+        border-radius: 999px;
+        background:
+          linear-gradient(
+            180deg,
+            rgba(255, 246, 219, 0.05) 0%,
+            rgba(255, 236, 172, 0.52) 38%,
+            rgba(255, 214, 106, 0.95) 62%,
+            rgba(255, 233, 168, 0.2) 100%
+          );
+        filter: blur(0.2px);
+        z-index: 9;
+        pointer-events: none;
+      }
+
       .play .flap {
-        animation: flapOpen 900ms cubic-bezier(0.22, 1, 0.36, 1) 420ms forwards;
+        animation: flapOpen 860ms cubic-bezier(0.22, 1, 0.36, 1) 980ms forwards;
       }
 
       .play .seal {
         animation:
-          sealFade 520ms ease 420ms forwards,
-          sealGlow 2.2s ease-in-out 1300ms infinite;
+          sealFade 460ms ease 980ms forwards,
+          sealGlow 2.2s ease-in-out 1600ms infinite;
       }
 
       .play .spark-ring {
-        animation: sparkRing 720ms ease-out 380ms forwards;
+        animation: sparkRing 680ms ease-out 940ms forwards;
       }
 
       .play .letter {
-        animation: letterRise 1160ms cubic-bezier(0.2, 1.08, 0.35, 1) 870ms forwards;
+        animation: letterReveal 1180ms cubic-bezier(0.16, 1.02, 0.3, 1) 1440ms forwards;
       }
 
       .play .letter-main {
-        animation: textReveal 780ms ease 1760ms forwards;
-      }
-
-      .play .letter-sub {
         animation: textReveal 760ms ease 2040ms forwards;
       }
 
-      .stage.ready .envelope-wrap {
-        animation: envelopeIdle 5.4s ease-in-out 3.2s infinite;
+      .play .letter-sub {
+        animation: textReveal 760ms ease 2290ms forwards;
+      }
+
+      .play .envelope-wrap {
+        animation:
+          hongbaoRiseIn 860ms cubic-bezier(0.21, 1.14, 0.34, 1) 0ms forwards,
+          hongbaoDropOut 900ms cubic-bezier(0.48, 0, 0.78, 0.22) 2850ms forwards;
+        pointer-events: none;
+      }
+
+      .play .reveal-beam {
+        animation: beamBlast 1120ms cubic-bezier(0.23, 0.96, 0.37, 1) 1260ms forwards;
       }
 
       .stage.ready .letter {
-        z-index: 8;
+        z-index: 12;
+        opacity: 1;
       }
 
       .stage.ready .lantern {
@@ -605,14 +637,27 @@
         }
       }
 
-      @keyframes envelopeEnter {
+      @keyframes hongbaoRiseIn {
         0% {
-          opacity: 0;
-          transform: translateX(-50%) translateY(26px) scale(0.94);
+          transform: translateX(-50%) translateY(170px) scale(0.92);
+          filter: brightness(0.9) saturate(0.96);
+        }
+        72% {
+          transform: translateX(-50%) translateY(-12px) scale(1.03);
+          filter: brightness(1.05) saturate(1.08);
         }
         100% {
-          opacity: 1;
           transform: translateX(-50%) translateY(0) scale(1);
+          filter: brightness(1) saturate(1);
+        }
+      }
+
+      @keyframes hongbaoDropOut {
+        0% {
+          transform: translateX(-50%) translateY(0) scale(1);
+        }
+        100% {
+          transform: translateX(-50%) translateY(195px) scale(0.96);
         }
       }
 
@@ -657,15 +702,36 @@
         }
       }
 
-      @keyframes letterRise {
+      @keyframes letterReveal {
         0% {
-          transform: translateX(-50%) translateY(24px) rotate(0deg);
+          transform: translateX(-50%) translateY(84px) rotate(0deg);
+          opacity: 0;
         }
-        70% {
+        62% {
           transform: translateX(-50%) translateY(-98px) rotate(-1deg);
+          opacity: 1;
         }
         100% {
-          transform: translateX(-50%) translateY(-82px) rotate(0deg);
+          transform: translateX(-50%) translateY(-84px) rotate(0deg);
+          opacity: 1;
+        }
+      }
+
+      @keyframes beamBlast {
+        0% {
+          transform: translateX(-50%) scaleY(0.02);
+          opacity: 0;
+        }
+        18% {
+          opacity: 1;
+        }
+        70% {
+          transform: translateX(-50%) scaleY(1);
+          opacity: 0.92;
+        }
+        100% {
+          transform: translateX(-50%) scaleY(1.08);
+          opacity: 0;
         }
       }
 
@@ -679,16 +745,6 @@
           opacity: 1;
           transform: translateY(0);
           text-shadow: 0 0 14px rgba(255, 215, 135, 0.18);
-        }
-      }
-
-      @keyframes envelopeIdle {
-        0%,
-        100% {
-          transform: translateX(-50%) translateY(0);
-        }
-        50% {
-          transform: translateX(-50%) translateY(-3px);
         }
       }
 
@@ -717,7 +773,8 @@
         }
 
         .play .letter {
-          transform: translateX(-50%) translateY(-82px) rotate(0deg);
+          transform: translateX(-50%) translateY(-84px) rotate(0deg);
+          opacity: 1;
         }
 
         .play .letter-main,
@@ -735,6 +792,15 @@
         .play .letter::after {
           opacity: 0.2;
           background-position: 0 0;
+        }
+
+        .play .envelope-wrap {
+          transform: translateX(-50%) translateY(195px) scale(0.96);
+        }
+
+        .play .reveal-beam {
+          opacity: 0;
+          transform: translateX(-50%) scaleY(0.02);
         }
       }
     </style>
@@ -786,19 +852,20 @@
         </div>
 
         <div class="letter-scene">
+          <div class="reveal-beam" aria-hidden="true"></div>
           <button class="envelope-wrap" id="hongbao-button" type="button" aria-label="Open hongbao">
             <div class="envelope">
               <div class="envelope-back"></div>
-              <div class="letter">
-                <p class="letter-main">知音，新年快乐!</p>
-                <p class="letter-sub">To Annie, Love Mark</p>
-              </div>
               <div class="envelope-front"></div>
               <div class="spark-ring" aria-hidden="true"></div>
               <div class="flap"></div>
               <div class="seal" aria-hidden="true">福</div>
             </div>
           </button>
+          <div class="letter">
+            <p class="letter-main">知音，新年快乐!</p>
+            <p class="letter-sub">To Annie, Love Mark</p>
+          </div>
         </div>
       </section>
 
@@ -811,7 +878,7 @@
         const hongbaoButton = document.getElementById("hongbao-button");
         const replayButton = document.getElementById("replay-button");
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-        const longAnimationMs = 3400;
+        const longAnimationMs = 4300;
         let isPlaying = false;
 
         const play = () => {
