@@ -138,7 +138,8 @@
 
       .flower-layer,
       .dragon-layer,
-      .firework-layer {
+      .firework-layer,
+      .finale-layer {
         position: absolute;
         inset: 0;
         pointer-events: none;
@@ -155,6 +156,11 @@
 
       .firework-layer {
         z-index: 9;
+        overflow: hidden;
+      }
+
+      .finale-layer {
+        z-index: 10;
         overflow: hidden;
       }
 
@@ -325,6 +331,19 @@
         transform: rotate(var(--angle, 0deg)) translateY(0) scaleY(0.16);
         transform-origin: center 2px;
         filter: drop-shadow(0 0 6px rgba(255, 206, 116, 0.4));
+      }
+
+      .finale-particle {
+        position: absolute;
+        left: var(--x, 50%);
+        bottom: var(--y, 14%);
+        width: var(--w, 5px);
+        height: var(--h, 16px);
+        border-radius: 999px;
+        opacity: 0;
+        background: linear-gradient(180deg, rgba(255, 246, 211, 0.95), rgba(255, 197, 94, 0.78) 58%, rgba(217, 42, 68, 0.8));
+        transform: translateY(0) scale(0.55) rotate(var(--rot, 0deg));
+        will-change: transform, opacity;
       }
 
       .letter-scene {
@@ -600,6 +619,10 @@
         animation: fireworkSpark 950ms cubic-bezier(0.2, 0.74, 0.27, 0.98) var(--delay, 0ms) forwards;
       }
 
+      .play .finale-particle {
+        animation: finaleRise var(--duration, 2200ms) cubic-bezier(0.18, 0.76, 0.26, 0.98) var(--delay, 0ms) forwards;
+      }
+
       .stage.ready .letter {
         z-index: 12;
         opacity: 1;
@@ -617,6 +640,19 @@
 
       .stage.ready .float-particle {
         animation: floatRise var(--duration, 2600ms) ease-out var(--delay, 0ms) forwards;
+      }
+
+      .stage.play::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(circle at 50% 58%, rgba(255, 237, 183, 0.36), transparent 36%),
+          radial-gradient(circle at 50% 18%, rgba(255, 207, 116, 0.24), transparent 46%);
+        opacity: 0;
+        z-index: 12;
+        animation: finaleFlash 980ms ease-out 3180ms forwards;
       }
 
       .stage.ready .flower {
@@ -855,6 +891,38 @@
         }
       }
 
+      @keyframes finaleRise {
+        0% {
+          opacity: 0;
+          transform: translateY(0) scale(0.55) rotate(var(--rot, 0deg));
+        }
+        18% {
+          opacity: 0.98;
+        }
+        100% {
+          opacity: 0;
+          transform:
+            translate(
+              var(--dx, 0px),
+              calc(-1 * var(--lift, 240px))
+            )
+            scale(1.06)
+            rotate(calc(var(--rot, 0deg) + var(--spin, 28deg)));
+        }
+      }
+
+      @keyframes finaleFlash {
+        0% {
+          opacity: 0;
+        }
+        22% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
       @keyframes hongbaoRiseIn {
         0% {
           transform: translateX(-50%) translateY(170px) scale(0.92);
@@ -1025,7 +1093,8 @@
         .play .flower,
         .play .firework,
         .play .firework-core,
-        .play .firework-spark {
+        .play .firework-spark,
+        .play .finale-particle {
           opacity: 0;
           transform: none;
         }
@@ -1035,7 +1104,7 @@
   <body>
     <main class="wrap">
       <h1 class="title">Happy Chinese New Year Annie</h1>
-      <p class="subtitle">I love you so much</p>
+      <p class="subtitle">I love you so much, don't ever forget that baby</p>
       <p class="hint">Click the hongbao to open it</p>
 
       <div class="controls">
@@ -1107,6 +1176,55 @@
             <span class="firework-spark" style="--angle: 270deg;"></span>
             <span class="firework-spark" style="--angle: 315deg;"></span>
           </div>
+          <div class="firework" style="--x: 30%; --y: 20%; --delay: 3080ms;">
+            <span class="firework-core"></span>
+            <span class="firework-spark" style="--angle: 0deg;"></span>
+            <span class="firework-spark" style="--angle: 45deg;"></span>
+            <span class="firework-spark" style="--angle: 90deg;"></span>
+            <span class="firework-spark" style="--angle: 135deg;"></span>
+            <span class="firework-spark" style="--angle: 180deg;"></span>
+            <span class="firework-spark" style="--angle: 225deg;"></span>
+            <span class="firework-spark" style="--angle: 270deg;"></span>
+            <span class="firework-spark" style="--angle: 315deg;"></span>
+          </div>
+          <div class="firework" style="--x: 66%; --y: 16%; --delay: 3380ms;">
+            <span class="firework-core"></span>
+            <span class="firework-spark" style="--angle: 0deg;"></span>
+            <span class="firework-spark" style="--angle: 45deg;"></span>
+            <span class="firework-spark" style="--angle: 90deg;"></span>
+            <span class="firework-spark" style="--angle: 135deg;"></span>
+            <span class="firework-spark" style="--angle: 180deg;"></span>
+            <span class="firework-spark" style="--angle: 225deg;"></span>
+            <span class="firework-spark" style="--angle: 270deg;"></span>
+            <span class="firework-spark" style="--angle: 315deg;"></span>
+          </div>
+          <div class="firework" style="--x: 50%; --y: 26%; --delay: 3620ms;">
+            <span class="firework-core"></span>
+            <span class="firework-spark" style="--angle: 0deg;"></span>
+            <span class="firework-spark" style="--angle: 45deg;"></span>
+            <span class="firework-spark" style="--angle: 90deg;"></span>
+            <span class="firework-spark" style="--angle: 135deg;"></span>
+            <span class="firework-spark" style="--angle: 180deg;"></span>
+            <span class="firework-spark" style="--angle: 225deg;"></span>
+            <span class="firework-spark" style="--angle: 270deg;"></span>
+            <span class="firework-spark" style="--angle: 315deg;"></span>
+          </div>
+        </div>
+
+        <div class="finale-layer" aria-hidden="true">
+          <span class="finale-particle" style="--x: 10%; --y: 12%; --delay: 2860ms; --duration: 2300ms; --dx: -26px; --lift: 270px; --rot: -8deg; --spin: -46deg;"></span>
+          <span class="finale-particle" style="--x: 15%; --y: 10%; --delay: 2960ms; --duration: 2100ms; --dx: 18px; --lift: 250px; --rot: 8deg; --spin: 38deg;"></span>
+          <span class="finale-particle" style="--x: 22%; --y: 14%; --delay: 3060ms; --duration: 2200ms; --dx: -14px; --lift: 260px; --rot: -12deg; --spin: -42deg;"></span>
+          <span class="finale-particle" style="--x: 29%; --y: 12%; --delay: 3160ms; --duration: 2350ms; --dx: 22px; --lift: 290px; --rot: 6deg; --spin: 44deg;"></span>
+          <span class="finale-particle" style="--x: 36%; --y: 10%; --delay: 3260ms; --duration: 2100ms; --dx: -20px; --lift: 250px; --rot: -10deg; --spin: -36deg;"></span>
+          <span class="finale-particle" style="--x: 43%; --y: 14%; --delay: 3340ms; --duration: 2450ms; --dx: 16px; --lift: 310px; --rot: 12deg; --spin: 40deg;"></span>
+          <span class="finale-particle" style="--x: 50%; --y: 11%; --delay: 3400ms; --duration: 2300ms; --dx: -10px; --lift: 300px; --rot: -6deg; --spin: -34deg;"></span>
+          <span class="finale-particle" style="--x: 57%; --y: 15%; --delay: 3460ms; --duration: 2200ms; --dx: 14px; --lift: 270px; --rot: 9deg; --spin: 37deg;"></span>
+          <span class="finale-particle" style="--x: 64%; --y: 12%; --delay: 3540ms; --duration: 2400ms; --dx: -24px; --lift: 320px; --rot: -9deg; --spin: -44deg;"></span>
+          <span class="finale-particle" style="--x: 71%; --y: 9%; --delay: 3620ms; --duration: 2200ms; --dx: 20px; --lift: 280px; --rot: 10deg; --spin: 40deg;"></span>
+          <span class="finale-particle" style="--x: 78%; --y: 13%; --delay: 3700ms; --duration: 2100ms; --dx: -16px; --lift: 250px; --rot: -11deg; --spin: -36deg;"></span>
+          <span class="finale-particle" style="--x: 84%; --y: 12%; --delay: 3780ms; --duration: 2350ms; --dx: 12px; --lift: 285px; --rot: 8deg; --spin: 34deg;"></span>
+          <span class="finale-particle" style="--x: 90%; --y: 14%; --delay: 3860ms; --duration: 2250ms; --dx: -18px; --lift: 295px; --rot: -8deg; --spin: -38deg;"></span>
         </div>
 
         <div class="celebration-layer" aria-hidden="true">
@@ -1124,6 +1242,18 @@
           <span class="float-particle" style="--delay: 900ms; --duration: 2600ms; --size: 8px; --tx: 24px; --lift: 260px;"></span>
           <span class="float-particle" style="--delay: 1040ms; --duration: 3000ms; --size: 10px; --tx: 70px; --lift: 310px;"></span>
           <span class="float-particle" style="--delay: 1180ms; --duration: 2800ms; --size: 7px; --tx: 114px; --lift: 280px;"></span>
+          <span class="burst-particle" style="--delay: 1420ms; --size: 7px; --tx: -126px; --ty: -128px;"></span>
+          <span class="burst-particle" style="--delay: 1500ms; --size: 9px; --tx: 132px; --ty: -142px;"></span>
+          <span class="burst-particle" style="--delay: 1580ms; --size: 6px; --tx: -92px; --ty: -196px;"></span>
+          <span class="burst-particle" style="--delay: 1660ms; --size: 8px; --tx: 94px; --ty: -188px;"></span>
+          <span class="burst-particle" style="--delay: 1740ms; --size: 7px; --tx: -44px; --ty: -222px;"></span>
+          <span class="burst-particle" style="--delay: 1820ms; --size: 9px; --tx: 48px; --ty: -228px;"></span>
+          <span class="float-particle" style="--delay: 1360ms; --duration: 2900ms; --size: 8px; --tx: -138px; --lift: 330px;"></span>
+          <span class="float-particle" style="--delay: 1460ms; --duration: 2700ms; --size: 6px; --tx: -98px; --lift: 300px;"></span>
+          <span class="float-particle" style="--delay: 1560ms; --duration: 3150ms; --size: 10px; --tx: -54px; --lift: 355px;"></span>
+          <span class="float-particle" style="--delay: 1660ms; --duration: 2850ms; --size: 8px; --tx: 52px; --lift: 325px;"></span>
+          <span class="float-particle" style="--delay: 1760ms; --duration: 3050ms; --size: 9px; --tx: 106px; --lift: 345px;"></span>
+          <span class="float-particle" style="--delay: 1860ms; --duration: 2900ms; --size: 7px; --tx: 146px; --lift: 320px;"></span>
         </div>
 
         <div class="letter-scene">
