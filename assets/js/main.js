@@ -157,7 +157,7 @@ const DEFAULT_FORUM_POSTS = [
 ];
 const API_BASE = "https://api.pqcnerd.com";
 const SESSION_KEY = "pqcnerd-session";
-const ADMIN_EMAIL = "admin@pqcnerd.com";
+const ADMIN_EMAIL = "pqcnerd@gmail.com";
 
 const PROFILE_STATE = {
   isLoggedIn: false,
