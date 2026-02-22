@@ -158,6 +158,7 @@ const DEFAULT_FORUM_POSTS = [
 const API_BASE = "https://api.pqcnerd.com";
 const SESSION_KEY = "pqcnerd-session";
 const ADMIN_EMAIL = "pqcnerd@gmail.com";
+const STORAGE_AVAILABLE = checkStorageAvailability();
 
 const PROFILE_STATE = {
   isLoggedIn: false,
@@ -212,6 +213,52 @@ const settingsState = {
   fontSize: "medium",
 };
 const SETTINGS_KEY = "pqcnerd-settings";
+
+function checkStorageAvailability() {
+  try {
+    const testKey = "__pqc_storage_test__";
+    window.localStorage.setItem(testKey, "1");
+    window.localStorage.removeItem(testKey);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function storageGet(key) {
+  if (!STORAGE_AVAILABLE) {
+    return null;
+  }
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function storageSet(key, value) {
+  if (!STORAGE_AVAILABLE) {
+    return false;
+  }
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function storageRemove(key) {
+  if (!STORAGE_AVAILABLE) {
+    return false;
+  }
+  try {
+    localStorage.removeItem(key);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   ui.tabBar = document.querySelector(".tab-bar");
@@ -617,12 +664,12 @@ function initSettings() {
 }
 
 function loadSettings() {
-  if (!window.localStorage) {
+  if (!STORAGE_AVAILABLE) {
     return { ...settingsState };
   }
 
   try {
-    const raw = localStorage.getItem(SETTINGS_KEY);
+    const raw = storageGet(SETTINGS_KEY);
     if (!raw) {
       return { ...settingsState };
     }
@@ -638,10 +685,10 @@ function loadSettings() {
 }
 
 function saveSettings() {
-  if (!window.localStorage) {
+  if (!STORAGE_AVAILABLE) {
     return;
   }
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settingsState));
+  storageSet(SETTINGS_KEY, JSON.stringify(settingsState));
 }
 
 function applySettings() {
@@ -754,12 +801,12 @@ async function fetchDailyQuote() {
 }
 
 function getCachedQuote() {
-  if (!window.localStorage) {
+  if (!STORAGE_AVAILABLE) {
     return null;
   }
 
   try {
-    const raw = localStorage.getItem(QUOTE_CACHE_KEY);
+    const raw = storageGet(QUOTE_CACHE_KEY);
     if (!raw) {
       return null;
     }
@@ -777,7 +824,7 @@ function getCachedQuote() {
 }
 
 function cacheQuote(quote) {
-  if (!window.localStorage) {
+  if (!STORAGE_AVAILABLE) {
     return;
   }
   const payload = {
@@ -785,7 +832,7 @@ function cacheQuote(quote) {
     text: quote.text,
     author: quote.author,
   };
-  localStorage.setItem(QUOTE_CACHE_KEY, JSON.stringify(payload));
+  storageSet(QUOTE_CACHE_KEY, JSON.stringify(payload));
 }
 
 function displayQuote(quote) {
@@ -842,26 +889,54 @@ function handleDotClick(index) {
 }
 
 function handleRefreshClick() {
-  fetchDailyQuote()
+  const current = quoteHistory[currentQuoteIndex] || null;
+  fetchFreshQuote(current)
     .then((quote) => {
       cacheQuote(quote);
       addQuoteToHistory(quote);
       displayQuote(quote);
     })
     .catch(() => {
-      fetchLocalQuote()
-        .then((fallback) => {
-          cacheQuote(fallback);
-          addQuoteToHistory(fallback);
-          displayQuote(fallback);
-        })
-        .catch(() => {
-          const fallback = pickFallbackQuote();
-          cacheQuote(fallback);
-          addQuoteToHistory(fallback);
-          displayQuote(fallback);
-        });
+      // Keep current quote if every source fails.
     });
+}
+
+async function fetchFreshQuote(currentQuote) {
+  try {
+    const remote = await fetchDailyQuote();
+    if (!isSameQuote(remote, currentQuote)) {
+      return remote;
+    }
+  } catch {
+    // Try local source below.
+  }
+
+  try {
+    for (let i = 0; i < 5; i += 1) {
+      const local = await fetchLocalQuote();
+      if (!isSameQuote(local, currentQuote)) {
+        return local;
+      }
+    }
+  } catch {
+    // Try static fallback below.
+  }
+
+  const alternatives = FALLBACK_QUOTES.filter(
+    (item) => !isSameQuote(item, currentQuote),
+  );
+  if (alternatives.length > 0) {
+    const index = Math.floor(Math.random() * alternatives.length);
+    return alternatives[index];
+  }
+  return pickFallbackQuote();
+}
+
+function isSameQuote(left, right) {
+  if (!left || !right) {
+    return false;
+  }
+  return left.text === right.text && left.author === right.author;
 }
 
 async function fetchLocalQuote() {
@@ -914,7 +989,11 @@ function initForum() {
 
 async function refreshForumPosts() {
   try {
-    const response = await fetch(`${API_BASE}/api/forum`);
+    const token = getStoredSessionToken();
+    const headers = token
+      ? { Authorization: `Bearer ${token}` }
+      : undefined;
+    const response = await fetch(`${API_BASE}/api/forum/feed`, { headers });
     if (!response.ok) {
       return;
     }
@@ -936,9 +1015,11 @@ function normalizeRemoteForumPost(post, index) {
   const createdAt = post?.created_at ? new Date(post.created_at) : new Date();
   return {
     id: post?.id ? `db-${post.id}` : `db-generated-${Date.now()}-${index}`,
+    sourceId: Number.isFinite(post?.id) ? post.id : null,
     title: post?.title || "Untitled Post",
     author: post?.author || "guest",
     userId: post?.user_id ?? null,
+    userReaction: post?.user_reaction || null,
     date: formatDate(createdAt),
     content: post?.content || "",
     likes: Number.isFinite(post?.likes) ? post.likes : 0,
@@ -954,8 +1035,10 @@ function cloneDefaultPosts() {
 function normalizeForumPost(post, index) {
   return {
     id: post?.id || `post-seeded-${Date.now()}-${index}`,
+    sourceId: null,
     title: post?.title || "Untitled Post",
     author: post?.author || "guest",
+    userReaction: null,
     date: post?.date || formatDate(new Date()),
     content: post?.content || "",
     likes: Number.isFinite(post?.likes) ? post.likes : 0,
@@ -965,15 +1048,15 @@ function normalizeForumPost(post, index) {
 
 function loadOrSeedPosts() {
   const seeded = cloneDefaultPosts();
-  if (!window.localStorage) {
+  if (!STORAGE_AVAILABLE) {
     return seeded;
   }
 
   try {
-    const raw = localStorage.getItem(FORUM_KEY);
+    const raw = storageGet(FORUM_KEY);
     const parsed = raw ? JSON.parse(raw) : [];
     if (!Array.isArray(parsed) || parsed.length === 0) {
-      localStorage.setItem(FORUM_KEY, JSON.stringify(seeded));
+      storageSet(FORUM_KEY, JSON.stringify(seeded));
       return seeded;
     }
 
@@ -981,12 +1064,12 @@ function loadOrSeedPosts() {
       parsed.length === 1 &&
       (parsed[0]?.id === "welcome-post" || parsed[0]?.title === "Welcome to the PQC Forum");
     if (hasLegacyWelcomeOnly) {
-      localStorage.setItem(FORUM_KEY, JSON.stringify(seeded));
+      storageSet(FORUM_KEY, JSON.stringify(seeded));
       return seeded;
     }
 
     const normalized = parsed.map(normalizeForumPost);
-    localStorage.setItem(FORUM_KEY, JSON.stringify(normalized));
+    storageSet(FORUM_KEY, JSON.stringify(normalized));
     return normalized;
   } catch (error) {
     return seeded;
@@ -994,10 +1077,10 @@ function loadOrSeedPosts() {
 }
 
 function savePosts(posts) {
-  if (!window.localStorage) {
+  if (!STORAGE_AVAILABLE) {
     return;
   }
-  localStorage.setItem(FORUM_KEY, JSON.stringify(posts));
+  storageSet(FORUM_KEY, JSON.stringify(posts));
 }
 
 function renderForumPosts(posts) {
@@ -1031,11 +1114,13 @@ function renderForumPosts(posts) {
     likeButton.type = "button";
     likeButton.className = "forum-reaction";
     likeButton.textContent = `Like (${post.likes ?? 0})`;
+    likeButton.classList.toggle("active", post.userReaction === "like");
 
     const dislikeButton = document.createElement("button");
     dislikeButton.type = "button";
     dislikeButton.className = "forum-reaction";
     dislikeButton.textContent = `Dislike (${post.dislikes ?? 0})`;
+    dislikeButton.classList.toggle("active", post.userReaction === "dislike");
 
     actions.append(likeButton, dislikeButton);
     card.append(title, meta, preview, actions);
@@ -1051,29 +1136,51 @@ function renderForumPosts(posts) {
 
     likeButton.addEventListener("click", (event) => {
       event.stopPropagation();
-      applyReaction(post.id, "like");
+      applyReaction(post, "like");
     });
 
     dislikeButton.addEventListener("click", (event) => {
       event.stopPropagation();
-      applyReaction(post.id, "dislike");
+      applyReaction(post, "dislike");
     });
   });
 }
 
-function applyReaction(postId, reaction) {
-  const posts = loadOrSeedPosts();
-  const updated = posts.map((post) => {
-    if (post.id !== postId) {
-      return post;
+async function applyReaction(post, reaction) {
+  if (!PROFILE_STATE.isLoggedIn) {
+    alert("Please log in to react to posts.");
+    return;
+  }
+  if (!post?.sourceId) {
+    alert("This post cannot be reacted to yet. Try again after refresh.");
+    return;
+  }
+  const token = getStoredSessionToken();
+  if (!token) {
+    alert("Your session expired. Please log in again.");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${API_BASE}/api/forum/${post.sourceId}/reaction`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ reaction }),
+      },
+    );
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      throw new Error(payload?.detail || "Unable to save reaction.");
     }
-    if (reaction === "like") {
-      return { ...post, likes: (post.likes ?? 0) + 1 };
-    }
-    return { ...post, dislikes: (post.dislikes ?? 0) + 1 };
-  });
-  savePosts(updated);
-  renderForumPosts(updated);
+    await refreshForumPosts();
+  } catch (error) {
+    alert(error?.message || "Unable to save reaction right now.");
+  }
 }
 
 function togglePost(card, post) {
@@ -1439,21 +1546,15 @@ async function restoreSession() {
 }
 
 function getStoredSessionToken() {
-  return window.localStorage?.getItem(SESSION_KEY) || "";
+  return storageGet(SESSION_KEY) || "";
 }
 
 function setStoredSessionToken(token) {
-  if (!window.localStorage) {
-    return;
-  }
-  localStorage.setItem(SESSION_KEY, token);
+  storageSet(SESSION_KEY, token);
 }
 
 function clearStoredSessionToken() {
-  if (!window.localStorage) {
-    return;
-  }
-  localStorage.removeItem(SESSION_KEY);
+  storageRemove(SESSION_KEY);
 }
 
 function renderProfileAvatar(avatarData) {
@@ -1496,22 +1597,35 @@ function initPersonalSection() {
     link.addEventListener("click", (event) => event.preventDefault());
   });
 
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const guess = messengerInput.value.trim().toLowerCase();
-    const isCorrect = guess === "signal";
+    const guess = messengerInput.value.trim();
+    if (!guess) {
+      return;
+    }
 
     status.classList.remove("success", "error");
-    if (isCorrect) {
+    status.textContent = "Checking...";
+
+    try {
+      const response = await fetch(`${API_BASE}/api/personal/unlock`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ guess }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || !payload?.ok) {
+        throw new Error(payload?.detail || "Access denied.");
+      }
       linksSection.classList.remove("hidden");
       status.classList.add("success");
       status.textContent = "Correct. Access granted.";
       return;
+    } catch {
+      linksSection.classList.add("hidden");
+      status.classList.add("error");
+      status.textContent = "Access denied.";
     }
-
-    linksSection.classList.add("hidden");
-    status.classList.add("error");
-    status.textContent = "Access denied. Hint: secure and private messenger.";
   });
 }
 

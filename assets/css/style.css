@@ -965,6 +965,12 @@ body {
   background: rgba(56, 189, 248, 0.2);
 }
 
+.forum-reaction.active {
+  border-color: rgba(56, 189, 248, 0.9);
+  color: var(--text-primary);
+  background: rgba(56, 189, 248, 0.28);
+}
+
 .forum-disclaimer {
   margin: 0;
   font-size: 0.85rem;
