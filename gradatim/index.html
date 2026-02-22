@@ -346,7 +346,10 @@
         grid-template-columns: 1fr 1fr;
         gap: 1.5rem;
       }
-      @media (max-width: 600px) { .comparison { grid-template-columns: 1fr; } }
+      @media (max-width: 600px) {
+        .comparison { grid-template-columns: 1fr; }
+        .two-col { grid-template-columns: 1fr !important; }
+      }
       .comp-col { display: flex; flex-direction: column; gap: 0.75rem; }
       .comp-label {
         font-size: 0.75rem;
@@ -511,6 +514,10 @@
         .screenshots-section { padding: 3rem 1.25rem; }
         .cta-strip { padding: 3.5rem 1.25rem; }
         .nav { padding: 0 1.25rem; gap: 0.75rem; }
+        .nav-links-md { display: none; }
+      }
+      @media (min-width: 769px) {
+        .nav-links-md { display: flex; gap: 1.25rem; align-items: center; }
       }
     </style>
   </head>
@@ -523,6 +530,11 @@
         <img src="assets/logo.png" alt="Gradatim" />
         <span>Gradatim</span>
       </a>
+      <span class="nav-links-md">
+        <a href="#trace" style="color:var(--muted);text-decoration:none;font-size:0.78rem;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">Pipeline</a>
+        <a href="#architecture" style="color:var(--muted);text-decoration:none;font-size:0.78rem;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">Architecture</a>
+        <a href="#codebase" style="color:var(--muted);text-decoration:none;font-size:0.78rem;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--muted)'">Codebase</a>
+      </span>
       <a href="../Gradatim Setup 0.1.0.exe" class="nav-dl" download>
         ↓ Download v0.1.0
       </a>
@@ -541,7 +553,7 @@
         <a href="../Gradatim Setup 0.1.0.exe" class="btn-primary" download>
           ↓ Download for Windows
         </a>
-        <a href="#how-it-works" class="btn-secondary">See how it works</a>
+        <a href="#trace" class="btn-secondary">See the pipeline</a>
       </div>
       <div class="badge-row">
         <span class="badge badge-blue">Electron + Monaco</span>
@@ -711,6 +723,525 @@
             <h3>Save, run, ship</h3>
             <p>Hit <kbd style="background:rgba(148,163,184,0.12);border:1px solid var(--glass-border);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem">Ctrl+S</kbd>, open the integrated terminal, compile and run — never leave the app.</p>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         TECHNICAL DEEP-DIVE: THE RUST CORE PIPELINE
+         ═══════════════════════════════════════════════════════════════ -->
+
+    <!-- PIPELINE BANNER -->
+    <div style="background:rgba(10,15,35,0.7);border-top:1px solid var(--glass-border);border-bottom:1px solid var(--glass-border);padding:5rem 2rem;">
+      <div style="max-width:1100px;margin:0 auto;">
+        <div class="section-header centered">
+          <div class="section-label">Engineering</div>
+          <h2 class="section-title">The Rust Core — A 7-Stage Compiler Pipeline</h2>
+          <p class="section-desc" style="margin:0 auto;">
+            Gradatim does not pass raw English directly to an AI. Before any network call is made,
+            four stages of pure Rust analysis — classification, hint extraction, variable context building,
+            and semantic validation — run locally in under 5 ms. The AI receives a structured prompt
+            constructed from typed, validated facts about your code. This is what makes it accurate.
+          </p>
+        </div>
+
+        <div style="margin-top:2.5rem;">
+          <pre style="max-width:780px;margin:0 auto;font-size:0.72rem;line-height:1.7;"><code><span class="hl-muted">  POST /translate-line  ← JSON payload from editor</span>
+         │
+         ▼
+  <span class="hl-accent">╔══════════════════════════════════════════════════════════╗</span>
+  <span class="hl-accent">║  STAGE 1 — INTENT CLASSIFICATION                         ║</span>
+  <span class="hl-accent">║</span>  <span class="hl-muted">Is this a statement or a project-level request?</span>          <span class="hl-accent">║</span>
+  <span class="hl-accent">║</span>  <span class="hl-muted">"build a game" → REJECTED  |  "declare x" → ALLOWED</span>     <span class="hl-accent">║</span>
+  <span class="hl-accent">╚══════════════════════════════════════════════════════════╝</span>
+         │
+         ▼
+  <span class="hl-purple">╔══════════════════════════════════════════════════════════╗</span>
+  <span class="hl-purple">║  STAGE 2 — HINT EXTRACTION                               ║</span>
+  <span class="hl-purple">║</span>  <span class="hl-muted">English → typed StatementHint enum  (40+ variants)</span>      <span class="hl-purple">║</span>
+  <span class="hl-purple">║</span>  <span class="hl-muted">Synonym engine normalises phrasing first (476 entries)</span>  <span class="hl-purple">║</span>
+  <span class="hl-purple">╚══════════════════════════════════════════════════════════╝</span>
+         │
+         ▼
+  <span class="hl-accent">╔══════════════════════════════════════════════════════════╗</span>
+  <span class="hl-accent">║  STAGE 3 — VARIABLE CONTEXT BUILDING                     ║</span>
+  <span class="hl-accent">║</span>  <span class="hl-muted">Scan code_before → extract declared names & types</span>       <span class="hl-accent">║</span>
+  <span class="hl-accent">║</span>  <span class="hl-muted">{ "score" → "int",  "max" → "int",  "i" → "int" }</span>      <span class="hl-accent">║</span>
+  <span class="hl-accent">╚══════════════════════════════════════════════════════════╝</span>
+         │
+         ▼
+  <span class="hl-purple">╔══════════════════════════════════════════════════════════╗</span>
+  <span class="hl-purple">║  STAGE 4 — READ VALIDATION                               ║</span>
+  <span class="hl-purple">║</span>  <span class="hl-muted">Does this hint read a variable that doesn't exist yet?</span>  <span class="hl-purple">║</span>
+  <span class="hl-purple">║</span>  <span class="hl-muted">"bonus" not in context → 400 before wasting an AI call</span> <span class="hl-purple">║</span>
+  <span class="hl-purple">╚══════════════════════════════════════════════════════════╝</span>
+         │
+         ├─────────────────────┐
+         │ is_trivial()?       │ NOT trivial
+         │ YES                 ▼
+         ▼          <span class="hl-accent">╔═══════════════════════════════╗</span>
+  <span class="hl-green">╔════════════════╗</span>  <span class="hl-accent">║  STAGE 6 — AI PROMPT          ║</span>
+  <span class="hl-green">║  STAGE 5       ║</span>  <span class="hl-accent">║  Structured hint + context    ║</span>
+  <span class="hl-green">║  RULE-BASED    ║</span>  <span class="hl-accent">║  sent as engineered prompt    ║</span>
+  <span class="hl-green">║  TRANSLATION   ║</span>  <span class="hl-accent">║  AI returns 1 line of code    ║</span>
+  <span class="hl-green">╚════════╦═══════╝</span>  <span class="hl-accent">╚═══════════════╦═══════════════╝</span>
+           │                          │  AI fail? → Stage 5 fallback
+           └──────────────────────────┘
+                        │
+                        ▼
+  <span class="hl-accent">╔══════════════════════════════════════════════════════════╗</span>
+  <span class="hl-accent">║  STAGE 7 — RESPONSE VALIDATION                           ║</span>
+  <span class="hl-accent">║</span>  <span class="hl-muted">Reject markdown, URLs, wrong-language bleed, length cap</span> <span class="hl-accent">║</span>
+  <span class="hl-accent">║</span>  <span class="hl-muted">AI output validated before any of it reaches the editor</span> <span class="hl-accent">║</span>
+  <span class="hl-accent">╚══════════════════════════════════════════════════════════╝</span>
+         │
+         ▼
+  <span class="hl-green">200 OK  { "kind": "ok", "code": "if (a > b) { printf(\"winner\\n\"); }" }</span></code></pre>
+        </div>
+
+        <div class="feature-grid" style="margin-top:2.5rem;">
+          <div class="feature-card" style="border-color:rgba(56,189,248,0.3);">
+            <div class="feature-icon">🔬</div>
+            <h3>Pure Rust analysis first</h3>
+            <p>4 stages run locally in &lt;5 ms before any network call is made. Most errors are caught and reported before the AI is ever contacted.</p>
+          </div>
+          <div class="feature-card" style="border-color:rgba(167,139,250,0.3);">
+            <div class="feature-icon">🧩</div>
+            <h3>40+ typed hint variants</h3>
+            <p>The <code>StatementHint</code> enum is a type-safe intermediate representation — a compiler IR for natural language. The AI receives structured facts, not raw text.</p>
+          </div>
+          <div class="feature-card" style="border-color:rgba(52,211,153,0.3);">
+            <div class="feature-icon">🛡️</div>
+            <h3>Fallback guarantee</h3>
+            <p>If AI fails or returns garbage, rule-based translation kicks in. If that can't handle it, a <code>// TODO</code> comment is emitted. The editor always gets something back.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- END-TO-END TRACE -->
+    <section class="section" id="trace">
+      <div class="section-header">
+        <div class="section-label">Worked Example</div>
+        <h2 class="section-title">One English line, fully traced</h2>
+        <p class="section-desc">
+          This is exactly what happens inside Gradatim when you type <em>"if a is greater than b, print winner"</em>
+          and press Enter — every stage, every decision, every millisecond.
+        </p>
+      </div>
+
+      <pre style="font-size:0.72rem;line-height:1.75;"><code><span class="hl-muted">  ┌──────────────────────────────────────────────────────────────────────┐</span>
+<span class="hl-muted">  │  INPUT                                                               │</span>
+<span class="hl-muted">  │</span>  english_line: <span class="hl-accent">"if a is greater than b, print winner"</span>               <span class="hl-muted">│</span>
+<span class="hl-muted">  │</span>  code_before:  <span class="hl-green">"int a = 5;\nint b = 0;\n"</span>                           <span class="hl-muted">│</span>
+<span class="hl-muted">  │</span>  language:     <span class="hl-purple">"c"</span>   provider: <span class="hl-purple">"gemini"</span>                           <span class="hl-muted">│</span>
+<span class="hl-muted">  └──────────────────────────────────────────────────────────────────────┘</span>
+
+  <span class="hl-accent">STAGE 1 — INTENT CLASSIFICATION</span>
+  classify(<span class="hl-accent">"if a is greater than b, print winner"</span>)
+    "if" ∈ STATEMENT_INDICATORS ✓ → <span class="hl-green">Intent::Statement</span>
+
+  <span class="hl-purple">STAGE 2 — HINT EXTRACTION</span>
+  Synonym pass: <span class="hl-muted">"greater than"</span> → <span class="hl-accent">">"</span>  (476-entry synonym table)
+  Trigger keyword: <span class="hl-accent">"if"</span> → Conditional branch
+  Condition extracted: <span class="hl-accent">"a > b"</span>
+  Then-action extracted: <span class="hl-accent">"print winner"</span>
+
+  StatementHint::Conditional {
+      condition:   <span class="hl-accent">"a > b"</span>,
+      then_action: Some(<span class="hl-accent">"print winner"</span>),
+      else_action: None,
+      is_else_if:  false,
+  }
+
+  <span class="hl-accent">STAGE 3 — VARIABLE CONTEXT BUILDING</span>
+  VariableContext::from_code(<span class="hl-green">"int a = 5;\nint b = 0;\n"</span>)
+    → declared: { <span class="hl-green">"a" → "int"</span>,  <span class="hl-green">"b" → "int"</span> }
+
+  <span class="hl-purple">STAGE 4 — READ VALIDATION</span>
+  validate_reads(Conditional { condition: "a > b" }, context)
+    reads: [<span class="hl-accent">"a"</span>, <span class="hl-accent">"b"</span>]
+    "a" ∈ declared <span class="hl-green">✓</span>     "b" ∈ declared <span class="hl-green">✓</span>
+    → <span class="hl-green">ValidationResult { is_valid: true }</span>
+
+  <span class="hl-accent">STAGE 5 — TRIVIAL CHECK</span>
+  Conditional.is_trivial() → <span class="hl-muted">false</span>  (condition requires AI for C-correct syntax)
+    → Skip rule-based path, proceed to AI
+
+  <span class="hl-purple">STAGE 6 — AI PROMPT CONSTRUCTION</span>
+  PromptContext assembled:
+
+    <span class="hl-muted">SYSTEM:</span> <span class="hl-accent">"You are a precise code translator. Output ONLY code."</span>
+    <span class="hl-muted">USER:</span>
+      TARGET LANGUAGE: C
+      EXTRACTED HINTS:
+        type: Conditional
+        condition: <span class="hl-accent">"a > b"</span>
+        then_action: <span class="hl-accent">"print winner"</span>
+      INSTRUCTION:
+        if a is greater than b, print winner
+      PRECEDING CODE:
+        int a = 5;
+        int b = 0;
+
+  → Sent to Gemini 2.5 Flash
+  ← Response: <span class="hl-green">"if (a > b) { printf(\"winner\\n\"); }"</span>
+
+  <span class="hl-accent">STAGE 7 — RESPONSE VALIDATION</span>
+  validate_candidate(<span class="hl-green">"if (a > b) { printf(\"winner\\n\"); }"</span>, "c")
+    Not empty              <span class="hl-green">✓</span>   No markdown fences      <span class="hl-green">✓</span>
+    42 chars &lt; 500         <span class="hl-green">✓</span>   No URLs                 <span class="hl-green">✓</span>
+    Braces balanced (1/1)  <span class="hl-green">✓</span>   No console.log          <span class="hl-green">✓</span>
+    → <span class="hl-green">VALID</span>
+
+  <span class="hl-muted">  ┌──────────────────────────────────────────────────────────────────────┐</span>
+  <span class="hl-muted">  │  RESULT                                                              │</span>
+  <span class="hl-muted">  │</span>  Editor line was: <span class="hl-muted">"if a is greater than b, print winner"</span>           <span class="hl-muted">│</span>
+  <span class="hl-muted">  │</span>  Editor line now: <span class="hl-green">if (a > b) { printf("winner\n"); }</span>              <span class="hl-muted">│</span>
+  <span class="hl-muted">  │</span>  Total latency:   <span class="hl-accent">&lt;1 second</span>   (Rust: ~3ms + Gemini: ~600ms)      <span class="hl-muted">│</span>
+  <span class="hl-muted">  └──────────────────────────────────────────────────────────────────────┘</span></code></pre>
+    </section>
+
+    <!-- NATURAL LANGUAGE UNDERSTANDING -->
+    <section class="section" style="padding-top:0;" id="nlp">
+      <div class="section-header">
+        <div class="section-label">Natural Language Understanding</div>
+        <h2 class="section-title">476 synonyms. 50+ stdlib functions. Zero guessing.</h2>
+        <p class="section-desc">
+          Before the AI is involved, a hand-crafted Rust system normalizes everything you type into a
+          canonical form — then matches it against a static database of C standard library functions.
+          Thousands of English phrasings collapse to the same precise intent.
+        </p>
+      </div>
+
+      <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div>
+          <div style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;">The Synonym Engine — <code style="font-size:0.8em;">synonyms.rs</code></div>
+          <pre style="font-size:0.72rem;line-height:1.7;"><code><span class="hl-muted">  All of these mean the same thing:</span>
+
+  <span class="hl-accent">declare / create / make / establish /</span>
+  <span class="hl-accent">instantiate / introduce / spin up /</span>
+  <span class="hl-accent">allocate variable / new variable</span>
+        <span class="hl-muted">↓  synonym engine</span>
+        <span class="hl-green">declare</span>   ← canonical form
+
+  <span class="hl-accent">increase by / add to / plus / sum /</span>
+  <span class="hl-accent">combine / increment by</span>
+        <span class="hl-muted">↓  longest-phrase-first regex</span>
+        <span class="hl-green">add</span>
+
+  <span class="hl-accent">bigger / larger / more / above /</span>
+  <span class="hl-accent">over / exceeding / higher than</span>
+        <span class="hl-muted">↓</span>
+        <span class="hl-green">&gt;</span>
+
+  <span class="hl-accent">output / display / show / write /</span>
+  <span class="hl-accent">log / echo / put / dump / emit</span>
+        <span class="hl-muted">↓</span>
+        <span class="hl-green">print</span>
+
+  <span class="hl-muted">  Phrases matched longest-first to prevent</span>
+  <span class="hl-muted">  shorter synonyms from corrupting longer ones:</span>
+
+  <span class="hl-muted">  "increase by 5"</span>
+    <span class="hl-muted">"increase by"  (10 chars)</span>  <span class="hl-green">← matches</span>
+    <span class="hl-muted">"increase"     ( 8 chars)</span>  <span class="hl-muted">← skipped</span>
+  <span class="hl-green">  → "add 5"    ✓</span>  <span class="hl-muted">(not "increment by 5")</span></code></pre>
+        </div>
+        <div>
+          <div style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;">Stdlib Matching — <code style="font-size:0.8em;">func_matcher.rs</code></div>
+          <pre style="font-size:0.72rem;line-height:1.7;"><code><span class="hl-muted">  Natural phrase → stdlib function, no AI needed:</span>
+
+  <span class="hl-accent">"print formatted: score is %d"</span>
+    + stdio.h included in code_before
+    → <span class="hl-green">printf("score is %d", score);</span>
+
+  <span class="hl-accent">"sort array"</span>      → <span class="hl-green">qsort(...)</span>
+  <span class="hl-accent">"binary search"</span>   → <span class="hl-green">bsearch(...)</span>
+  <span class="hl-accent">"string length"</span>   → <span class="hl-green">strlen(...)</span>
+  <span class="hl-accent">"open file"</span>       → <span class="hl-green">fopen(...)</span>
+  <span class="hl-accent">"allocate"</span>        → <span class="hl-green">malloc(...)</span>
+  <span class="hl-accent">"square root"</span>     → <span class="hl-green">sqrt(...)</span>
+  <span class="hl-accent">"copy string"</span>     → <span class="hl-green">strcpy(...)</span>
+
+  <span class="hl-muted">  Coverage: 50+ functions across 4 headers</span>
+  <span class="hl-muted">  stdio.h · stdlib.h · string.h · math.h</span>
+
+  <span class="hl-muted">  Only functions whose header is actually</span>
+  <span class="hl-muted">  #included in code_before are eligible —</span>
+  <span class="hl-muted">  prevents nonsense matches from functions</span>
+  <span class="hl-muted">  the user hasn't set up.</span></code></pre>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem;">
+        <div style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent-purple);margin-bottom:1rem;">The StatementHint IR — <code style="font-size:0.8em;">hints.rs · ~7,000 lines</code></div>
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem;max-width:780px;">
+          The hint extractor produces a typed enum — not a string, not a JSON blob, but a Rust enum variant with structured fields.
+          Every downstream stage operates on this type-safe intermediate representation.
+          The AI receives it as serialized key-value pairs so it understands <em>what kind of thing to generate</em>
+          before deciding on syntax.
+        </p>
+        <pre style="font-size:0.72rem;line-height:1.7;max-width:880px;"><code><span class="hl-muted">  StatementHint variants  (selected from 40+):</span>
+
+  Declaration    { names, type_hint, qualifiers, initial_value, is_array, array_size }
+  Assignment     { targets, value }
+  Conditional    { condition, then_action, else_action, is_else_if }
+  Loop           { iterator, start, end, collection }
+  While          { condition }
+  FunctionDef    { name, parameters: Vec&lt;(type, name)&gt;, return_type }
+  StructDef      { name, fields: Vec&lt;(type, name)&gt; }
+  FunctionCall   { name, arguments }
+  PointerDecl    { name, pointed_type }
+  Malloc         { target, element_type, count }
+  Free           { pointer }
+  Arithmetic     { operation: Add|Sub|Mul|Div|Mod, left, right, target }
+  Modify         { target, delta: +1|-1 }
+  Include        { header, is_system }
+  Define         { name, value }
+  Return         { value }
+  Print          { content, is_literal }
+  Comment        { text }
+  Switch         { expression }  |  Case { value }  |  Break  |  Continue
+  EnumDef        { name, variants }  |  Typedef  |  Bitwise  |  Cast
+  MainFunction   |  Else  |  EndBlock  |  Unknown { original }
+
+  <span class="hl-muted">  Same hint, different languages:</span>
+  Loop { iterator: "i", start: "0", end: "n" }
+    → C:      <span class="hl-green">for (int i = 0; i &lt; n; i++) {</span>
+    → Python: <span class="hl-green">for i in range(0, n):</span></code></pre>
+      </div>
+    </section>
+
+    <!-- ARCHITECTURE & SECURITY -->
+    <section class="section" style="padding-top:0;" id="architecture">
+      <div class="section-header">
+        <div class="section-label">Architecture & Security</div>
+        <h2 class="section-title">Secure by design, from renderer to shell</h2>
+        <p class="section-desc">
+          Gradatim follows Electron security best practices throughout — isolated renderer, explicit IPC bridge,
+          path-traversal protection on every filesystem call, and a real PTY-backed terminal that behaves
+          exactly like a native shell.
+        </p>
+      </div>
+
+      <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem;">
+        <div>
+          <div style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;">IPC Security Model — <code style="font-size:0.8em;">preload.js</code></div>
+          <pre style="font-size:0.72rem;line-height:1.7;"><code><span class="hl-muted">  contextIsolation: true   nodeIntegration: false</span>
+  <span class="hl-muted">  Renderer has zero access to Node.js APIs directly.</span>
+
+  Renderer            Preload bridge         Main process
+  ──────────          ──────────────         ────────────
+  electronAPI         contextBridge          ipcMain.handle()
+  .translateLine() ──► exposeInMainWorld ──► 'translate-line'
+  .readFile(path)  ──►                  ──► 'fs:read-file'
+  .writeFile(...)  ──►                  ──► 'fs:write-file'
+  .loadSettings()  ──►                  ──► 'settings:load'
+  .window.close()  ──►                  ──► 'window:close'
+
+  <span class="hl-muted">  Path traversal protection on every fs call:</span>
+
+  workspaceRoot: <span class="hl-green">/home/user/project</span>
+  request: readFile(<span class="hl-accent">"../../etc/passwd"</span>)
+    resolved: <span class="hl-accent">/etc/passwd</span>
+    startsWith("/home/user/project") → <span class="hl-muted">false</span>
+    → <span class="hl-green">BLOCKED: "Path escapes workspace boundary"</span></code></pre>
+        </div>
+        <div>
+          <div style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;">Rust Core Lifecycle — <code style="font-size:0.8em;">main.js</code></div>
+          <pre style="font-size:0.72rem;line-height:1.7;"><code><span class="hl-muted">  The Rust server is managed entirely by Electron.</span>
+  <span class="hl-muted">  You never configure a port or start a server manually.</span>
+
+  app.whenReady()
+    │
+    ├── isRustCoreResponsive()?  (1200ms timeout)
+    │     YES → already running (dev reuse) → done
+    │     NO  → startRustCoreProcess()
+    │               isDev? → powershell build.ps1 run
+    │               packaged? → resources/rust-core/rust-core.exe
+    │               spawn + unref() → doesn't block Electron
+    │
+    └── waitForRustCoreReady()
+          poll every 500ms · up to 30 seconds
+          → createMainWindow() → user sees the app
+
+  <span class="hl-muted">  Before every translation IPC call:</span>
+  const ready = await ensureRustCoreReady();
+  if (!ready) return { kind: 'error',
+    message: <span class="hl-accent">'Rust core is starting. Try again.'</span> };
+
+  <span class="hl-muted">  On close: rustCoreProcess.kill()</span>
+  <span class="hl-muted">  No orphaned processes ever left running.</span></code></pre>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent-purple);margin-bottom:1rem;">PTY Terminal — <code style="font-size:0.8em;">pty-manager.js · xterm.js + FitAddon + WebLinksAddon</code></div>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">⌨️</div>
+            <h3>Real PTY sessions via node-pty</h3>
+            <p>Not a fake terminal. Uses <code>node-pty</code> to create genuine pseudoterminal sessions — the same mechanism native terminal emulators use. <code>Ctrl+C</code> sends SIGINT to the foreground process, tab completion and arrow-key history work correctly.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">📐</div>
+            <h3>Auto-resize with FitAddon</h3>
+            <p>The terminal's column/row count automatically resizes to match the panel dimensions when the user drags the splitter — powered by xterm.js FitAddon.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🔗</div>
+            <h3>Clickable URLs via WebLinksAddon</h3>
+            <p>URLs in terminal output — compiler warnings, npm links, git remotes — become clickable with zero configuration.</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🎨</div>
+            <h3>Theme-synced color palettes</h3>
+            <p>Three hand-tuned xterm.js palettes update in real time when the UI theme switches: deep navy for Dark, off-white for Light, near-transparent with high-contrast tokens for Glass.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULE MAP -->
+    <section class="section" style="padding-top:0;" id="codebase">
+      <div class="section-header">
+        <div class="section-label">Codebase</div>
+        <h2 class="section-title">Module map — what's inside</h2>
+        <p class="section-desc">
+          Gradatim is three layers of technology working together: a TypeScript renderer,
+          a Node.js Electron main process, and a compiled Rust microservice.
+          Every module has a single responsibility.
+        </p>
+      </div>
+      <pre style="font-size:0.72rem;line-height:1.75;"><code><span class="hl-accent">  rust-core/src/</span>
+  │
+  ├── <span class="hl-green">main.rs</span>           Axum server entry point. Owns AppState. Routes POST /translate-line.
+  │                     Orchestrates the full 7-stage pipeline per request.
+  │
+  ├── <span class="hl-green">models.rs</span>         Data transfer objects.
+  │                     TranslateLineRequest · TranslateLineResponse · ResponseKind enum
+  │
+  ├── <span class="hl-green">intent.rs</span>         Stage 1: Intent classifier.
+  │                     classify() → Intent::Statement | Intent::Project
+  │                     Keyword lists: PROJECT_VERBS, PROJECT_NOUNS, STATEMENT_INDICATORS
+  │
+  ├── <span class="hl-purple">hints.rs</span>          Stage 2–4: The core module. <span class="hl-accent">~7,000 lines.</span>
+  │                     StatementHint enum — 40+ typed variants
+  │                     extract() — English → StatementHint (with synonym expansion)
+  │                     VariableContext::from_code() — scans code_before for declarations
+  │                     validate_reads() — catches undeclared variable reads
+  │                     is_trivial() — decides AI vs rule-based path
+  │                     to_prompt_hints() — serializes hint for AI prompt construction
+  │
+  ├── <span class="hl-green">translate.rs</span>      Stage 5: Rule-based code generator.
+  │                     translate_with_context() — context-aware code emission
+  │                     CodeStyle { IndentStyle, BraceStyle, NamingConvention }
+  │                     Brace styles: K&amp;R, Allman, GNU, Whitesmiths
+  │                     Handles C + Python output for every hint variant
+  │
+  ├── <span class="hl-green">prompt.rs</span>         Stage 6–7: AI prompt construction + response validation.
+  │                     PromptContext — tail-trims code_before (1200 chars) + code_after (600)
+  │                     SYSTEM_PROMPT — constant, constrains AI to single-line output
+  │                     validate_candidate() — 5-check filter on every AI response
+  │
+  ├── <span class="hl-green">providers.rs</span>      AI provider abstraction layer.
+  │                     GeminiProvider — Google generateContent API
+  │                     OpenAIProvider — /v1/chat/completions (OpenAI, DeepSeek, Ollama, etc.)
+  │                     Per-request api_key + model override support
+  │
+  ├── <span class="hl-purple">synonyms.rs</span>       Synonym expansion. <span class="hl-accent">476 entries.</span> Longest-phrase-first regex ordering.
+  │                     Maps natural variants → canonical keywords before hint extraction.
+  │
+  ├── <span class="hl-purple">func_matcher.rs</span>   stdlib function recognition engine.
+  │                     Matches natural descriptions → C stdlib function calls
+  │                     Header-gated: only functions whose #include is in code_before match
+  │
+  └── <span class="hl-green">stdlib_db.rs</span>      Static database of C stdlib functions with full metadata.
+                        FunctionSpec: name, header, return type, param list, natural patterns
+                        Coverage: 50+ functions  ·  stdio.h · stdlib.h · string.h · math.h
+
+<span class="hl-accent">  electron/</span>
+  ├── <span class="hl-green">main.js</span>           App lifecycle. Spawns + manages Rust core. IPC handlers. PTY manager.
+  ├── <span class="hl-green">preload.js</span>        Secure contextBridge — only named methods exposed to renderer.
+  ├── <span class="hl-green">config-store.js</span>   deepMerge settings persistence in OS userData dir.
+  └── <span class="hl-green">pty-manager.js</span>    node-pty session management. Multiple shells per window.
+
+<span class="hl-accent">  renderer/src/</span>
+  ├── <span class="hl-green">main.ts</span>           Editor init, Monaco config, translation wiring, theme switching.
+  │                     Untranslated line markers with intelligent line-number remapping.
+  │                     Portal-style dropdowns (body-appended, z-index safe).
+  ├── <span class="hl-green">settings.ts</span>       Settings modal UI, provider sync, form handling.
+  └── <span class="hl-green">terminal/</span>         xterm.js multi-tab terminal panel.
+      ├── TerminalPanel.ts      Tab lifecycle manager
+      └── TerminalInstance.ts   xterm.js wrapper with theme palette support</code></pre>
+
+      <div class="feature-grid" style="margin-top:1.5rem;">
+        <div class="feature-card" style="border-color:rgba(56,189,248,0.25);">
+          <div style="font-size:1.8rem;font-weight:700;color:var(--accent);margin-bottom:0.4rem;">~7,000</div>
+          <h3>Lines in hints.rs</h3>
+          <p>The hint extraction module — the intellectual core of the entire pipeline. 40+ enum variants, regex matchers, variable context scanning, and validation logic.</p>
+        </div>
+        <div class="feature-card" style="border-color:rgba(167,139,250,0.25);">
+          <div style="font-size:1.8rem;font-weight:700;color:var(--accent-purple);margin-bottom:0.4rem;">476</div>
+          <h3>Synonym table entries</h3>
+          <p>Hand-curated mappings from natural language variants to canonical keywords, sorted and applied longest-phrase-first using compiled Rust regex patterns.</p>
+        </div>
+        <div class="feature-card" style="border-color:rgba(52,211,153,0.25);">
+          <div style="font-size:1.8rem;font-weight:700;color:var(--green);margin-bottom:0.4rem;">50+</div>
+          <h3>stdlib functions in the DB</h3>
+          <p>Full static metadata for C standard library functions across stdio.h, stdlib.h, string.h, and math.h — enabling no-AI-call translation for common patterns.</p>
+        </div>
+        <div class="feature-card" style="border-color:rgba(56,189,248,0.25);">
+          <div style="font-size:1.8rem;font-weight:700;color:var(--accent);margin-bottom:0.4rem;">&lt;5ms</div>
+          <h3>Local overhead</h3>
+          <p>All 4 local stages — intent, extraction, context, validation — run in under 5 ms. The only latency you feel is the network round-trip to the AI provider.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- EDITOR INTERNALS -->
+    <section class="section" style="padding-top:0;" id="editor-internals">
+      <div class="section-header">
+        <div class="section-label">Editor Internals</div>
+        <h2 class="section-title">Monaco — tuned beyond defaults</h2>
+        <p class="section-desc">
+          Gradatim ships with a non-default Monaco configuration. Three custom themes are hand-tuned
+          to match the glass UI aesthetic. Untranslated lines get animated gutter markers
+          that remap intelligently as you insert and delete lines.
+        </p>
+      </div>
+
+      <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
+        <div>
+          <div style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;">Custom Monaco Configuration</div>
+          <div class="card" style="font-size:0.82rem;line-height:1.8;">
+            <div style="display:grid;grid-template-columns:auto 1fr;gap:0.3rem 1rem;">
+              <span style="color:var(--muted);">bracketPairColorization</span><span style="color:var(--green);">true — each nesting depth gets its own color</span>
+              <span style="color:var(--muted);">smoothScrolling</span><span style="color:var(--green);">true — animated scroll throughout</span>
+              <span style="color:var(--muted);">stickyScroll</span><span style="color:var(--green);">true — current function pinned to top</span>
+              <span style="color:var(--muted);">linkedEditing</span><span style="color:var(--green);">true — rename matching pairs simultaneously</span>
+              <span style="color:var(--muted);">custom themes</span><span style="color:var(--accent);">gradatim-light / gradatim-dark / gradatim-glass</span>
+              <span style="color:var(--muted);">glass bg</span><span style="color:var(--accent);">rgba(0,0,0,0) — frosted panel shows through editor</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;">Untranslated Line Marker Remapping</div>
+          <pre style="font-size:0.72rem;line-height:1.7;"><code><span class="hl-muted">  Each tab carries: translatedLines: Set&lt;number&gt;</span>
+
+  <span class="hl-muted">  Before edit:</span>   translatedLines = { 3, 5, 7 }
+  <span class="hl-muted">  Insert 2 lines at line 4:</span>
+  <span class="hl-muted">  After edit:</span>    translatedLines = { <span class="hl-green">3</span>, <span class="hl-green">7</span>, <span class="hl-green">9</span> }
+
+  <span class="hl-muted">  Line 3 (above insert) → stays at 3</span>
+  <span class="hl-muted">  Lines 5, 7 (below) shift +2 → 7, 9</span>
+
+  <span class="hl-muted">  Previously translated lines don't re-acquire</span>
+  <span class="hl-muted">  markers when new lines are added above them.</span>
+
+  <span class="hl-muted">  Markers persist across tab switches.</span>
+  <span class="hl-muted">  Per-tab state survives the full session.</span></code></pre>
         </div>
       </div>
     </section>
