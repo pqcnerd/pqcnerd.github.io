@@ -750,6 +750,9 @@ function updateSettingsUI() {
 }
 
 function initQuote() {
+  const refreshButton = document.getElementById("quote-refresh");
+  refreshButton?.addEventListener("click", handleRefreshClick);
+
   const cached = getCachedQuote();
   if (cached) {
     addQuoteToHistory(cached);
@@ -777,9 +780,6 @@ function initQuote() {
           displayQuote(fallback);
         });
     });
-
-  const refreshButton = document.getElementById("quote-refresh");
-  refreshButton?.addEventListener("click", handleRefreshClick);
 }
 
 async function fetchDailyQuote() {
@@ -1153,6 +1153,10 @@ async function applyReaction(post, reaction) {
   }
   if (!post?.sourceId) {
     alert("This post cannot be reacted to yet. Try again after refresh.");
+    return;
+  }
+  if (post.userReaction) {
+    alert("You already reacted to this post.");
     return;
   }
   const token = getStoredSessionToken();
