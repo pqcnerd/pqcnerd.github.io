@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gradatim — Write in English. Ship in Code.</title>
+    <meta name="description" content="Gradatim is the AI-powered code editor that translates natural language into production-ready code, one line at a time." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: radial-gradient(circle at top, #172554, #0f172a 55%, #020617 100%);
+        --glass-bg: rgba(15, 23, 42, 0.72);
+        --glass-bg-solid: rgba(15, 23, 42, 0.92);
+        --glass-border: rgba(148, 163, 184, 0.18);
+        --text: #e2e8f0;
+        --muted: #94a3b8;
+        --accent: #38bdf8;
+        --accent-purple: #a78bfa;
+        --accent-glow: rgba(56, 189, 248, 0.25);
+        --green: #34d399;
+        --radius: 14px;
+        --font: "Fira Code", "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      }
+
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      html { scroll-behavior: smooth; }
+
+      body {
+        font-family: var(--font);
+        background: var(--bg) fixed;
+        color: var(--text);
+        min-height: 100vh;
+        line-height: 1.65;
+        overflow-x: hidden;
+      }
+
+      /* ── NAV ────────────────────────────────────────── */
+      .nav {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        z-index: 100;
+        height: 3.5rem;
+        display: flex;
+        align-items: center;
+        padding: 0 2rem;
+        gap: 1.5rem;
+        background: rgba(15, 23, 42, 0.85);
+        border-bottom: 1px solid var(--glass-border);
+        backdrop-filter: blur(16px);
+      }
+      .nav-logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+      .nav-logo img { width: 26px; height: 26px; border-radius: 6px; }
+      .nav-logo span { color: var(--text); font-weight: 600; font-size: 0.95rem; letter-spacing: 0.02em; }
+      .nav-back {
+        margin-right: auto;
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 0.8rem;
+        display: flex; align-items: center; gap: 0.35rem;
+        transition: color 0.15s;
+      }
+      .nav-back:hover { color: var(--accent); }
+      .nav-dl {
+        display: inline-flex; align-items: center; gap: 0.4rem;
+        background: var(--accent);
+        color: #000;
+        font-weight: 600;
+        font-size: 0.8rem;
+        padding: 0.4rem 1rem;
+        border-radius: 999px;
+        text-decoration: none;
+        transition: opacity 0.15s, transform 0.1s;
+      }
+      .nav-dl:hover { opacity: 0.88; transform: translateY(-1px); }
+
+      /* ── HERO ───────────────────────────────────────── */
+      .hero {
+        padding: 9rem 2rem 5rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(56,189,248,0.12), transparent 70%);
+        pointer-events: none;
+      }
+      .hero-logo {
+        width: 96px; height: 96px;
+        border-radius: 22px;
+        margin: 0 auto 1.75rem;
+        display: block;
+        box-shadow: 0 0 40px rgba(56,189,248,0.3), 0 8px 32px rgba(0,0,0,0.4);
+        animation: float 6s ease-in-out infinite;
+      }
+      @keyframes float {
+        0%,100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+      }
+      .hero-eyebrow {
+        display: inline-block;
+        font-size: 0.75rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+        background: rgba(56,189,248,0.12);
+        border: 1px solid rgba(56,189,248,0.3);
+        border-radius: 999px;
+        padding: 0.25rem 0.9rem;
+        margin-bottom: 1.25rem;
+      }
+      .hero h1 {
+        font-size: clamp(2.2rem, 5vw, 3.8rem);
+        font-weight: 700;
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.75rem;
+      }
+      .hero h1 em {
+        font-style: normal;
+        background: linear-gradient(135deg, var(--accent), var(--accent-purple));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero-sub {
+        font-size: clamp(0.95rem, 2vw, 1.15rem);
+        color: var(--muted);
+        max-width: 600px;
+        margin: 0 auto 2.25rem;
+      }
+      .hero-actions { display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+      .btn-primary {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        background: var(--accent);
+        color: #000;
+        font-weight: 700;
+        font-size: 0.95rem;
+        padding: 0.75rem 1.75rem;
+        border-radius: 10px;
+        text-decoration: none;
+        transition: transform 0.15s, box-shadow 0.15s;
+        box-shadow: 0 0 24px rgba(56,189,248,0.35);
+      }
+      .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 32px rgba(56,189,248,0.5); }
+      .btn-secondary {
+        display: inline-flex; align-items: center; gap: 0.5rem;
+        background: transparent;
+        color: var(--text);
+        font-size: 0.9rem;
+        padding: 0.7rem 1.5rem;
+        border-radius: 10px;
+        border: 1px solid var(--glass-border);
+        text-decoration: none;
+        transition: border-color 0.15s, color 0.15s;
+      }
+      .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+      .hero-meta {
+        margin-top: 1.5rem;
+        display: flex; align-items: center; justify-content: center; gap: 1.25rem; flex-wrap: wrap;
+        font-size: 0.75rem;
+        color: var(--muted);
+      }
+      .hero-meta span { display: flex; align-items: center; gap: 0.3rem; }
+
+      /* ── SECTION SHELL ──────────────────────────────── */
+      .section {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 4.5rem 2rem;
+      }
+      .section-sm { padding: 3rem 2rem; }
+      .section-label {
+        font-size: 0.7rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 0.6rem;
+      }
+      .section-title {
+        font-size: clamp(1.5rem, 3vw, 2.2rem);
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.75rem;
+      }
+      .section-desc {
+        color: var(--muted);
+        font-size: 0.95rem;
+        max-width: 640px;
+        line-height: 1.7;
+      }
+      .section-header { margin-bottom: 3rem; }
+      .centered { text-align: center; }
+      .centered .section-desc { margin: 0 auto; }
+
+      /* ── GLASS CARD ─────────────────────────────────── */
+      .card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius);
+        backdrop-filter: blur(12px);
+        padding: 1.75rem;
+      }
+      .card-sm { padding: 1.25rem 1.5rem; }
+
+      /* ── SCREENSHOTS ─────────────────────────────────── */
+      .screenshots-section {
+        padding: 4rem 2rem;
+        background: rgba(15,23,42,0.4);
+        border-top: 1px solid var(--glass-border);
+        border-bottom: 1px solid var(--glass-border);
+      }
+      .screenshots-wrap { max-width: 1100px; margin: 0 auto; }
+      .screenshots-tabs {
+        display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap;
+      }
+      .ss-tab {
+        padding: 0.35rem 1rem;
+        border: 1px solid var(--glass-border);
+        background: transparent;
+        color: var(--muted);
+        border-radius: 999px;
+        font-family: var(--font);
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .ss-tab.active, .ss-tab:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: rgba(56,189,248,0.08);
+      }
+      .ss-pane { display: none; }
+      .ss-pane.active { display: block; }
+      .ss-img-wrap {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid var(--glass-border);
+        box-shadow: 0 24px 64px rgba(0,0,0,0.5);
+      }
+      .ss-img-wrap img { width: 100%; display: block; }
+      .ss-caption {
+        text-align: center;
+        margin-top: 1rem;
+        font-size: 0.78rem;
+        color: var(--muted);
+      }
+
+      /* ── HOW IT WORKS ───────────────────────────────── */
+      .steps { display: flex; flex-direction: column; gap: 1.25rem; }
+      .step {
+        display: grid;
+        grid-template-columns: 2.5rem 1fr;
+        gap: 1rem;
+        align-items: start;
+      }
+      .step-num {
+        width: 2.5rem; height: 2.5rem;
+        border-radius: 50%;
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.85rem;
+        font-weight: 700;
+        flex-shrink: 0;
+        background: rgba(56,189,248,0.08);
+      }
+      .step-body h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.35rem; }
+      .step-body p { font-size: 0.88rem; color: var(--muted); line-height: 1.65; }
+      .step-connector {
+        width: 1px;
+        background: linear-gradient(to bottom, var(--accent), transparent);
+        height: 1.5rem;
+        margin: 0 1.25rem;
+      }
+
+      /* ── PIPELINE DEMO ──────────────────────────────── */
+      .pipeline {
+        display: flex; flex-direction: column; gap: 0;
+        max-width: 640px;
+        margin: 2rem auto 0;
+      }
+      .pipeline-row { display: flex; align-items: stretch; gap: 0; }
+      .pipeline-box {
+        flex: 1;
+        padding: 0.9rem 1.25rem;
+        border: 1px solid var(--glass-border);
+        background: var(--glass-bg);
+        border-radius: var(--radius);
+        font-size: 0.82rem;
+      }
+      .pipeline-box .tag {
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 0.2rem;
+      }
+      .pipeline-box .val { color: var(--text); font-weight: 500; }
+      .pipeline-arrow {
+        display: flex; align-items: center; justify-content: center;
+        height: 2rem;
+        color: var(--muted);
+        font-size: 1rem;
+        position: relative;
+      }
+      .pipeline-arrow::before {
+        content: "▼";
+        color: var(--accent);
+        font-size: 0.75rem;
+        opacity: 0.7;
+      }
+      .pipeline-box.out { border-color: var(--accent); background: rgba(56,189,248,0.06); }
+      .pipeline-box.out .val { color: var(--accent); }
+
+      /* ── FEATURE GRID ───────────────────────────────── */
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+      }
+      .feature-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        transition: border-color 0.2s, transform 0.2s;
+      }
+      .feature-card:hover { border-color: rgba(56,189,248,0.4); transform: translateY(-2px); }
+      .feature-icon {
+        font-size: 1.4rem;
+        margin-bottom: 0.75rem;
+      }
+      .feature-card h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
+      .feature-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+      /* ── COMPARISON ─────────────────────────────────── */
+      .comparison {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+      @media (max-width: 600px) { .comparison { grid-template-columns: 1fr; } }
+      .comp-col { display: flex; flex-direction: column; gap: 0.75rem; }
+      .comp-label {
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        display: inline-block;
+        margin-bottom: 0.25rem;
+      }
+      .comp-label.bad { color: #f87171; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.25); }
+      .comp-label.good { color: var(--green); background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.25); }
+      .comp-item {
+        display: flex; align-items: flex-start; gap: 0.6rem;
+        font-size: 0.85rem; color: var(--muted); line-height: 1.5;
+      }
+      .comp-item::before { content: "•"; flex-shrink: 0; margin-top: 0.05em; }
+      .comp-col.bad .comp-item::before { color: #f87171; }
+      .comp-col.good .comp-item::before { color: var(--green); }
+
+      /* ── PROVIDERS ──────────────────────────────────── */
+      .provider-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1rem;
+      }
+      .provider-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius);
+        padding: 1.25rem;
+      }
+      .provider-card.recommended { border-color: rgba(56,189,248,0.5); position: relative; }
+      .provider-rec-badge {
+        position: absolute; top: -0.6rem; right: 1rem;
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        background: var(--accent);
+        color: #000;
+        font-weight: 700;
+        padding: 0.15rem 0.6rem;
+        border-radius: 999px;
+      }
+      .provider-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.25rem; }
+      .provider-model { font-size: 0.75rem; color: var(--accent); margin-bottom: 0.6rem; font-style: italic; }
+      .provider-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.55; margin-bottom: 0.75rem; }
+      .provider-link { font-size: 0.75rem; color: var(--accent); text-decoration: none; }
+      .provider-link:hover { text-decoration: underline; }
+
+      /* ── WHO IT'S FOR ───────────────────────────────── */
+      .audience-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 1rem;
+      }
+      .audience-card {
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        transition: border-color 0.2s;
+      }
+      .audience-card:hover { border-color: rgba(167,139,250,0.45); }
+      .audience-icon { font-size: 1.5rem; margin-bottom: 0.6rem; }
+      .audience-card h3 { font-size: 0.92rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--accent-purple); }
+      .audience-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+      /* ── ROADMAP ─────────────────────────────────────── */
+      .roadmap { display: flex; flex-direction: column; gap: 0.6rem; }
+      .rm-item {
+        display: flex; align-items: center; gap: 1rem;
+        padding: 0.85rem 1.25rem;
+        border-radius: 10px;
+        border: 1px solid var(--glass-border);
+        background: var(--glass-bg);
+        font-size: 0.85rem;
+      }
+      .rm-version {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        min-width: 3rem;
+        text-align: center;
+        padding: 0.2rem 0.5rem;
+        border-radius: 6px;
+      }
+      .rm-version.done { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+      .rm-version.upcoming { background: rgba(148,163,184,0.1); color: var(--muted); border: 1px solid rgba(148,163,184,0.2); }
+      .rm-text { flex: 1; color: var(--muted); }
+      .rm-text.done { color: var(--text); }
+      .rm-check { font-size: 0.9rem; }
+      .rm-check.done { color: var(--green); }
+      .rm-check.upcoming { color: var(--glass-border); }
+
+      /* ── CTA STRIP ───────────────────────────────────── */
+      .cta-strip {
+        background: rgba(15,23,42,0.6);
+        border-top: 1px solid var(--glass-border);
+        border-bottom: 1px solid var(--glass-border);
+        text-align: center;
+        padding: 5rem 2rem;
+      }
+      .cta-strip h2 {
+        font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        letter-spacing: -0.02em;
+      }
+      .cta-strip p { color: var(--muted); margin-bottom: 2rem; font-size: 0.95rem; }
+      .cta-note { margin-top: 1rem; font-size: 0.75rem; color: var(--muted); }
+
+      /* ── FOOTER ──────────────────────────────────────── */
+      footer {
+        text-align: center;
+        padding: 2rem;
+        font-size: 0.78rem;
+        color: var(--muted);
+        border-top: 1px solid var(--glass-border);
+      }
+      footer a { color: var(--accent); text-decoration: none; }
+      footer a:hover { text-decoration: underline; }
+
+      /* ── CODE BLOCK ──────────────────────────────────── */
+      pre {
+        background: rgba(2,6,23,0.7);
+        border: 1px solid var(--glass-border);
+        border-radius: 10px;
+        padding: 1.25rem 1.5rem;
+        font-size: 0.78rem;
+        color: var(--text);
+        overflow-x: auto;
+        line-height: 1.65;
+        backdrop-filter: blur(8px);
+      }
+      code { font-family: var(--font); }
+      .hl-accent { color: var(--accent); }
+      .hl-green { color: var(--green); }
+      .hl-purple { color: var(--accent-purple); }
+      .hl-muted { color: var(--muted); }
+
+      /* ── BADGE ROW ───────────────────────────────────── */
+      .badge-row {
+        display: flex; align-items: center; justify-content: center; gap: 0.6rem; flex-wrap: wrap;
+        margin: 1.5rem 0 0;
+      }
+      .badge {
+        font-size: 0.72rem;
+        padding: 0.2rem 0.7rem;
+        border-radius: 999px;
+        border: 1px solid;
+      }
+      .badge-blue { color: var(--accent); border-color: rgba(56,189,248,0.35); background: rgba(56,189,248,0.08); }
+      .badge-orange { color: #fb923c; border-color: rgba(251,146,60,0.35); background: rgba(251,146,60,0.08); }
+      .badge-purple { color: var(--accent-purple); border-color: rgba(167,139,250,0.35); background: rgba(167,139,250,0.08); }
+      .badge-green { color: var(--green); border-color: rgba(52,211,153,0.35); background: rgba(52,211,153,0.08); }
+
+      /* ── RESPONSIVE ─────────────────────────────────── */
+      @media (max-width: 768px) {
+        .hero { padding: 8rem 1.25rem 4rem; }
+        .section { padding: 3rem 1.25rem; }
+        .screenshots-section { padding: 3rem 1.25rem; }
+        .cta-strip { padding: 3.5rem 1.25rem; }
+        .nav { padding: 0 1.25rem; gap: 0.75rem; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <!-- NAV -->
+    <nav class="nav">
+      <a href="/" class="nav-back">← pqcnerd.com</a>
+      <a href="#" class="nav-logo">
+        <img src="assets/logo.png" alt="Gradatim" />
+        <span>Gradatim</span>
+      </a>
+      <a href="../Gradatim Setup 0.1.0.exe" class="nav-dl" download>
+        ↓ Download v0.1.0
+      </a>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <img src="assets/logo.png" alt="Gradatim Logo" class="hero-logo" />
+      <div class="hero-eyebrow">v0.1.0 · Windows · Free</div>
+      <h1>Write in English.<br /><em>Ship in Code.</em></h1>
+      <p class="hero-sub">
+        Gradatim is the AI-powered desktop code editor that translates your plain-English instructions
+        into production-ready source code — one line at a time, as you type.
+      </p>
+      <div class="hero-actions">
+        <a href="../Gradatim Setup 0.1.0.exe" class="btn-primary" download>
+          ↓ Download for Windows
+        </a>
+        <a href="#how-it-works" class="btn-secondary">See how it works</a>
+      </div>
+      <div class="badge-row">
+        <span class="badge badge-blue">Electron + Monaco</span>
+        <span class="badge badge-orange">Rust Core</span>
+        <span class="badge badge-purple">Gemini · OpenAI · DeepSeek</span>
+        <span class="badge badge-green">MIT License</span>
+      </div>
+      <div class="hero-meta">
+        <span>⚡ &lt;1 second per translation</span>
+        <span>🔒 API keys stored locally</span>
+        <span>🪟 Windows installer</span>
+      </div>
+    </section>
+
+    <!-- SCREENSHOTS -->
+    <div class="screenshots-section">
+      <div class="screenshots-wrap">
+        <div class="section-header centered">
+          <div class="section-label">Interface</div>
+          <h2 class="section-title">Three themes, one workflow</h2>
+        </div>
+        <div class="screenshots-tabs">
+          <button class="ss-tab active" data-pane="dark">Dark</button>
+          <button class="ss-tab" data-pane="glass">Glass</button>
+          <button class="ss-tab" data-pane="light">Light</button>
+        </div>
+        <div id="ss-dark" class="ss-pane active">
+          <div class="ss-img-wrap">
+            <img src="assets/screenshot-dark.png" alt="Gradatim Dark Theme" loading="lazy" />
+          </div>
+          <p class="ss-caption">Dark theme — deep navy with electric blue highlights, built for long coding sessions.</p>
+        </div>
+        <div id="ss-glass" class="ss-pane">
+          <div class="ss-img-wrap">
+            <img src="assets/screenshot-glass.png" alt="Gradatim Glass Theme" loading="lazy" />
+          </div>
+          <p class="ss-caption">Glass theme — fully translucent frosted-glass panels with backdrop blur effects.</p>
+        </div>
+        <div id="ss-light" class="ss-pane">
+          <div class="ss-img-wrap">
+            <img src="assets/screenshot-light.png" alt="Gradatim Light Theme" loading="lazy" />
+          </div>
+          <p class="ss-caption">Light theme — crisp white glassmorphism with soft purple accents for bright environments.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHAT IS IT -->
+    <section class="section">
+      <div class="section-header">
+        <div class="section-label">The concept</div>
+        <h2 class="section-title">You describe. Gradatim codes.</h2>
+        <p class="section-desc">
+          Traditional editors assume you already know the syntax, idioms, and API calls for your target language.
+          Gradatim throws that assumption out. Type natural language instructions line by line —
+          press <strong>Enter</strong> — and an AI-powered engine converts your intent into syntactically
+          correct, context-aware code in your chosen language.
+        </p>
+      </div>
+      <div class="pipeline">
+        <div class="pipeline-box">
+          <div class="tag">You type</div>
+          <div class="val">declare an integer called score and set it to 0</div>
+        </div>
+        <div class="pipeline-arrow"></div>
+        <div class="pipeline-box">
+          <div class="tag">Context + hints assembled by Rust core</div>
+          <div class="val">Variable scope · Indentation depth · Target language: C</div>
+        </div>
+        <div class="pipeline-arrow"></div>
+        <div class="pipeline-box">
+          <div class="tag">AI translates (Gemini 2.5 Flash)</div>
+          <div class="val">One constrained line of code requested</div>
+        </div>
+        <div class="pipeline-arrow"></div>
+        <div class="pipeline-box out">
+          <div class="tag">Appears in editor</div>
+          <div class="val">int score = 0;</div>
+        </div>
+      </div>
+      <p style="text-align:center;color:var(--muted);font-size:0.8rem;margin-top:1.25rem;">
+        It is not a chatbot. It is not a prompt box. It is a <strong style="color:var(--text)">line-by-line collaborative editor</strong>.
+      </p>
+    </section>
+
+    <!-- THE PROBLEM -->
+    <section class="section" style="padding-top:0;">
+      <div class="section-header">
+        <div class="section-label">The problem</div>
+        <h2 class="section-title">Syntax is friction. Gradatim removes it.</h2>
+        <p class="section-desc">
+          Every programmer spends 30–40% of their active coding time on non-logical tasks: looking up syntax,
+          browsing documentation, correcting trivial errors. Gradatim attacks all four simultaneously.
+        </p>
+      </div>
+      <div class="comparison">
+        <div class="comp-col bad">
+          <span class="comp-label bad">Without Gradatim</span>
+          <div class="comp-item">Think about logic</div>
+          <div class="comp-item">Remember syntax — or forget it</div>
+          <div class="comp-item">Open browser, search Stack Overflow</div>
+          <div class="comp-item">Copy, adapt, hope it compiles</div>
+          <div class="comp-item">~4–8 minutes per concept</div>
+        </div>
+        <div class="comp-col good">
+          <span class="comp-label good">With Gradatim</span>
+          <div class="comp-item">Think about logic</div>
+          <div class="comp-item">Type it in plain English</div>
+          <div class="comp-item">Press Enter</div>
+          <div class="comp-item">Correct code appears inline</div>
+          <div class="comp-item">~15 seconds per line</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section" id="how-it-works" style="padding-top:0;">
+      <div class="section-header">
+        <div class="section-label">Workflow</div>
+        <h2 class="section-title">From blank file to running code</h2>
+        <p class="section-desc">Six steps is all it takes to go from idea to compiled, running program — without ever leaving the app.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h3>Open Gradatim</h3>
+            <p>The app launches with a blank untitled file and an open terminal. The Rust core server boots silently in the background — no configuration needed.</p>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h3>Choose your target language</h3>
+            <p>Click the <strong>TARGET</strong> dropdown and select C, Python, or another supported language. This single choice informs every translation going forward.</p>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h3>Write in English</h3>
+            <p>Type your logic naturally — <em>"declare an integer called score and set it to 0"</em> or <em>"if score is greater than max, print winner"</em>. A purple gutter marker tracks untranslated lines.</p>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h3>Press Enter to translate</h3>
+            <p>With <strong>Auto-translate ON</strong>, every Enter triggers an AI translation of the line you just finished. Or toggle it off to draft multiple lines and translate them together.</p>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h3>Review and iterate</h3>
+            <p>Each translated line replaces its English counterpart inline. Don't like the output? Click <strong>REGENERATE</strong> for a fresh translation. The Line Activity panel logs every event.</p>
+          </div>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="step-body">
+            <h3>Save, run, ship</h3>
+            <p>Hit <kbd style="background:rgba(148,163,184,0.12);border:1px solid var(--glass-border);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem">Ctrl+S</kbd>, open the integrated terminal, compile and run — never leave the app.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" style="padding-top:0;">
+      <div class="section-header">
+        <div class="section-label">Features</div>
+        <h2 class="section-title">Everything you need, nothing you don't</h2>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Line-by-line AI translation</h3>
+          <p>Each English line is independently translated with full context awareness. Not a chatbot — a collaborative editor.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🧠</div>
+          <h3>Context window &amp; hint extraction</h3>
+          <p>The Rust core scans surrounding code for variable names, types, scope, and indentation depth — feeding them into every prompt for dramatically higher accuracy.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔄</div>
+          <h3>Auto-translate toggle</h3>
+          <p>Translate on every Enter keypress, or draft multiple lines and batch-translate when you're ready. Full control, always.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3>Monaco Editor</h3>
+          <p>The same engine that powers VS Code — full syntax highlighting, bracket colorization, sticky scroll, and smooth animations.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🖥️</div>
+          <h3>Integrated terminal</h3>
+          <p>Full PTY-backed shell (PowerShell on Windows, bash/zsh on Linux) with multiple tabs, right inside the app.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📁</div>
+          <h3>File tree sidebar</h3>
+          <p>Open any folder as your workspace and navigate your full project with the right-panel directory viewer.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🌙</div>
+          <h3>Three built-in themes</h3>
+          <p>Dark, Light, and Glass themes with glassmorphism effects, custom window chrome, and theme-aware terminal colors.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔑</div>
+          <h3>Multi-provider AI</h3>
+          <p>Use Gemini, OpenAI, DeepSeek, or any OpenAI-compatible endpoint — including local models via Ollama or LM Studio.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3>Deterministic fallback</h3>
+          <p>A rule-based translator kicks in when no API key is configured. Gradatim never crashes — it always produces output.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3>Privacy-first</h3>
+          <p>Your API key is stored locally in your OS user-data directory. It is never transmitted anywhere except directly to your chosen AI provider.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h3>Multi-tab editing</h3>
+          <p>Open multiple files simultaneously with per-tab state, unsaved-change indicators, and Ctrl+T to open a fresh file.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚙️</div>
+          <h3>Fully configurable</h3>
+          <p>Tab size, font family, font size, cursor style, word wrap, context window size, and more — all persisted per-user.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI PROVIDERS -->
+    <section class="section" style="padding-top:0;">
+      <div class="section-header">
+        <div class="section-label">AI Providers</div>
+        <h2 class="section-title">Your model, your choice</h2>
+        <p class="section-desc">Gradatim is model-agnostic. Swap providers in Settings without restarting the app. Your key stays on your machine.</p>
+      </div>
+      <div class="provider-grid">
+        <div class="provider-card recommended" style="position:relative;">
+          <span class="provider-rec-badge">Recommended</span>
+          <div class="provider-name">Google Gemini</div>
+          <div class="provider-model">gemini-2.5-flash</div>
+          <div class="provider-desc">Fast, accurate, and has a generous free tier. Best balance of speed and code quality for most workflows.</div>
+          <a href="https://aistudio.google.com" target="_blank" class="provider-link">Get API key →</a>
+        </div>
+        <div class="provider-card">
+          <div class="provider-name">OpenAI</div>
+          <div class="provider-model">gpt-4o / gpt-4o-mini</div>
+          <div class="provider-desc">Industry standard, widely trusted, excellent for complex multi-language projects.</div>
+          <a href="https://platform.openai.com/api-keys" target="_blank" class="provider-link">Get API key →</a>
+        </div>
+        <div class="provider-card">
+          <div class="provider-name">DeepSeek</div>
+          <div class="provider-model">deepseek-coder</div>
+          <div class="provider-desc">Open-weights, code-specialist model. Highly cost-effective for high-volume translation sessions.</div>
+          <a href="https://platform.deepseek.com/api_keys" target="_blank" class="provider-link">Get API key →</a>
+        </div>
+        <div class="provider-card">
+          <div class="provider-name">Any OpenAI-compatible</div>
+          <div class="provider-model">Ollama · LM Studio · Custom</div>
+          <div class="provider-desc">Run entirely locally with Ollama or LM Studio. Zero API costs, complete privacy, works offline.</div>
+          <span class="provider-link" style="cursor:default;color:var(--muted);">Just paste your endpoint URL</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHO IS IT FOR -->
+    <section class="section" style="padding-top:0;">
+      <div class="section-header">
+        <div class="section-label">Use cases</div>
+        <h2 class="section-title">Who is Gradatim for?</h2>
+      </div>
+      <div class="audience-grid">
+        <div class="audience-card">
+          <div class="audience-icon">🎓</div>
+          <h3>Beginners</h3>
+          <p>You understand what you want to do — you just don't know the syntax yet. Gradatim is an interactive textbook where every English line you write produces a real, runnable example.</p>
+        </div>
+        <div class="audience-card">
+          <div class="audience-icon">🚀</div>
+          <h3>Rapid prototypers</h3>
+          <p>Sketch out algorithms and data structures in English. Iterate on the logic, not the boilerplate. Go from idea to working code in minutes, not hours.</p>
+        </div>
+        <div class="audience-card">
+          <div class="audience-icon">🌐</div>
+          <h3>Polyglot developers</h3>
+          <p>Working across C, Python, and more in the same week? Stop context-switching your mental syntax library. Describe once; Gradatim handles the language-specific idioms.</p>
+        </div>
+        <div class="audience-card">
+          <div class="audience-icon">📖</div>
+          <h3>Educators</h3>
+          <p>Demonstrate programming concepts in plain English and show students the generated equivalent in real time. An unparalleled live teaching tool for any classroom.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PERFORMANCE -->
+    <section class="section" style="padding-top:0;">
+      <div class="section-header">
+        <div class="section-label">Performance</div>
+        <h2 class="section-title">Under 1 second from keystroke to code</h2>
+        <p class="section-desc">The Rust core is a compiled, zero-GC microservice. It adds negligible latency between your Enter key and the AI network call.</p>
+      </div>
+      <pre><code><span class="hl-muted">  Keystroke → AI response → Code in editor</span>
+
+  <span class="hl-muted">Local overhead (Electron → Rust core): </span><span class="hl-green"> ~2–5 ms</span>
+  <span class="hl-muted">AI network round-trip (Gemini Flash):  </span><span class="hl-accent"> ~400–900 ms</span>
+  <span class="hl-muted">In-editor replacement:                 </span><span class="hl-green"> ~1 ms</span>
+
+  <span class="hl-muted">Total perceived latency: </span><span class="hl-accent">under 1 second on most lines</span></code></pre>
+    </section>
+
+    <!-- ROADMAP -->
+    <section class="section" style="padding-top:0;">
+      <div class="section-header">
+        <div class="section-label">Roadmap</div>
+        <h2 class="section-title">What's done, what's coming</h2>
+      </div>
+      <div class="roadmap">
+        <div class="rm-item">
+          <span class="rm-version done">v0.1</span>
+          <span class="rm-text done">Editor shell, Monaco, Rust core, AI line-by-line translation</span>
+          <span class="rm-check done">✓</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-version done">v0.1</span>
+          <span class="rm-text done">Dark, Light, and Glass themes — terminal, file tree, custom window chrome</span>
+          <span class="rm-check done">✓</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-version done">v0.1</span>
+          <span class="rm-text done">Windows installer (.exe), Linux AppImage + .deb, auto server startup</span>
+          <span class="rm-check done">✓</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-version upcoming">v0.2</span>
+          <span class="rm-text">Batch translation across multiple lines and multi-file context awareness</span>
+          <span class="rm-check upcoming">○</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-version upcoming">v0.2</span>
+          <span class="rm-text">More target languages — Java, Rust, Go, JavaScript</span>
+          <span class="rm-check upcoming">○</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-version upcoming">v0.3</span>
+          <span class="rm-text">Auto-update via electron-updater + translation history with undo</span>
+          <span class="rm-check upcoming">○</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-version upcoming">v0.4</span>
+          <span class="rm-text">Inline diff view — toggle between English intent and generated code</span>
+          <span class="rm-check upcoming">○</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-version upcoming">v0.5</span>
+          <span class="rm-text">macOS support + .dmg installer</span>
+          <span class="rm-check upcoming">○</span>
+        </div>
+        <div class="rm-item">
+          <span class="rm-version upcoming">v1.0</span>
+          <span class="rm-text">Plugin API and community themes</span>
+          <span class="rm-check upcoming">○</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta-strip">
+      <h2>Start writing in English today.</h2>
+      <p>Download the Windows installer, configure your AI provider in Settings, and translate your first line in under a minute.</p>
+      <a href="../Gradatim Setup 0.1.0.exe" class="btn-primary" style="font-size:1.05rem;padding:0.85rem 2rem;" download>
+        ↓ Download Gradatim v0.1.0
+      </a>
+      <p class="cta-note">Windows 10 / 11 · ~100 MB · Free · MIT License</p>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <p>
+        Gradatim is a project by <a href="/">pqcnerd</a> ·
+        Built with Electron, Monaco, Rust, Axum, Vite &amp; TypeScript ·
+        <a href="/">← back to pqcnerd.com</a>
+      </p>
+      <p style="margin-top:0.5rem;font-size:0.7rem;opacity:0.6;">
+        <em>Gradatim — step by step, your code writes itself.</em>
+      </p>
+    </footer>
+
+    <script>
+      // Screenshot tab switcher
+      document.querySelectorAll(".ss-tab").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var pane = btn.dataset.pane;
+          document.querySelectorAll(".ss-tab").forEach(function (b) { b.classList.remove("active"); });
+          document.querySelectorAll(".ss-pane").forEach(function (p) { p.classList.remove("active"); });
+          btn.classList.add("active");
+          document.getElementById("ss-" + pane).classList.add("active");
+        });
+      });
+    </script>
+
+  </body>
+</html>
