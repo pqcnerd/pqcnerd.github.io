@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Gradatim — Write in English. Ship in Code.</title>
-    <meta name="description" content="Gradatim is the AI-powered code editor that translates natural language into production-ready code, one line at a time." />
+    <title>Gradatim — English is the Source Language.</title>
+    <meta name="description" content="Gradatim is a compiler. It compiles English into source code — the same way a traditional compiler compiles source code into machine code. Rust-powered, line by line." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -543,11 +543,13 @@
     <!-- HERO -->
     <section class="hero">
       <img src="assets/logo.png" alt="Gradatim Logo" class="hero-logo" />
-      <div class="hero-eyebrow">v0.1.0 · Windows · Free</div>
-      <h1>Write in English.<br /><em>Ship in Code.</em></h1>
+      <div class="hero-eyebrow">v0.1.0 · Windows · Free · Rust-powered</div>
+      <h1>English is the<br /><em>Source Language.</em></h1>
       <p class="hero-sub">
-        Gradatim is the AI-powered desktop code editor that translates your plain-English instructions
-        into production-ready source code — one line at a time, as you type.
+        Compilers translate source code into machine code.
+        Gradatim adds the stage before: it compiles <strong>English into source code</strong> —
+        one line at a time, through a 7-stage Rust pipeline that parses, analyzes, and emits
+        before any network call is ever made.
       </p>
       <div class="hero-actions">
         <a href="../Gradatim Setup 0.1.0.exe" class="btn-primary" download>
@@ -556,14 +558,14 @@
         <a href="#trace" class="btn-secondary">See the pipeline</a>
       </div>
       <div class="badge-row">
-        <span class="badge badge-blue">Electron + Monaco</span>
-        <span class="badge badge-orange">Rust Core</span>
-        <span class="badge badge-purple">Gemini · OpenAI · DeepSeek</span>
-        <span class="badge badge-green">MIT License</span>
+        <span class="badge badge-orange">7-Stage Rust Compiler Core</span>
+        <span class="badge badge-blue">Monaco Editor</span>
+        <span class="badge badge-green">Rule-Based Emitter</span>
+        <span class="badge badge-purple">LLM for edge cases</span>
       </div>
       <div class="hero-meta">
-        <span>⚡ &lt;1 second per translation</span>
-        <span>🔒 API keys stored locally</span>
+        <span>⚡ &lt;5 ms local compilation</span>
+        <span>🦀 Rust core, zero GC</span>
         <span>🪟 Windows installer</span>
       </div>
     </section>
@@ -604,14 +606,15 @@
     <!-- WHAT IS IT -->
     <section class="section">
       <div class="section-header">
-        <div class="section-label">The concept</div>
-        <h2 class="section-title">You describe. Gradatim codes.</h2>
-        <p class="section-desc">
-          Traditional editors assume you already know the syntax, idioms, and API calls for your target language.
-          Gradatim throws that assumption out. Type natural language instructions line by line —
-          press <strong>Enter</strong> — and an AI-powered engine converts your intent into syntactically
-          correct, context-aware code in your chosen language.
-        </p>
+      <div class="section-label">The concept</div>
+          <h2 class="section-title">A compiler for your compiler.</h2>
+          <p class="section-desc">
+            A C compiler takes source code and produces machine code. Gradatim adds the stage before it:
+            it takes English and produces source code. You write the logic in plain sentences;
+            Gradatim's Rust core parses, analyzes, and emits syntactically correct code —
+            then <em>your</em> compiler takes it the rest of the way to the CPU.
+            English → Source → Machine. Gradatim owns the first arrow.
+          </p>
       </div>
       <div class="pipeline">
         <div class="pipeline-box">
@@ -635,9 +638,32 @@
         </div>
       </div>
       <p style="text-align:center;color:var(--muted);font-size:0.8rem;margin-top:1.25rem;">
-        It is not a chatbot. It is not a prompt box. It is a <strong style="color:var(--text)">line-by-line collaborative editor</strong>.
+        It is not a chatbot. It is not a prompt box. It is a <strong style="color:var(--text)">compiler</strong> — one that uses English as its source language.
       </p>
     </section>
+
+    <!-- COMPILER ANALOGY -->
+    <div style="background:rgba(10,15,35,0.55);border-top:1px solid var(--glass-border);border-bottom:1px solid var(--glass-border);padding:3rem 2rem;">
+      <div style="max-width:900px;margin:0 auto;">
+        <div class="section-label centered" style="text-align:center;margin-bottom:1.25rem;">The Compiler Chain</div>
+        <pre style="font-size:0.78rem;line-height:1.9;text-align:center;"><code><span class="hl-muted">  Traditional stack:</span>
+
+  <span class="hl-accent">English idea</span>  →  <span class="hl-muted">(programmer's brain)</span>  →  <span class="hl-green">Source code</span>  →  <span class="hl-muted">(gcc / clang)</span>  →  <span class="hl-purple">Machine code</span>
+
+
+  <span class="hl-muted">  With Gradatim:</span>
+
+  <span class="hl-accent">English idea</span>  →  <span class="hl-green">Gradatim  →  Source code</span>  →  <span class="hl-muted">(gcc / clang)</span>  →  <span class="hl-purple">Machine code</span>
+                    <span class="hl-muted">└── 7-stage Rust pipeline</span>
+                        <span class="hl-muted">parse · analyze · emit</span></code></pre>
+        <p style="text-align:center;color:var(--muted);font-size:0.83rem;margin-top:1.25rem;max-width:620px;margin-left:auto;margin-right:auto;">
+          Gradatim is a <strong style="color:var(--text)">compiler for compilers</strong> — or more precisely, a
+          <strong style="color:var(--text)">frontend stage</strong> that has never existed before.
+          The Rust core is the compilation engine. The LLM is a fallback for the edge cases
+          the rule-based emitter can't cover deterministically. The compiler does the real work.
+        </p>
+      </div>
+    </div>
 
     <!-- THE PROBLEM -->
     <section class="section" style="padding-top:0;">
@@ -673,8 +699,8 @@
     <section class="section" id="how-it-works" style="padding-top:0;">
       <div class="section-header">
         <div class="section-label">Workflow</div>
-        <h2 class="section-title">From blank file to running code</h2>
-        <p class="section-desc">Six steps is all it takes to go from idea to compiled, running program — without ever leaving the app.</p>
+        <h2 class="section-title">From blank file to running program</h2>
+        <p class="section-desc">Write English, compile to source, compile to machine code — all without leaving the app. Two compilation stages, one editor.</p>
       </div>
       <div class="steps">
         <div class="step">
@@ -704,8 +730,8 @@
         <div class="step">
           <div class="step-num">4</div>
           <div class="step-body">
-            <h3>Press Enter to translate</h3>
-            <p>With <strong>Auto-translate ON</strong>, every Enter triggers an AI translation of the line you just finished. Or toggle it off to draft multiple lines and translate them together.</p>
+            <h3>Press Enter to compile</h3>
+            <p>With <strong>Auto-compile ON</strong>, every Enter triggers a full compilation pass on the line you just finished — through the Rust pipeline, rule-based emitter, and LLM if needed. Or toggle it off and compile a batch of lines together.</p>
           </div>
         </div>
         <div class="step-connector"></div>
@@ -713,7 +739,7 @@
           <div class="step-num">5</div>
           <div class="step-body">
             <h3>Review and iterate</h3>
-            <p>Each translated line replaces its English counterpart inline. Don't like the output? Click <strong>REGENERATE</strong> for a fresh translation. The Line Activity panel logs every event.</p>
+            <p>Each compiled line replaces its English counterpart inline. Don't like the output? Click <strong>REGENERATE</strong> to re-run the pipeline — hitting the LLM backend for a different output. The Line Activity panel logs every compilation event.</p>
           </div>
         </div>
         <div class="step-connector"></div>
@@ -738,10 +764,11 @@
           <div class="section-label">Engineering</div>
           <h2 class="section-title">The Rust Core — A 7-Stage Compiler Pipeline</h2>
           <p class="section-desc" style="margin:0 auto;">
-            Gradatim does not pass raw English directly to an AI. Before any network call is made,
-            four stages of pure Rust analysis — classification, hint extraction, variable context building,
-            and semantic validation — run locally in under 5 ms. The AI receives a structured prompt
-            constructed from typed, validated facts about your code. This is what makes it accurate.
+            Like any compiler, the Rust core has distinct phases: lexing (synonym normalization),
+            parsing (hint extraction into a typed IR), semantic analysis (variable context + read validation),
+            and code generation (rule-based emitter). Four stages run entirely locally in under 5 ms.
+            The LLM is invoked only for the cases the rule-based emitter can't handle deterministically —
+            and even then, its output is validated before it touches the editor.
           </p>
         </div>
 
@@ -801,19 +828,19 @@
 
         <div class="feature-grid" style="margin-top:2.5rem;">
           <div class="feature-card" style="border-color:rgba(56,189,248,0.3);">
-            <div class="feature-icon">🔬</div>
-            <h3>Pure Rust analysis first</h3>
-            <p>4 stages run locally in &lt;5 ms before any network call is made. Most errors are caught and reported before the AI is ever contacted.</p>
+            <div class="feature-icon">🦀</div>
+            <h3>Rust does the real work</h3>
+            <p>Parse → analyze → emit. Four compiler stages run locally in &lt;5 ms. Most lines never touch the network. The LLM is the optimizer for edge cases, not the engine.</p>
           </div>
           <div class="feature-card" style="border-color:rgba(167,139,250,0.3);">
             <div class="feature-icon">🧩</div>
-            <h3>40+ typed hint variants</h3>
-            <p>The <code>StatementHint</code> enum is a type-safe intermediate representation — a compiler IR for natural language. The AI receives structured facts, not raw text.</p>
+            <h3>Type-safe IR — 40+ variants</h3>
+            <p><code>StatementHint</code> is the compiler's intermediate representation. English collapses into a typed enum before anything else happens. The LLM receives structured facts, not raw sentences.</p>
           </div>
           <div class="feature-card" style="border-color:rgba(52,211,153,0.3);">
             <div class="feature-icon">🛡️</div>
-            <h3>Fallback guarantee</h3>
-            <p>If AI fails or returns garbage, rule-based translation kicks in. If that can't handle it, a <code>// TODO</code> comment is emitted. The editor always gets something back.</p>
+            <h3>Always emits something</h3>
+            <p>Rule-based emitter first. LLM for variety. If the LLM returns garbage, validation rejects it and the emitter takes over. Last resort: a <code>// TODO</code> comment preserving your intent.</p>
           </div>
         </div>
       </div>
@@ -905,13 +932,14 @@
     <!-- NATURAL LANGUAGE UNDERSTANDING -->
     <section class="section" style="padding-top:0;" id="nlp">
       <div class="section-header">
-        <div class="section-label">Natural Language Understanding</div>
-        <h2 class="section-title">476 synonyms. 50+ stdlib functions. Zero guessing.</h2>
-        <p class="section-desc">
-          Before the AI is involved, a hand-crafted Rust system normalizes everything you type into a
-          canonical form — then matches it against a static database of C standard library functions.
-          Thousands of English phrasings collapse to the same precise intent.
-        </p>
+      <div class="section-label">Lexing &amp; Parsing</div>
+          <h2 class="section-title">476 synonyms. 50+ stdlib functions. The lexer runs before anything else.</h2>
+          <p class="section-desc">
+            Every compiler has a lexer. Gradatim's is a 476-entry synonym normalizer written in Rust —
+            it collapses thousands of English phrasings into canonical tokens before the parser
+            (hint extractor) ever sees them. Then a static stdlib database matches those tokens
+            to real C functions, emitting correct code without touching the network.
+          </p>
       </div>
 
       <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
@@ -977,10 +1005,10 @@
       <div style="margin-top:1.5rem;">
         <div style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent-purple);margin-bottom:1rem;">The StatementHint IR — <code style="font-size:0.8em;">hints.rs · ~7,000 lines</code></div>
         <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem;max-width:780px;">
-          The hint extractor produces a typed enum — not a string, not a JSON blob, but a Rust enum variant with structured fields.
-          Every downstream stage operates on this type-safe intermediate representation.
-          The AI receives it as serialized key-value pairs so it understands <em>what kind of thing to generate</em>
-          before deciding on syntax.
+          The hint extractor is the parser. It produces a typed Rust enum — not a string, not a JSON blob —
+          with structured fields carrying exact programmer intent. This is the IR: the same role played by
+          ASTs in traditional compilers. Every downstream stage — the rule-based emitter, the LLM prompt builder,
+          the response validator — operates on this typed structure, never on raw English again.
         </p>
         <pre style="font-size:0.72rem;line-height:1.7;max-width:880px;"><code><span class="hl-muted">  StatementHint variants  (selected from 40+):</span>
 
@@ -1255,18 +1283,18 @@
       <div class="feature-grid">
         <div class="feature-card">
           <div class="feature-icon">⚡</div>
-          <h3>Line-by-line AI translation</h3>
-          <p>Each English line is independently translated with full context awareness. Not a chatbot — a collaborative editor.</p>
+          <h3>Line-by-line compilation</h3>
+          <p>Each English line is independently compiled with full context awareness — typed IR, semantic validation, and code emission. Not a chatbot. A compiler.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🧠</div>
-          <h3>Context window &amp; hint extraction</h3>
-          <p>The Rust core scans surrounding code for variable names, types, scope, and indentation depth — feeding them into every prompt for dramatically higher accuracy.</p>
+          <h3>Semantic analysis — variable context</h3>
+          <p>The Rust core scans surrounding code for declared variable names and types, building a context snapshot used for read validation and context-aware code emission — before any line is compiled.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🔄</div>
-          <h3>Auto-translate toggle</h3>
-          <p>Translate on every Enter keypress, or draft multiple lines and batch-translate when you're ready. Full control, always.</p>
+          <h3>Auto-compile toggle</h3>
+          <p>Compile on every Enter keypress, or draft multiple English lines and compile them together when you're ready. Full control, always.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🎨</div>
@@ -1290,18 +1318,18 @@
         </div>
         <div class="feature-card">
           <div class="feature-icon">🔑</div>
-          <h3>Multi-provider AI</h3>
-          <p>Use Gemini, OpenAI, DeepSeek, or any OpenAI-compatible endpoint — including local models via Ollama or LM Studio.</p>
+          <h3>Pluggable LLM backend</h3>
+          <p>Gemini, OpenAI, DeepSeek, or any OpenAI-compatible endpoint — including local Ollama models. The compiler core works identically regardless of which backend handles edge cases.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🛡️</div>
-          <h3>Deterministic fallback</h3>
-          <p>A rule-based translator kicks in when no API key is configured. Gradatim never crashes — it always produces output.</p>
+          <h3>Deterministic emitter — always</h3>
+          <p>The rule-based emitter runs first. No API key? No network? The compiler still works. Gradatim produces output on every line — always.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🔒</div>
           <h3>Privacy-first</h3>
-          <p>Your API key is stored locally in your OS user-data directory. It is never transmitted anywhere except directly to your chosen AI provider.</p>
+          <p>Your LLM key is stored locally in your OS user-data directory. It is never transmitted anywhere except directly to your chosen provider. Most lines don't leave your machine at all.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">📋</div>
@@ -1319,9 +1347,9 @@
     <!-- AI PROVIDERS -->
     <section class="section" style="padding-top:0;">
       <div class="section-header">
-        <div class="section-label">AI Providers</div>
-        <h2 class="section-title">Your model, your choice</h2>
-        <p class="section-desc">Gradatim is model-agnostic. Swap providers in Settings without restarting the app. Your key stays on your machine.</p>
+        <div class="section-label">LLM Backend — Edge Case Handler</div>
+        <h2 class="section-title">The compiler handles most lines. An LLM handles the rest.</h2>
+        <p class="section-desc">The rule-based emitter covers declarations, assignments, loops, conditionals, function defs, stdlib calls, and more — all without a network call. An LLM is invoked only when syntax variety genuinely requires it. Swap providers any time; your key is stored locally and never leaves your machine except to reach your chosen provider directly.</p>
       </div>
       <div class="provider-grid">
         <div class="provider-card recommended" style="position:relative;">
@@ -1356,7 +1384,7 @@
     <section class="section" style="padding-top:0;">
       <div class="section-header">
         <div class="section-label">Use cases</div>
-        <h2 class="section-title">Who is Gradatim for?</h2>
+        <h2 class="section-title">Who programs in English?</h2>
       </div>
       <div class="audience-grid">
         <div class="audience-card">
@@ -1386,16 +1414,20 @@
     <section class="section" style="padding-top:0;">
       <div class="section-header">
         <div class="section-label">Performance</div>
-        <h2 class="section-title">Under 1 second from keystroke to code</h2>
-        <p class="section-desc">The Rust core is a compiled, zero-GC microservice. It adds negligible latency between your Enter key and the AI network call.</p>
+        <h2 class="section-title">Rule-based: &lt;5 ms. LLM-assisted: &lt;1 second.</h2>
+        <p class="section-desc">The Rust core is a compiled, zero-GC microservice. Lines handled by the rule-based emitter complete in single-digit milliseconds — no network, no wait. Lines that genuinely need the LLM backend for syntactic variety are still fast; local overhead is negligible.</p>
       </div>
-      <pre><code><span class="hl-muted">  Keystroke → AI response → Code in editor</span>
+      <pre><code><span class="hl-muted">  Keystroke → Rust pipeline → Code in editor</span>
 
-  <span class="hl-muted">Local overhead (Electron → Rust core): </span><span class="hl-green"> ~2–5 ms</span>
-  <span class="hl-muted">AI network round-trip (Gemini Flash):  </span><span class="hl-accent"> ~400–900 ms</span>
-  <span class="hl-muted">In-editor replacement:                 </span><span class="hl-green"> ~1 ms</span>
+  <span class="hl-green">Rule-based path (most lines):</span>
+  <span class="hl-muted">  Parse + analyze + emit (Rust):         </span><span class="hl-green">&lt;5 ms   — no network</span>
 
-  <span class="hl-muted">Total perceived latency: </span><span class="hl-accent">under 1 second on most lines</span></code></pre>
+  <span class="hl-accent">LLM path (edge cases):</span>
+  <span class="hl-muted">  Local overhead (Electron → Rust core): </span><span class="hl-green"> ~2–5 ms</span>
+  <span class="hl-muted">  LLM round-trip (Gemini Flash):         </span><span class="hl-accent"> ~400–900 ms</span>
+  <span class="hl-muted">  In-editor replacement:                 </span><span class="hl-green"> ~1 ms</span>
+
+  <span class="hl-muted">Most of your lines never leave your machine.</span></code></pre>
     </section>
 
     <!-- ROADMAP -->
@@ -1455,8 +1487,8 @@
 
     <!-- CTA -->
     <div class="cta-strip">
-      <h2>Start writing in English today.</h2>
-      <p>Download the Windows installer, configure your AI provider in Settings, and translate your first line in under a minute.</p>
+      <h2>Start compiling English today.</h2>
+      <p>Download the Windows installer. Open a file, pick a target language, write a line of English, press Enter. Watch the Rust core compile it into source code in under a second.</p>
       <a href="../Gradatim Setup 0.1.0.exe" class="btn-primary" style="font-size:1.05rem;padding:0.85rem 2rem;" download>
         ↓ Download Gradatim v0.1.0
       </a>
@@ -1471,7 +1503,7 @@
         <a href="/">← back to pqcnerd.com</a>
       </p>
       <p style="margin-top:0.5rem;font-size:0.7rem;opacity:0.6;">
-        <em>Gradatim — step by step, your code writes itself.</em>
+        <em>Gradatim — English → Source → Machine. We own the first arrow.</em>
       </p>
     </footer>
 
