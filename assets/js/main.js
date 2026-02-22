@@ -890,6 +890,10 @@ function handleDotClick(index) {
 
 function handleRefreshClick() {
   const current = quoteHistory[currentQuoteIndex] || null;
+  const quoteAuthor = document.getElementById("quote-author");
+  if (quoteAuthor) {
+    quoteAuthor.textContent = "Refreshing...";
+  }
   fetchFreshQuote(current)
     .then((quote) => {
       cacheQuote(quote);
@@ -897,7 +901,9 @@ function handleRefreshClick() {
       displayQuote(quote);
     })
     .catch(() => {
-      // Keep current quote if every source fails.
+      if (current) {
+        displayQuote(current);
+      }
     });
 }
 
@@ -1525,8 +1531,10 @@ function updateNavProfileBadge() {
   }
 
   if (PROFILE_STATE.isLoggedIn) {
-    navLabel.textContent = PROFILE_STATE.name || "Profile";
-    if (PROFILE_STATE.avatar) {
+    const inlineName = document.getElementById("profile-name")?.value.trim();
+    const displayName = inlineName || PROFILE_STATE.name || "Profile";
+    navLabel.textContent = displayName;
+    if (isUsableAvatar(PROFILE_STATE.avatar)) {
       navAvatar.style.backgroundImage = `url("${PROFILE_STATE.avatar}")`;
       navAvatar.classList.add("has-image");
       return;
@@ -1588,13 +1596,20 @@ function renderProfileAvatar(avatarData) {
   if (!avatarImage) {
     return;
   }
-  if (avatarData) {
+  if (isUsableAvatar(avatarData)) {
     avatarImage.src = avatarData;
     avatarImage.classList.remove("empty");
   } else {
     avatarImage.removeAttribute("src");
     avatarImage.classList.add("empty");
   }
+}
+
+function isUsableAvatar(value) {
+  if (!value || typeof value !== "string") {
+    return false;
+  }
+  return value.startsWith("data:image/") || value.startsWith("http://") || value.startsWith("https://");
 }
 
 function fileToDataUrl(file) {
