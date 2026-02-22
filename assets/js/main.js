@@ -1155,10 +1155,6 @@ async function applyReaction(post, reaction) {
     alert("This post cannot be reacted to yet. Try again after refresh.");
     return;
   }
-  if (post.userReaction) {
-    alert("You already reacted to this post.");
-    return;
-  }
   const token = getStoredSessionToken();
   if (!token) {
     alert("Your session expired. Please log in again.");
@@ -1668,9 +1664,17 @@ function initDirectContactSection() {
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const name = form.querySelector("#direct-name")?.value.trim() ?? "";
-    const email = form.querySelector("#direct-email")?.value.trim() ?? "";
     const message = form.querySelector("#direct-message")?.value.trim() ?? "";
+    if (!PROFILE_STATE.isLoggedIn) {
+      status.textContent = "Please sign in before sending a direct message.";
+      return;
+    }
+    const name = PROFILE_STATE.name || "guest";
+    const email = PROFILE_STATE.email || "";
+    if (!message) {
+      status.textContent = "Message cannot be empty.";
+      return;
+    }
 
     status.textContent = "Sending...";
     try {
