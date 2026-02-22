@@ -58,9 +58,40 @@
         margin-top: 0.75rem;
         display: block;
       }
-      .auth-password-hint {
-        font-size: 0.75rem;
-        opacity: 0.55;
+      .auth-mode-switch {
+        display: inline-flex;
+        gap: 0.4rem;
+        margin-bottom: 0.8rem;
+      }
+      .auth-mode-button {
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        background: transparent;
+        color: var(--text-secondary, #94a3b8);
+        border-radius: 999px;
+        padding: 0.25rem 0.85rem;
+        cursor: pointer;
+      }
+      .auth-mode-button.active {
+        border-color: rgba(56, 189, 248, 0.7);
+        color: var(--accent, #38bdf8);
+        background: rgba(56, 189, 248, 0.12);
+      }
+      .auth-status {
+        margin: 0.45rem 0 0;
+        min-height: 1.1em;
+        font-size: 0.8rem;
+        color: var(--text-secondary, #94a3b8);
+      }
+      .profile-avatar-image {
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        object-fit: cover;
+        background: rgba(15, 23, 42, 0.5);
+      }
+      .profile-avatar-image.empty {
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.45), rgba(148, 163, 184, 0.35));
       }
     </style>
   </head>
@@ -284,7 +315,17 @@
             <div class="profile-user hidden" id="profile-user">
               <div class="profile-hero">
                 <button type="button" class="profile-avatar-upload" id="avatar-upload">
-                  <span class="profile-avatar large" aria-hidden="true"></span>
+                  <img
+                    id="profile-avatar-img"
+                    class="profile-avatar-image empty"
+                    alt="Profile avatar"
+                  />
+                  <input
+                    type="file"
+                    id="profile-avatar-input"
+                    class="profile-avatar-input hidden"
+                    accept="image/*"
+                  />
                   <span class="avatar-upload-hint">Change</span>
                 </button>
                 <div>
@@ -543,14 +584,31 @@
     <dialog class="auth-modal" id="auth-modal">
       <div class="auth-card">
         <h3 class="auth-title">Sign In / Sign Up</h3>
+        <div class="auth-mode-switch" role="group" aria-label="Authentication mode">
+          <button type="button" class="auth-mode-button active" data-auth-mode="login" aria-pressed="true">
+            Login
+          </button>
+          <button type="button" class="auth-mode-button" data-auth-mode="register" aria-pressed="false">
+            Sign Up
+          </button>
+        </div>
         <form class="auth-form" id="auth-form">
           <label for="auth-email">Email</label>
           <input type="email" id="auth-email" required placeholder="you@example.com" />
-          <label for="auth-password" class="auth-password-label">Password <span class="auth-password-hint">(admin only)</span></label>
-          <input type="password" id="auth-password" placeholder="Leave blank for guest access" autocomplete="current-password" />
+          <div id="auth-username-wrap" class="hidden">
+            <label for="auth-username">Username</label>
+            <input type="text" id="auth-username" placeholder="Pick a username" />
+          </div>
+          <label for="auth-password" class="auth-password-label">Password</label>
+          <input type="password" id="auth-password" required placeholder="Enter your password" autocomplete="current-password" />
+          <div id="auth-confirm-wrap" class="hidden">
+            <label for="auth-confirm-password">Confirm Password</label>
+            <input type="password" id="auth-confirm-password" placeholder="Re-enter password" autocomplete="new-password" />
+          </div>
+          <p class="auth-status" id="auth-status" aria-live="polite"></p>
           <button type="submit" class="auth-submit">Continue</button>
         </form>
-        <p class="auth-note">Enter your email to sign in. Admin access requires a password.</p>
+        <p class="auth-note">Create an account or sign in with your email and password.</p>
         <button type="button" class="auth-close" id="auth-close">Cancel</button>
       </div>
     </dialog>

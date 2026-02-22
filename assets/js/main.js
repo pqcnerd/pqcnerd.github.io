@@ -156,13 +156,15 @@ const DEFAULT_FORUM_POSTS = [
   },
 ];
 const API_BASE = "https://api.pqcnerd.com";
+const SESSION_KEY = "pqcnerd-session";
 const ADMIN_EMAIL = "admin@pqcnerd.com";
-const ADMIN_PASSWORD = "pqcNerd@2026";
 
 const PROFILE_STATE = {
   isLoggedIn: false,
   email: "",
   name: "",
+  userId: null,
+  avatar: "",
   isAdmin: false,
 };
 const PROFILE_NAMES = new Set();
@@ -256,6 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initPersonalSection();
   initDirectContactSection();
   initAdminPanel();
+  restoreSession();
 });
 
 function registerSession({
@@ -906,6 +909,42 @@ function initForum() {
   const posts = loadOrSeedPosts();
   renderForumPosts(posts);
   bindForumEvents();
+  refreshForumPosts();
+}
+
+async function refreshForumPosts() {
+  try {
+    const response = await fetch(`${API_BASE}/api/forum`);
+    if (!response.ok) {
+      return;
+    }
+    const remotePosts = await response.json();
+    if (!Array.isArray(remotePosts)) {
+      return;
+    }
+    const normalized = remotePosts.map((post, index) =>
+      normalizeRemoteForumPost(post, index),
+    );
+    savePosts(normalized);
+    renderForumPosts(normalized);
+  } catch {
+    // Keep local fallback if API is unavailable.
+  }
+}
+
+function normalizeRemoteForumPost(post, index) {
+  const createdAt = post?.created_at ? new Date(post.created_at) : new Date();
+  return {
+    id: post?.id ? `db-${post.id}` : `db-generated-${Date.now()}-${index}`,
+    title: post?.title || "Untitled Post",
+    author: post?.author || "guest",
+    userId: post?.user_id ?? null,
+    date: formatDate(createdAt),
+    content: post?.content || "",
+    likes: Number.isFinite(post?.likes) ? post.likes : 0,
+    dislikes: Number.isFinite(post?.dislikes) ? post.dislikes : 0,
+    avatar: post?.avatar || "",
+  };
 }
 
 function cloneDefaultPosts() {
@@ -1078,7 +1117,7 @@ function bindForumEvents() {
   });
 }
 
-function handlePostSubmit(form, modal) {
+async function handlePostSubmit(form, modal) {
   const titleInput = form.querySelector("#post-title");
   const contentInput = form.querySelector("#post-content");
   if (!titleInput || !contentInput) {
@@ -1091,29 +1130,36 @@ function handlePostSubmit(form, modal) {
     return;
   }
 
-  fetch(`${API_BASE}/api/forum`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ title, content }),
-  }).catch(() => {});
+  if (!PROFILE_STATE.isLoggedIn) {
+    alert("Please log in to create forum posts.");
+    return;
+  }
 
-  const posts = loadOrSeedPosts();
-  const newPost = {
-    id: `post-${Date.now()}`,
-    title,
-    author: "guest",
-    date: formatDate(new Date()),
-    content,
-    likes: 0,
-    dislikes: 0,
-  };
-  const updated = [newPost, ...posts];
-  savePosts(updated);
-  renderForumPosts(updated);
+  const token = getStoredSessionToken();
+  if (!token) {
+    alert("Your session expired. Please log in again.");
+    return;
+  }
 
-  titleInput.value = "";
-  contentInput.value = "";
-  modal.close();
+  try {
+    const response = await fetch(`${API_BASE}/api/forum`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ title, content }),
+    });
+    if (!response.ok) {
+      throw new Error("Post failed");
+    }
+    await refreshForumPosts();
+    titleInput.value = "";
+    contentInput.value = "";
+    modal.close();
+  } catch {
+    alert("Unable to create post right now. Please try again.");
+  }
 }
 
 function formatDate(date) {
@@ -1129,14 +1175,23 @@ function initAuthProfile() {
   const authModal = document.getElementById("auth-modal");
   const authForm = document.getElementById("auth-form");
   const authClose = document.getElementById("auth-close");
-  const profileGuest = document.getElementById("profile-guest");
-  const profileUser = document.getElementById("profile-user");
+  const authStatus = document.getElementById("auth-status");
+  const authModeButtons = Array.from(
+    document.querySelectorAll(".auth-mode-button"),
+  );
+  const usernameWrap = document.getElementById("auth-username-wrap");
+  const confirmWrap = document.getElementById("auth-confirm-wrap");
+  const emailInput = authForm?.querySelector("#auth-email");
+  const usernameInput = authForm?.querySelector("#auth-username");
+  const passwordInput = authForm?.querySelector("#auth-password");
+  const confirmInput = authForm?.querySelector("#auth-confirm-password");
   const profileName = document.getElementById("profile-name");
-  const profileEmail = document.getElementById("profile-email");
   const profileLogout = document.querySelector(".profile-logout");
   const profileSave = document.querySelector(".profile-save");
+  const avatarButton = document.getElementById("avatar-upload");
+  const avatarInput = document.getElementById("profile-avatar-input");
 
-  if (!authModal || !authForm || !profileGuest || !profileUser) {
+  if (!authModal || !authForm || !emailInput || !passwordInput) {
     return;
   }
 
@@ -1148,64 +1203,193 @@ function initAuthProfile() {
     }
   });
 
-  authForm.addEventListener("submit", (event) => {
+  authModeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const mode = button.dataset.authMode === "register" ? "register" : "login";
+      authForm.dataset.mode = mode;
+      authModeButtons.forEach((btn) => {
+        const active = btn === button;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-pressed", String(active));
+      });
+      const isRegister = mode === "register";
+      usernameWrap?.classList.toggle("hidden", !isRegister);
+      confirmWrap?.classList.toggle("hidden", !isRegister);
+      if (usernameInput) {
+        usernameInput.required = isRegister;
+      }
+      if (confirmInput) {
+        confirmInput.required = isRegister;
+      }
+      if (authStatus) {
+        authStatus.textContent = "";
+      }
+    });
+  });
+
+  authForm.addEventListener("submit", async (event) => {
     event.preventDefault();
-    const emailInput = authForm.querySelector("#auth-email");
-    const passwordInput = authForm.querySelector("#auth-password");
-    if (!emailInput) {
-      return;
-    }
     const email = emailInput.value.trim();
-    const password = passwordInput?.value ?? "";
-    if (!email) {
+    const username = usernameInput?.value.trim() || "";
+    const password = passwordInput.value;
+    const confirm = confirmInput?.value || "";
+    const mode = authForm.dataset.mode === "register" ? "register" : "login";
+
+    if (!email || !password) {
+      if (authStatus) {
+        authStatus.textContent = "Email and password are required.";
+      }
+      return;
+    }
+    if (mode === "register" && !username) {
+      if (authStatus) {
+        authStatus.textContent = "Username is required for signup.";
+      }
+      return;
+    }
+    if (mode === "register" && password !== confirm) {
+      if (authStatus) {
+        authStatus.textContent = "Passwords do not match.";
+      }
       return;
     }
 
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      PROFILE_STATE.isLoggedIn = true;
-      PROFILE_STATE.email = email;
-      PROFILE_STATE.name = "admin";
-      PROFILE_STATE.isAdmin = true;
-      document.getElementById("admin-nav-item")?.classList.remove("hidden");
-      loadAdminData();
-    } else if (!PROFILE_STATE.isLoggedIn) {
-      PROFILE_STATE.isLoggedIn = true;
-      PROFILE_STATE.email = email;
-      PROFILE_STATE.name = generateGuestName();
-      PROFILE_STATE.isAdmin = false;
-    } else {
-      PROFILE_STATE.email = email;
+    const endpoint = mode === "register" ? "/api/auth/register" : "/api/auth/login";
+    const payload =
+      mode === "register"
+        ? { email, username, password }
+        : { email, password };
+
+    if (authStatus) {
+      authStatus.textContent = "Working...";
     }
 
-    updateProfileUI(profileGuest, profileUser, profileName, profileEmail);
-    authModal.close();
-    emailInput.value = "";
-    if (passwordInput) {
-      passwordInput.value = "";
+    try {
+      const response = await fetch(`${API_BASE}${endpoint}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data?.token) {
+        const message = data?.detail || "Authentication failed.";
+        if (authStatus) {
+          authStatus.textContent = message;
+        }
+        return;
+      }
+
+      setStoredSessionToken(data.token);
+      PROFILE_STATE.isLoggedIn = true;
+      PROFILE_STATE.email = data.email || email;
+      PROFILE_STATE.name = data.username || username;
+      PROFILE_STATE.userId = data.user_id ?? null;
+      PROFILE_STATE.avatar = data.avatar || "";
+      PROFILE_STATE.isAdmin = PROFILE_STATE.email.toLowerCase() === ADMIN_EMAIL;
+      updateProfileUI();
+      if (PROFILE_STATE.isAdmin) {
+        document.getElementById("admin-nav-item")?.classList.remove("hidden");
+        loadAdminData();
+      } else {
+        document.getElementById("admin-nav-item")?.classList.add("hidden");
+      }
+      authModal.close();
+      authForm.reset();
+      authForm.dataset.mode = "login";
+      authModeButtons[0]?.click();
+      if (authStatus) {
+        authStatus.textContent = "";
+      }
+    } catch {
+      if (authStatus) {
+        authStatus.textContent = "Network error. Please try again.";
+      }
     }
   });
 
-  profileLogout?.addEventListener("click", () => {
+  profileLogout?.addEventListener("click", async () => {
+    const token = getStoredSessionToken();
+    if (token) {
+      await fetch(`${API_BASE}/api/auth/logout`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      }).catch(() => {});
+    }
+    clearStoredSessionToken();
     PROFILE_STATE.isLoggedIn = false;
     PROFILE_STATE.email = "";
     PROFILE_STATE.name = "";
+    PROFILE_STATE.userId = null;
+    PROFILE_STATE.avatar = "";
     PROFILE_STATE.isAdmin = false;
     document.getElementById("admin-nav-item")?.classList.add("hidden");
-    updateProfileUI(profileGuest, profileUser, profileName, profileEmail);
+    updateProfileUI();
   });
 
-  profileSave?.addEventListener("click", () => {
+  profileSave?.addEventListener("click", async () => {
     const newName = profileName?.value.trim();
     if (newName) {
-      PROFILE_STATE.name = newName;
-      PROFILE_NAMES.add(newName.toLowerCase());
+      const token = getStoredSessionToken();
+      if (!token) {
+        return;
+      }
+      const response = await fetch(`${API_BASE}/api/profile/username`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ username: newName }),
+      }).catch(() => null);
+      if (response?.ok) {
+        PROFILE_STATE.name = newName;
+        PROFILE_NAMES.add(newName.toLowerCase());
+      }
     }
   });
 
-  updateProfileUI(profileGuest, profileUser, profileName, profileEmail);
+  avatarButton?.addEventListener("click", () => {
+    avatarInput?.click();
+  });
+
+  avatarInput?.addEventListener("change", async () => {
+    const file = avatarInput.files?.[0];
+    if (!file) {
+      return;
+    }
+    const token = getStoredSessionToken();
+    if (!token) {
+      return;
+    }
+    const avatarData = await fileToDataUrl(file);
+    const response = await fetch(`${API_BASE}/api/profile/avatar`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ avatar: avatarData }),
+    }).catch(() => null);
+    if (response?.ok) {
+      PROFILE_STATE.avatar = avatarData;
+      renderProfileAvatar(avatarData);
+    }
+  });
+
+  authForm.dataset.mode = "login";
+  authModeButtons[0]?.click();
+  updateProfileUI();
 }
 
-function updateProfileUI(profileGuest, profileUser, profileName, profileEmail) {
+function updateProfileUI() {
+  const profileGuest = document.getElementById("profile-guest");
+  const profileUser = document.getElementById("profile-user");
+  const profileName = document.getElementById("profile-name");
+  const profileEmail = document.getElementById("profile-email");
+  if (!profileGuest || !profileUser) {
+    return;
+  }
+
   if (PROFILE_STATE.isLoggedIn) {
     profileGuest.classList.add("hidden");
     profileUser.classList.remove("hidden");
@@ -1215,10 +1399,84 @@ function updateProfileUI(profileGuest, profileUser, profileName, profileEmail) {
     if (profileEmail) {
       profileEmail.textContent = PROFILE_STATE.email;
     }
+    renderProfileAvatar(PROFILE_STATE.avatar);
   } else {
     profileGuest.classList.remove("hidden");
     profileUser.classList.add("hidden");
   }
+}
+
+async function restoreSession() {
+  const token = getStoredSessionToken();
+  if (!token) {
+    return;
+  }
+  try {
+    const response = await fetch(`${API_BASE}/api/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) {
+      clearStoredSessionToken();
+      return;
+    }
+    const data = await response.json();
+    PROFILE_STATE.isLoggedIn = true;
+    PROFILE_STATE.email = data.email || "";
+    PROFILE_STATE.name = data.username || "";
+    PROFILE_STATE.userId = data.user_id ?? null;
+    PROFILE_STATE.avatar = data.avatar || "";
+    PROFILE_STATE.isAdmin = PROFILE_STATE.email.toLowerCase() === ADMIN_EMAIL;
+    if (PROFILE_STATE.isAdmin) {
+      document.getElementById("admin-nav-item")?.classList.remove("hidden");
+      loadAdminData();
+    } else {
+      document.getElementById("admin-nav-item")?.classList.add("hidden");
+    }
+    updateProfileUI();
+  } catch {
+    clearStoredSessionToken();
+  }
+}
+
+function getStoredSessionToken() {
+  return window.localStorage?.getItem(SESSION_KEY) || "";
+}
+
+function setStoredSessionToken(token) {
+  if (!window.localStorage) {
+    return;
+  }
+  localStorage.setItem(SESSION_KEY, token);
+}
+
+function clearStoredSessionToken() {
+  if (!window.localStorage) {
+    return;
+  }
+  localStorage.removeItem(SESSION_KEY);
+}
+
+function renderProfileAvatar(avatarData) {
+  const avatarImage = document.getElementById("profile-avatar-img");
+  if (!avatarImage) {
+    return;
+  }
+  if (avatarData) {
+    avatarImage.src = avatarData;
+    avatarImage.classList.remove("empty");
+  } else {
+    avatarImage.removeAttribute("src");
+    avatarImage.classList.add("empty");
+  }
+}
+
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 function initPersonalSection() {

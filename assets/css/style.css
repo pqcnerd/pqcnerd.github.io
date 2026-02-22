@@ -76,6 +76,10 @@ body {
   flex-direction: column;
 }
 
+.hidden {
+  display: none !important;
+}
+
 .quote-card {
   width: min(1400px, calc(100% - 3rem));
   margin: calc(var(--nav-height) + 1rem) auto 1rem;
