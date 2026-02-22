@@ -515,9 +515,228 @@
         .cta-strip { padding: 3.5rem 1.25rem; }
         .nav { padding: 0 1.25rem; gap: 0.75rem; }
         .nav-links-md { display: none; }
+        .pg-fork-spread { grid-template-columns: 1fr !important; }
+        .chain-row { flex-direction: column !important; }
+        .chain-arrow { transform: rotate(90deg); }
       }
       @media (min-width: 769px) {
         .nav-links-md { display: flex; gap: 1.25rem; align-items: center; }
+      }
+
+      /* ── PIPELINE GRAPH CARDS ─────────────────────────────── */
+      .pipeline-graph {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        max-width: 680px;
+        margin: 2.5rem auto 0;
+      }
+      .pg-card {
+        background: rgba(15, 23, 42, 0.88);
+        border: 1px solid var(--glass-border);
+        border-radius: 12px;
+        padding: 1.1rem 1.4rem;
+        transition: transform 0.15s, box-shadow 0.15s;
+        backdrop-filter: blur(8px);
+      }
+      .pg-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.35); }
+      .pg-card.c-accent { border-left: 3px solid var(--accent); }
+      .pg-card.c-purple { border-left: 3px solid var(--accent-purple); }
+      .pg-card.c-green  { border-left: 3px solid var(--green); }
+      .pg-card.c-muted  { border-left: 3px solid rgba(148,163,184,0.4); border-style: dashed; }
+      .pg-card-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.45rem; }
+      .pg-badge {
+        font-size: 0.6rem; font-weight: 700; letter-spacing: 0.1em;
+        text-transform: uppercase; padding: 0.1rem 0.45rem;
+        border-radius: 5px; white-space: nowrap;
+      }
+      .c-accent .pg-badge { background: rgba(56,189,248,0.12); color: var(--accent); }
+      .c-purple .pg-badge { background: rgba(167,139,250,0.12); color: var(--accent-purple); }
+      .c-green  .pg-badge { background: rgba(52,211,153,0.12); color: var(--green); }
+      .c-muted  .pg-badge { background: rgba(148,163,184,0.08); color: var(--muted); }
+      .pg-title { font-size: 0.9rem; font-weight: 700; }
+      .c-accent .pg-title { color: var(--accent); }
+      .c-purple .pg-title { color: var(--accent-purple); }
+      .c-green  .pg-title { color: var(--green); }
+      .c-muted  .pg-title { color: var(--muted); }
+      .pg-body  { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+      .pg-code-inline {
+        display: inline-block; margin-top: 0.5rem;
+        font-size: 0.71rem; color: var(--green);
+        background: rgba(2,6,23,0.6); border-radius: 6px;
+        padding: 0.3rem 0.65rem; line-height: 1.5;
+      }
+      .pg-tags { margin-top: 0.5rem; display: flex; gap: 0.6rem; flex-wrap: wrap; }
+      .pg-tag-bad  { font-size: 0.71rem; color: #f87171; }
+      .pg-tag-ok   { font-size: 0.71rem; color: var(--green); }
+      .pg-tag-mute { font-size: 0.71rem; color: var(--muted); }
+
+      /* Vertical connector */
+      .pg-conn {
+        width: 2px; height: 2rem;
+        background: linear-gradient(to bottom, rgba(148,163,184,0.2), rgba(148,163,184,0.5));
+        margin: 0 auto; position: relative; flex-shrink: 0;
+      }
+      .pg-conn::after {
+        content: ""; position: absolute;
+        bottom: -5px; left: 50%; transform: translateX(-50%);
+        border-left: 5px solid transparent; border-right: 5px solid transparent;
+        border-top: 7px solid rgba(148,163,184,0.5);
+      }
+
+      /* Fork section */
+      .pg-decision {
+        display: flex; flex-direction: column; align-items: center; gap: 0.3rem;
+        margin: 0 auto;
+      }
+      .pg-decision-pill {
+        font-size: 0.72rem; font-weight: 600; color: var(--accent);
+        background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.3);
+        border-radius: 999px; padding: 0.25rem 0.9rem; white-space: nowrap;
+      }
+      .pg-fork-spread {
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 1rem; width: 100%; margin-top: 0.75rem; position: relative;
+      }
+      .pg-fork-spread::before {
+        content: ""; position: absolute;
+        top: -0.75rem; left: calc(25% - 0.5rem); right: calc(25% - 0.5rem);
+        height: 1px; background: rgba(148,163,184,0.3);
+      }
+      .pg-fork-arm { display: flex; flex-direction: column; align-items: center; gap: 0.45rem; }
+      .pg-fork-label {
+        font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em;
+        text-transform: uppercase; padding: 0.12rem 0.55rem; border-radius: 999px;
+      }
+      .pg-fork-label.yes { color: var(--green); background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); }
+      .pg-fork-label.no  { color: var(--accent-purple); background: rgba(167,139,250,0.1); border: 1px solid rgba(167,139,250,0.3); }
+      .pg-fork-card { width: 100%; }
+      .pg-fallback-bridge {
+        margin-top: 0.75rem; font-size: 0.68rem; color: var(--muted);
+        text-align: center; padding: 0.35rem 0.75rem;
+        border: 1px dashed rgba(148,163,184,0.2); border-radius: 8px; width: 100%;
+      }
+      .pg-result-card {
+        background: rgba(52,211,153,0.06); border: 1px solid rgba(52,211,153,0.35);
+        border-radius: 12px; padding: 1rem 1.4rem;
+        display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap;
+      }
+      .pg-result-badge {
+        font-size: 0.72rem; font-weight: 700; color: var(--green);
+        background: rgba(52,211,153,0.12); border-radius: 6px;
+        padding: 0.2rem 0.55rem; white-space: nowrap;
+      }
+      .pg-result-code { font-size: 0.72rem; color: var(--green); }
+
+      /* ── COMPILER CHAIN CARDS ─────────────────────────────── */
+      .chain-row {
+        display: flex; align-items: stretch; gap: 0;
+        justify-content: center; flex-wrap: nowrap;
+      }
+      .chain-node {
+        background: rgba(15,23,42,0.85); border: 1px solid var(--glass-border);
+        border-radius: 10px; padding: 0.9rem 1.1rem;
+        display: flex; flex-direction: column; align-items: center;
+        text-align: center; gap: 0.3rem; min-width: 110px; flex: 1; max-width: 160px;
+        transition: transform 0.15s;
+      }
+      .chain-node:hover { transform: translateY(-2px); }
+      .chain-node .cn-icon { font-size: 1.4rem; }
+      .chain-node .cn-label { font-size: 0.72rem; font-weight: 700; }
+      .chain-node .cn-sub { font-size: 0.62rem; color: var(--muted); line-height: 1.4; }
+      .chain-node.cn-english { border-color: rgba(56,189,248,0.35); }
+      .chain-node.cn-english .cn-label { color: var(--accent); }
+      .chain-node.cn-gradatim { border-color: rgba(167,139,250,0.45); background: rgba(167,139,250,0.06); }
+      .chain-node.cn-gradatim .cn-label { color: var(--accent-purple); }
+      .chain-node.cn-source { border-color: rgba(52,211,153,0.35); }
+      .chain-node.cn-source .cn-label { color: var(--green); }
+      .chain-node.cn-compiler { border-color: rgba(148,163,184,0.25); }
+      .chain-node.cn-compiler .cn-label { color: var(--muted); }
+      .chain-node.cn-machine { border-color: rgba(251,146,60,0.35); }
+      .chain-node.cn-machine .cn-label { color: #fb923c; }
+      .chain-arrow {
+        display: flex; align-items: center; justify-content: center;
+        padding: 0 0.4rem; color: var(--muted); font-size: 0.85rem;
+        flex-shrink: 0;
+      }
+      .chain-arrow.highlight { color: var(--accent-purple); font-weight: 700; }
+
+      /* ── TRACE TIMELINE ──────────────────────────────────── */
+      .trace-input {
+        background: rgba(2,6,23,0.7); border: 1px solid var(--glass-border);
+        border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.5rem;
+        font-size: 0.78rem;
+      }
+      .trace-input-label { font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+      .trace-input-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: baseline; margin-top: 0.2rem; }
+      .trace-key { color: var(--muted); font-size: 0.72rem; }
+      .trace-val-accent { color: var(--accent); }
+      .trace-val-green { color: var(--green); }
+      .trace-val-purple { color: var(--accent-purple); }
+
+      .trace-timeline { display: flex; flex-direction: column; gap: 0; }
+      .trace-step {
+        display: grid; grid-template-columns: 2px 1fr;
+        gap: 0 1.25rem; position: relative;
+      }
+      .trace-step-line {
+        background: rgba(148,163,184,0.2); width: 2px;
+        position: relative; margin-left: 0.75rem;
+      }
+      .trace-step-line::before {
+        content: ""; position: absolute; top: 0.9rem;
+        left: 50%; transform: translateX(-50%);
+        width: 10px; height: 10px; border-radius: 50%;
+        border: 2px solid; background: rgba(15,23,42,0.9);
+      }
+      .trace-step.ts-accent .trace-step-line::before { border-color: var(--accent); }
+      .trace-step.ts-purple .trace-step-line::before { border-color: var(--accent-purple); }
+      .trace-step.ts-green  .trace-step-line::before { border-color: var(--green); }
+      .trace-step-body {
+        padding: 0.5rem 0 1.25rem 0;
+      }
+      .trace-step-header { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem; }
+      .trace-step-badge {
+        font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em;
+        text-transform: uppercase; padding: 0.1rem 0.45rem; border-radius: 4px;
+      }
+      .ts-accent .trace-step-badge { background: rgba(56,189,248,0.12); color: var(--accent); }
+      .ts-purple .trace-step-badge { background: rgba(167,139,250,0.12); color: var(--accent-purple); }
+      .ts-green  .trace-step-badge { background: rgba(52,211,153,0.12); color: var(--green); }
+      .trace-step-name { font-size: 0.85rem; font-weight: 700; }
+      .ts-accent .trace-step-name { color: var(--accent); }
+      .ts-purple .trace-step-name { color: var(--accent-purple); }
+      .ts-green  .trace-step-name { color: var(--green); }
+      .trace-detail { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
+      .trace-out {
+        margin-top: 0.4rem; font-size: 0.72rem; color: var(--green);
+        background: rgba(2,6,23,0.5); border-radius: 6px;
+        padding: 0.3rem 0.65rem; display: inline-block;
+      }
+      .trace-checks {
+        margin-top: 0.4rem; display: flex; gap: 0.75rem; flex-wrap: wrap;
+        font-size: 0.71rem;
+      }
+      .trace-check-ok { color: var(--green); }
+
+      /* ── SYNONYM TRANSFORM ──────────────────────────────── */
+      .synonym-transforms { display: flex; flex-direction: column; gap: 0.75rem; }
+      .syn-row {
+        display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+      }
+      .syn-inputs {
+        display: flex; gap: 0.4rem; flex-wrap: wrap; flex: 1;
+      }
+      .syn-chip {
+        font-size: 0.72rem; padding: 0.2rem 0.6rem; border-radius: 999px;
+        background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.2);
+        color: var(--text); white-space: nowrap;
+      }
+      .syn-arrow { color: var(--muted); font-size: 0.8rem; flex-shrink: 0; }
+      .syn-canonical {
+        font-size: 0.78rem; font-weight: 700; color: var(--green);
+        background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3);
+        border-radius: 6px; padding: 0.2rem 0.65rem; white-space: nowrap;
       }
     </style>
   </head>
@@ -628,8 +847,8 @@
         </div>
         <div class="pipeline-arrow"></div>
         <div class="pipeline-box">
-          <div class="tag">AI translates (Gemini 2.5 Flash)</div>
-          <div class="val">One constrained line of code requested</div>
+          <div class="tag">Rust core compiles · LLM handles edge cases</div>
+          <div class="val">7-stage pipeline: parse · analyze · emit</div>
         </div>
         <div class="pipeline-arrow"></div>
         <div class="pipeline-box out">
@@ -645,17 +864,31 @@
     <!-- COMPILER ANALOGY -->
     <div style="background:rgba(10,15,35,0.55);border-top:1px solid var(--glass-border);border-bottom:1px solid var(--glass-border);padding:3rem 2rem;">
       <div style="max-width:900px;margin:0 auto;">
-        <div class="section-label centered" style="text-align:center;margin-bottom:1.25rem;">The Compiler Chain</div>
-        <pre style="font-size:0.78rem;line-height:1.9;text-align:center;"><code><span class="hl-muted">  Traditional stack:</span>
-
-  <span class="hl-accent">English idea</span>  →  <span class="hl-muted">(programmer's brain)</span>  →  <span class="hl-green">Source code</span>  →  <span class="hl-muted">(gcc / clang)</span>  →  <span class="hl-purple">Machine code</span>
-
-
-  <span class="hl-muted">  With Gradatim:</span>
-
-  <span class="hl-accent">English idea</span>  →  <span class="hl-green">Gradatim  →  Source code</span>  →  <span class="hl-muted">(gcc / clang)</span>  →  <span class="hl-purple">Machine code</span>
-                    <span class="hl-muted">└── 7-stage Rust pipeline</span>
-                        <span class="hl-muted">parse · analyze · emit</span></code></pre>
+        <div class="section-label centered" style="text-align:center;margin-bottom:0.5rem;">The Compiler Chain</div>
+        <p style="text-align:center;color:var(--muted);font-size:0.75rem;margin-bottom:1.5rem;">Traditional stack</p>
+        <div class="chain-row" style="margin-bottom:1rem;">
+          <div class="chain-node cn-english"><span class="cn-icon">💬</span><span class="cn-label">English Idea</span><span class="cn-sub">In your head</span></div>
+          <div class="chain-arrow">→</div>
+          <div class="chain-node cn-compiler"><span class="cn-icon">🧠</span><span class="cn-label">Programmer</span><span class="cn-sub">Manual translation</span></div>
+          <div class="chain-arrow">→</div>
+          <div class="chain-node cn-source"><span class="cn-icon">📄</span><span class="cn-label">Source Code</span><span class="cn-sub">C · Python · etc.</span></div>
+          <div class="chain-arrow">→</div>
+          <div class="chain-node cn-compiler"><span class="cn-icon">⚙️</span><span class="cn-label">gcc / clang</span><span class="cn-sub">Compiler</span></div>
+          <div class="chain-arrow">→</div>
+          <div class="chain-node cn-machine"><span class="cn-icon">🖥️</span><span class="cn-label">Machine Code</span><span class="cn-sub">Binary</span></div>
+        </div>
+        <p style="text-align:center;color:var(--muted);font-size:0.75rem;margin-bottom:1.5rem;">With Gradatim — Gradatim owns the first arrow</p>
+        <div class="chain-row">
+          <div class="chain-node cn-english"><span class="cn-icon">💬</span><span class="cn-label">English Idea</span><span class="cn-sub">You type it</span></div>
+          <div class="chain-arrow highlight">→</div>
+          <div class="chain-node cn-gradatim"><span class="cn-icon">🦀</span><span class="cn-label">Gradatim</span><span class="cn-sub">7-stage Rust pipeline</span></div>
+          <div class="chain-arrow highlight">→</div>
+          <div class="chain-node cn-source"><span class="cn-icon">📄</span><span class="cn-label">Source Code</span><span class="cn-sub">C · Python · etc.</span></div>
+          <div class="chain-arrow">→</div>
+          <div class="chain-node cn-compiler"><span class="cn-icon">⚙️</span><span class="cn-label">gcc / clang</span><span class="cn-sub">Compiler</span></div>
+          <div class="chain-arrow">→</div>
+          <div class="chain-node cn-machine"><span class="cn-icon">🖥️</span><span class="cn-label">Machine Code</span><span class="cn-sub">Binary</span></div>
+        </div>
         <p style="text-align:center;color:var(--muted);font-size:0.83rem;margin-top:1.25rem;max-width:620px;margin-left:auto;margin-right:auto;">
           Gradatim is a <strong style="color:var(--text)">compiler for compilers</strong> — or more precisely, a
           <strong style="color:var(--text)">frontend stage</strong> that has never existed before.
@@ -772,8 +1005,81 @@
           </p>
         </div>
 
-        <div style="margin-top:2.5rem;">
-          <pre style="max-width:780px;margin:0 auto;font-size:0.72rem;line-height:1.7;"><code><span class="hl-muted">  POST /translate-line  ← JSON payload from editor</span>
+        <div class="pipeline-graph" style="margin-top:2.5rem;">
+          <!-- Input -->
+          <div class="pg-card c-muted">
+            <div class="pg-card-header"><span class="pg-badge">POST /translate-line</span></div>
+            <div class="pg-body" style="display:flex;gap:1rem 1.5rem;flex-wrap:wrap;">
+              <span>english_line <span style="color:var(--accent)">"if a is greater than b, print winner"</span></span>
+              <span>code_before <span style="color:var(--green)">"int a = 5;\nint b = 0;\n"</span></span>
+              <span>language <span style="color:var(--accent-purple)">"c"</span></span>
+            </div>
+          </div>
+          <div class="pg-conn"></div>
+          <!-- Stage 1 -->
+          <div class="pg-card c-accent">
+            <div class="pg-card-header"><span class="pg-badge">Stage 1</span><span class="pg-title">Intent Classification</span></div>
+            <div class="pg-body">Gate that asks: is this a single statement or a project-level request? Rejects ambiguous project requests before any work is done.</div>
+            <div class="pg-tags"><span class="pg-tag-bad">"build a game" → REJECTED</span><span class="pg-tag-ok">"declare x" → ALLOWED</span></div>
+          </div>
+          <div class="pg-conn"></div>
+          <!-- Stage 2 -->
+          <div class="pg-card c-purple">
+            <div class="pg-card-header"><span class="pg-badge">Stage 2</span><span class="pg-title">Hint Extraction — The Parser</span></div>
+            <div class="pg-body">Synonym engine normalizes phrasing first (476 entries, longest-phrase-first regex). Then English parses into a typed <code>StatementHint</code> enum — 40+ variants. This is the IR.</div>
+            <div class="pg-code-inline">"increase by 5" → synonym → "add 5" → Arithmetic { op: Add, right: "5" }</div>
+          </div>
+          <div class="pg-conn"></div>
+          <!-- Stage 3 -->
+          <div class="pg-card c-accent">
+            <div class="pg-card-header"><span class="pg-badge">Stage 3</span><span class="pg-title">Variable Context Building</span></div>
+            <div class="pg-body">Scans <code>code_before</code> for declared variable names and types. Builds a live scope snapshot used by validation and the code emitter.</div>
+            <div class="pg-code-inline">{ "a" → int, "b" → int, "score" → int, "i" → int }</div>
+          </div>
+          <div class="pg-conn"></div>
+          <!-- Stage 4 -->
+          <div class="pg-card c-purple">
+            <div class="pg-card-header"><span class="pg-badge">Stage 4</span><span class="pg-title">Read Validation — Semantic Analysis</span></div>
+            <div class="pg-body">Does this hint read a variable that hasn't been declared yet? Catches logic errors before any code generation or network call.</div>
+            <div class="pg-tags"><span class="pg-tag-bad">"bonus" not in scope → 400 "Variable 'bonus' used before declaration"</span></div>
+          </div>
+          <div class="pg-conn"></div>
+          <!-- Decision + Fork -->
+          <div class="pg-decision"><div class="pg-decision-pill">is_trivial()?</div></div>
+          <div class="pg-fork-spread">
+            <div class="pg-fork-arm">
+              <span class="pg-fork-label yes">YES — trivial path</span>
+              <div class="pg-card c-green pg-fork-card">
+                <div class="pg-card-header"><span class="pg-badge">Stage 5</span><span class="pg-title">Rule-Based Emitter</span></div>
+                <div class="pg-body">Deterministic code generation from the typed hint. Zero network. Sub-millisecond. Always succeeds for recognized variants.</div>
+                <div class="pg-tags"><span class="pg-tag-ok">else → "} else {"</span><span class="pg-tag-ok">main → int main() {</span><span class="pg-tag-ok">include → #include &lt;...&gt;</span></div>
+              </div>
+            </div>
+            <div class="pg-fork-arm">
+              <span class="pg-fork-label no">NO — LLM path</span>
+              <div class="pg-card c-purple pg-fork-card">
+                <div class="pg-card-header"><span class="pg-badge">Stage 6</span><span class="pg-title">LLM Prompt &amp; Generation</span></div>
+                <div class="pg-body">Structured IR hint + trimmed context assembled into an engineered prompt. LLM returns exactly one line of code. ~400–900 ms network round-trip.</div>
+                <div class="pg-tags"><span class="pg-tag-mute">LLM fails or returns garbage → falls back to Stage 5</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="pg-fallback-bridge">Both paths converge → Stage 7</div>
+          <div class="pg-conn"></div>
+          <!-- Stage 7 -->
+          <div class="pg-card c-accent">
+            <div class="pg-card-header"><span class="pg-badge">Stage 7</span><span class="pg-title">Response Validation</span></div>
+            <div class="pg-body">5-check filter on every output. Any failure triggers Stage 5 fallback — the editor only ever receives verified code.</div>
+            <div class="pg-tags"><span class="pg-tag-ok">Not empty</span><span class="pg-tag-ok">No markdown fences</span><span class="pg-tag-ok">&lt;500 chars</span><span class="pg-tag-ok">No URLs</span><span class="pg-tag-ok">Language-valid</span></div>
+          </div>
+          <div class="pg-conn"></div>
+          <!-- Result -->
+          <div class="pg-result-card">
+            <span class="pg-result-badge">200 OK</span>
+            <span class="pg-result-code">{ "kind": "ok", "code": "if (a &gt; b) { printf(\"winner\\n\"); }" }</span>
+          </div>
+        </div>
+        <div style="display:none"><pre><code><span class="hl-muted">  POST /translate-line  ← JSON payload from editor</span>
          │
          ▼
   <span class="hl-accent">╔══════════════════════════════════════════════════════════╗</span>
@@ -823,8 +1129,7 @@
   <span class="hl-accent">╚══════════════════════════════════════════════════════════╝</span>
          │
          ▼
-  <span class="hl-green">200 OK  { "kind": "ok", "code": "if (a > b) { printf(\"winner\\n\"); }" }</span></code></pre>
-        </div>
+  200 OK</code></pre></div>
 
         <div class="feature-grid" style="margin-top:2.5rem;">
           <div class="feature-card" style="border-color:rgba(56,189,248,0.3);">
@@ -857,76 +1162,125 @@
         </p>
       </div>
 
-      <pre style="font-size:0.72rem;line-height:1.75;"><code><span class="hl-muted">  ┌──────────────────────────────────────────────────────────────────────┐</span>
-<span class="hl-muted">  │  INPUT                                                               │</span>
-<span class="hl-muted">  │</span>  english_line: <span class="hl-accent">"if a is greater than b, print winner"</span>               <span class="hl-muted">│</span>
-<span class="hl-muted">  │</span>  code_before:  <span class="hl-green">"int a = 5;\nint b = 0;\n"</span>                           <span class="hl-muted">│</span>
-<span class="hl-muted">  │</span>  language:     <span class="hl-purple">"c"</span>   provider: <span class="hl-purple">"gemini"</span>                           <span class="hl-muted">│</span>
-<span class="hl-muted">  └──────────────────────────────────────────────────────────────────────┘</span>
+      <!-- Input banner -->
+      <div class="trace-input">
+        <div class="trace-input-label">Input payload</div>
+        <div class="trace-input-row">
+          <span class="trace-key">english_line</span>
+          <span class="trace-val-accent">"if a is greater than b, print winner"</span>
+        </div>
+        <div class="trace-input-row">
+          <span class="trace-key">code_before</span>
+          <span class="trace-val-green">"int a = 5;\nint b = 0;\n"</span>
+          <span class="trace-key" style="margin-left:1rem;">language</span>
+          <span class="trace-val-purple">"c"</span>
+          <span class="trace-key" style="margin-left:1rem;">provider</span>
+          <span class="trace-val-purple">"gemini"</span>
+        </div>
+      </div>
 
-  <span class="hl-accent">STAGE 1 — INTENT CLASSIFICATION</span>
-  classify(<span class="hl-accent">"if a is greater than b, print winner"</span>)
-    "if" ∈ STATEMENT_INDICATORS ✓ → <span class="hl-green">Intent::Statement</span>
+      <!-- Timeline -->
+      <div class="trace-timeline">
+        <div class="trace-step ts-accent">
+          <div class="trace-step-line"></div>
+          <div class="trace-step-body">
+            <div class="trace-step-header">
+              <span class="trace-step-badge">Stage 1</span>
+              <span class="trace-step-name">Intent Classification</span>
+            </div>
+            <div class="trace-detail">classify(<span style="color:var(--accent)">"if a is greater than b..."</span>)<br>"if" ∈ STATEMENT_INDICATORS ✓</div>
+            <div class="trace-out">→ Intent::Statement</div>
+          </div>
+        </div>
+        <div class="trace-step ts-purple">
+          <div class="trace-step-line"></div>
+          <div class="trace-step-body">
+            <div class="trace-step-header">
+              <span class="trace-step-badge">Stage 2</span>
+              <span class="trace-step-name">Hint Extraction</span>
+            </div>
+            <div class="trace-detail">Synonym: <span style="color:var(--muted)">"greater than"</span> → <span style="color:var(--accent)">"&gt;"</span> &nbsp;·&nbsp; Trigger: <span style="color:var(--accent)">"if"</span> → Conditional</div>
+            <div class="trace-out">→ StatementHint::Conditional { condition: "a &gt; b", then_action: Some("print winner"), else_action: None }</div>
+          </div>
+        </div>
+        <div class="trace-step ts-accent">
+          <div class="trace-step-line"></div>
+          <div class="trace-step-body">
+            <div class="trace-step-header">
+              <span class="trace-step-badge">Stage 3</span>
+              <span class="trace-step-name">Variable Context Building</span>
+            </div>
+            <div class="trace-detail">VariableContext::from_code(<span style="color:var(--green)">"int a = 5;\nint b = 0;\n"</span>)</div>
+            <div class="trace-out">→ declared: { "a" → int, "b" → int }</div>
+          </div>
+        </div>
+        <div class="trace-step ts-purple">
+          <div class="trace-step-line"></div>
+          <div class="trace-step-body">
+            <div class="trace-step-header">
+              <span class="trace-step-badge">Stage 4</span>
+              <span class="trace-step-name">Read Validation</span>
+            </div>
+            <div class="trace-detail">reads: ["a", "b"] &nbsp;·&nbsp; "a" ∈ declared ✓ &nbsp;·&nbsp; "b" ∈ declared ✓</div>
+            <div class="trace-out">→ ValidationResult { is_valid: true }</div>
+          </div>
+        </div>
+        <div class="trace-step ts-green">
+          <div class="trace-step-line"></div>
+          <div class="trace-step-body">
+            <div class="trace-step-header">
+              <span class="trace-step-badge">Stage 5 check</span>
+              <span class="trace-step-name">is_trivial()?</span>
+            </div>
+            <div class="trace-detail">Conditional.is_trivial() → <span style="color:var(--muted)">false</span> &nbsp;(non-trivial condition syntax)</div>
+            <div class="trace-out" style="background:rgba(167,139,250,0.08);color:var(--accent-purple);">→ Skip rule-based path, send to LLM</div>
+          </div>
+        </div>
+        <div class="trace-step ts-purple">
+          <div class="trace-step-line"></div>
+          <div class="trace-step-body">
+            <div class="trace-step-header">
+              <span class="trace-step-badge">Stage 6</span>
+              <span class="trace-step-name">LLM Prompt &amp; Generation</span>
+            </div>
+            <div class="trace-detail" style="margin-bottom:0.5rem;">Prompt includes: TARGET LANGUAGE: C &nbsp;·&nbsp; EXTRACTED HINTS: type=Conditional, condition="a &gt; b", then_action="print winner" &nbsp;·&nbsp; PRECEDING CODE: int a=5; int b=0;</div>
+            <div class="trace-detail" style="color:var(--muted);font-size:0.72rem;">→ Sent to Gemini 2.5 Flash (&lt;900 ms)</div>
+            <div class="trace-out">← Response: if (a &gt; b) &#123; printf("winner\n"); &#125;</div>
+          </div>
+        </div>
+        <div class="trace-step ts-accent">
+          <div class="trace-step-line" style="background:transparent;"></div>
+          <div class="trace-step-body">
+            <div class="trace-step-header">
+              <span class="trace-step-badge">Stage 7</span>
+              <span class="trace-step-name">Response Validation</span>
+            </div>
+            <div class="trace-checks">
+              <span class="trace-check-ok">✓ Not empty</span>
+              <span class="trace-check-ok">✓ No markdown</span>
+              <span class="trace-check-ok">✓ 42 chars &lt; 500</span>
+              <span class="trace-check-ok">✓ No URLs</span>
+              <span class="trace-check-ok">✓ Braces balanced</span>
+              <span class="trace-check-ok">✓ No console.log</span>
+            </div>
+            <div class="trace-out">→ VALID</div>
+          </div>
+        </div>
+      </div>
 
-  <span class="hl-purple">STAGE 2 — HINT EXTRACTION</span>
-  Synonym pass: <span class="hl-muted">"greater than"</span> → <span class="hl-accent">">"</span>  (476-entry synonym table)
-  Trigger keyword: <span class="hl-accent">"if"</span> → Conditional branch
-  Condition extracted: <span class="hl-accent">"a > b"</span>
-  Then-action extracted: <span class="hl-accent">"print winner"</span>
-
-  StatementHint::Conditional {
-      condition:   <span class="hl-accent">"a > b"</span>,
-      then_action: Some(<span class="hl-accent">"print winner"</span>),
-      else_action: None,
-      is_else_if:  false,
-  }
-
-  <span class="hl-accent">STAGE 3 — VARIABLE CONTEXT BUILDING</span>
-  VariableContext::from_code(<span class="hl-green">"int a = 5;\nint b = 0;\n"</span>)
-    → declared: { <span class="hl-green">"a" → "int"</span>,  <span class="hl-green">"b" → "int"</span> }
-
-  <span class="hl-purple">STAGE 4 — READ VALIDATION</span>
-  validate_reads(Conditional { condition: "a > b" }, context)
-    reads: [<span class="hl-accent">"a"</span>, <span class="hl-accent">"b"</span>]
-    "a" ∈ declared <span class="hl-green">✓</span>     "b" ∈ declared <span class="hl-green">✓</span>
-    → <span class="hl-green">ValidationResult { is_valid: true }</span>
-
-  <span class="hl-accent">STAGE 5 — TRIVIAL CHECK</span>
-  Conditional.is_trivial() → <span class="hl-muted">false</span>  (condition requires AI for C-correct syntax)
-    → Skip rule-based path, proceed to AI
-
-  <span class="hl-purple">STAGE 6 — AI PROMPT CONSTRUCTION</span>
-  PromptContext assembled:
-
-    <span class="hl-muted">SYSTEM:</span> <span class="hl-accent">"You are a precise code translator. Output ONLY code."</span>
-    <span class="hl-muted">USER:</span>
-      TARGET LANGUAGE: C
-      EXTRACTED HINTS:
-        type: Conditional
-        condition: <span class="hl-accent">"a > b"</span>
-        then_action: <span class="hl-accent">"print winner"</span>
-      INSTRUCTION:
-        if a is greater than b, print winner
-      PRECEDING CODE:
-        int a = 5;
-        int b = 0;
-
-  → Sent to Gemini 2.5 Flash
-  ← Response: <span class="hl-green">"if (a > b) { printf(\"winner\\n\"); }"</span>
-
-  <span class="hl-accent">STAGE 7 — RESPONSE VALIDATION</span>
-  validate_candidate(<span class="hl-green">"if (a > b) { printf(\"winner\\n\"); }"</span>, "c")
-    Not empty              <span class="hl-green">✓</span>   No markdown fences      <span class="hl-green">✓</span>
-    42 chars &lt; 500         <span class="hl-green">✓</span>   No URLs                 <span class="hl-green">✓</span>
-    Braces balanced (1/1)  <span class="hl-green">✓</span>   No console.log          <span class="hl-green">✓</span>
-    → <span class="hl-green">VALID</span>
-
-  <span class="hl-muted">  ┌──────────────────────────────────────────────────────────────────────┐</span>
-  <span class="hl-muted">  │  RESULT                                                              │</span>
-  <span class="hl-muted">  │</span>  Editor line was: <span class="hl-muted">"if a is greater than b, print winner"</span>           <span class="hl-muted">│</span>
-  <span class="hl-muted">  │</span>  Editor line now: <span class="hl-green">if (a > b) { printf("winner\n"); }</span>              <span class="hl-muted">│</span>
-  <span class="hl-muted">  │</span>  Total latency:   <span class="hl-accent">&lt;1 second</span>   (Rust: ~3ms + Gemini: ~600ms)      <span class="hl-muted">│</span>
-  <span class="hl-muted">  └──────────────────────────────────────────────────────────────────────┘</span></code></pre>
+      <!-- Result -->
+      <div class="pg-result-card" style="margin-top:1.5rem;">
+        <div style="display:flex;flex-direction:column;gap:0.4rem;width:100%;">
+          <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+            <span class="pg-result-badge">200 OK</span>
+            <span class="pg-result-code">if (a &gt; b) &#123; printf("winner\n"); &#125;</span>
+          </div>
+          <div style="font-size:0.72rem;color:var(--muted);">
+            Line was: <span style="color:var(--muted);font-style:italic;">"if a is greater than b, print winner"</span>
+            &nbsp;·&nbsp; Total latency: <span style="color:var(--accent);">&lt;1 second</span> (Rust: ~3 ms + Gemini: ~600 ms)
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- NATURAL LANGUAGE UNDERSTANDING -->
@@ -945,36 +1299,39 @@
       <div class="two-col" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;">
         <div>
           <div style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;">The Synonym Engine — <code style="font-size:0.8em;">synonyms.rs</code></div>
-          <pre style="font-size:0.72rem;line-height:1.7;"><code><span class="hl-muted">  All of these mean the same thing:</span>
-
-  <span class="hl-accent">declare / create / make / establish /</span>
-  <span class="hl-accent">instantiate / introduce / spin up /</span>
-  <span class="hl-accent">allocate variable / new variable</span>
-        <span class="hl-muted">↓  synonym engine</span>
-        <span class="hl-green">declare</span>   ← canonical form
-
-  <span class="hl-accent">increase by / add to / plus / sum /</span>
-  <span class="hl-accent">combine / increment by</span>
-        <span class="hl-muted">↓  longest-phrase-first regex</span>
-        <span class="hl-green">add</span>
-
-  <span class="hl-accent">bigger / larger / more / above /</span>
-  <span class="hl-accent">over / exceeding / higher than</span>
-        <span class="hl-muted">↓</span>
-        <span class="hl-green">&gt;</span>
-
-  <span class="hl-accent">output / display / show / write /</span>
-  <span class="hl-accent">log / echo / put / dump / emit</span>
-        <span class="hl-muted">↓</span>
-        <span class="hl-green">print</span>
-
-  <span class="hl-muted">  Phrases matched longest-first to prevent</span>
-  <span class="hl-muted">  shorter synonyms from corrupting longer ones:</span>
-
-  <span class="hl-muted">  "increase by 5"</span>
-    <span class="hl-muted">"increase by"  (10 chars)</span>  <span class="hl-green">← matches</span>
-    <span class="hl-muted">"increase"     ( 8 chars)</span>  <span class="hl-muted">← skipped</span>
-  <span class="hl-green">  → "add 5"    ✓</span>  <span class="hl-muted">(not "increment by 5")</span></code></pre>
+          <div class="synonym-transforms">
+            <div class="syn-row">
+              <div class="syn-inputs"><span class="syn-chip">declare</span><span class="syn-chip">create</span><span class="syn-chip">make</span><span class="syn-chip">establish</span><span class="syn-chip">spin up</span><span class="syn-chip">new variable</span></div>
+              <div class="syn-arrow">→</div>
+              <div class="syn-canonical">declare</div>
+            </div>
+            <div class="syn-row">
+              <div class="syn-inputs"><span class="syn-chip">increase by</span><span class="syn-chip">add to</span><span class="syn-chip">plus</span><span class="syn-chip">sum</span><span class="syn-chip">increment by</span></div>
+              <div class="syn-arrow">→</div>
+              <div class="syn-canonical">add</div>
+            </div>
+            <div class="syn-row">
+              <div class="syn-inputs"><span class="syn-chip">bigger than</span><span class="syn-chip">larger</span><span class="syn-chip">more than</span><span class="syn-chip">above</span><span class="syn-chip">exceeding</span><span class="syn-chip">higher than</span></div>
+              <div class="syn-arrow">→</div>
+              <div class="syn-canonical">&gt;</div>
+            </div>
+            <div class="syn-row">
+              <div class="syn-inputs"><span class="syn-chip">output</span><span class="syn-chip">display</span><span class="syn-chip">show</span><span class="syn-chip">write</span><span class="syn-chip">log</span><span class="syn-chip">echo</span><span class="syn-chip">emit</span></div>
+              <div class="syn-arrow">→</div>
+              <div class="syn-canonical">print</div>
+            </div>
+            <div class="syn-row">
+              <div class="syn-inputs"><span class="syn-chip">give back</span><span class="syn-chip">send back</span><span class="syn-chip">yield</span><span class="syn-chip">hand back</span></div>
+              <div class="syn-arrow">→</div>
+              <div class="syn-canonical">return</div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:1rem;font-size:0.75rem;line-height:1.65;">
+            <span style="color:var(--accent);font-weight:600;">Longest-phrase-first ordering:</span>
+            <span style="color:var(--muted);"> "increase by 5" — matches "increase by" (10 chars) before "increase" (8 chars), giving </span>
+            <span style="color:var(--green);">"add 5"</span>
+            <span style="color:var(--muted);"> not "increment by 5".</span>
+          </div>
         </div>
         <div>
           <div style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem;">Stdlib Matching — <code style="font-size:0.8em;">func_matcher.rs</code></div>
