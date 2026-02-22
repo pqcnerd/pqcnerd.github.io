@@ -155,10 +155,15 @@ const DEFAULT_FORUM_POSTS = [
       "Closed out Reverse Quantum Vault by unpacking a heavily obfuscated VM-based binary and reimplementing its bytecode interpreter.\n\nThe key check mixed fake PQC references with classic bit-twiddling traps. Once we mirrored opcode semantics in Python, generating a valid license string was straightforward.",
   },
 ];
+const API_BASE = "https://api.pqcnerd.com";
+const ADMIN_EMAIL = "admin@pqcnerd.com";
+const ADMIN_PASSWORD = "pqcNerd@2026";
+
 const PROFILE_STATE = {
   isLoggedIn: false,
   email: "",
   name: "",
+  isAdmin: false,
 };
 const PROFILE_NAMES = new Set();
 
@@ -250,6 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initAuthProfile();
   initPersonalSection();
   initDirectContactSection();
+  initAdminPanel();
 });
 
 function registerSession({
@@ -1085,6 +1091,12 @@ function handlePostSubmit(form, modal) {
     return;
   }
 
+  fetch(`${API_BASE}/api/forum`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, content }),
+  }).catch(() => {});
+
   const posts = loadOrSeedPosts();
   const newPost = {
     id: `post-${Date.now()}`,
@@ -1139,18 +1151,28 @@ function initAuthProfile() {
   authForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const emailInput = authForm.querySelector("#auth-email");
+    const passwordInput = authForm.querySelector("#auth-password");
     if (!emailInput) {
       return;
     }
     const email = emailInput.value.trim();
+    const password = passwordInput?.value ?? "";
     if (!email) {
       return;
     }
 
-    if (!PROFILE_STATE.isLoggedIn) {
+    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      PROFILE_STATE.isLoggedIn = true;
+      PROFILE_STATE.email = email;
+      PROFILE_STATE.name = "admin";
+      PROFILE_STATE.isAdmin = true;
+      document.getElementById("admin-nav-item")?.classList.remove("hidden");
+      loadAdminData();
+    } else if (!PROFILE_STATE.isLoggedIn) {
       PROFILE_STATE.isLoggedIn = true;
       PROFILE_STATE.email = email;
       PROFILE_STATE.name = generateGuestName();
+      PROFILE_STATE.isAdmin = false;
     } else {
       PROFILE_STATE.email = email;
     }
@@ -1158,12 +1180,17 @@ function initAuthProfile() {
     updateProfileUI(profileGuest, profileUser, profileName, profileEmail);
     authModal.close();
     emailInput.value = "";
+    if (passwordInput) {
+      passwordInput.value = "";
+    }
   });
 
   profileLogout?.addEventListener("click", () => {
     PROFILE_STATE.isLoggedIn = false;
     PROFILE_STATE.email = "";
     PROFILE_STATE.name = "";
+    PROFILE_STATE.isAdmin = false;
+    document.getElementById("admin-nav-item")?.classList.add("hidden");
     updateProfileUI(profileGuest, profileUser, profileName, profileEmail);
   });
 
@@ -1237,10 +1264,24 @@ function initDirectContactSection() {
     return;
   }
 
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    status.textContent =
-      "Message captured in placeholder mode. Backend delivery will be added later.";
+    const name = form.querySelector("#direct-name")?.value.trim() ?? "";
+    const email = form.querySelector("#direct-email")?.value.trim() ?? "";
+    const message = form.querySelector("#direct-message")?.value.trim() ?? "";
+
+    status.textContent = "Sending...";
+    try {
+      await fetch(`${API_BASE}/api/contact`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, message }),
+      });
+      status.textContent = "Message sent successfully!";
+      form.reset();
+    } catch {
+      status.textContent = "Failed to send. Please try again later.";
+    }
   });
 }
 
@@ -1558,11 +1599,114 @@ function handleRatingSelect(button) {
   visitorState.notesInput?.focus();
 }
 
+function initAdminPanel() {
+  const tabBtns = document.querySelectorAll(".admin-tab-btn");
+  tabBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      tabBtns.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      const tab = btn.dataset.adminTab;
+      document.querySelectorAll(".admin-tab-content").forEach((el) => {
+        el.classList.add("hidden");
+      });
+      document.getElementById(`admin-${tab}`)?.classList.remove("hidden");
+    });
+  });
+}
+
+async function loadAdminData() {
+  await Promise.all([loadAdminVisitors(), loadAdminForum(), loadAdminContact()]);
+}
+
+async function loadAdminVisitors() {
+  const el = document.getElementById("admin-visitors-list");
+  if (!el) {
+    return;
+  }
+  try {
+    const res = await fetch(`${API_BASE}/api/visitors`);
+    const data = await res.json();
+    if (data.length === 0) {
+      el.innerHTML = "<p>No visitor submissions yet.</p>";
+      return;
+    }
+    el.innerHTML = `<table class="admin-table">
+      <thead><tr><th>Role</th><th>Reason</th><th>Rating</th><th>Notes</th><th>Time</th></tr></thead>
+      <tbody>${data.map((r) => `<tr>
+        <td>${r.role || "—"}</td>
+        <td>${r.reason || "—"}</td>
+        <td>${r.rating || "—"}</td>
+        <td>${r.notes || "—"}</td>
+        <td>${r.created_at}</td>
+      </tr>`).join("")}</tbody>
+    </table>`;
+  } catch {
+    el.innerHTML = "<p>Failed to load visitor data.</p>";
+  }
+}
+
+async function loadAdminForum() {
+  const el = document.getElementById("admin-forum-list");
+  if (!el) {
+    return;
+  }
+  try {
+    const res = await fetch(`${API_BASE}/api/forum`);
+    const data = await res.json();
+    if (data.length === 0) {
+      el.innerHTML = "<p>No forum posts yet.</p>";
+      return;
+    }
+    el.innerHTML = `<table class="admin-table">
+      <thead><tr><th>Title</th><th>Content</th><th>Time</th></tr></thead>
+      <tbody>${data.map((r) => `<tr>
+        <td>${r.title}</td>
+        <td>${r.content}</td>
+        <td>${r.created_at}</td>
+      </tr>`).join("")}</tbody>
+    </table>`;
+  } catch {
+    el.innerHTML = "<p>Failed to load forum data.</p>";
+  }
+}
+
+async function loadAdminContact() {
+  const el = document.getElementById("admin-contact-list");
+  if (!el) {
+    return;
+  }
+  try {
+    const res = await fetch(`${API_BASE}/api/contact`);
+    const data = await res.json();
+    if (data.length === 0) {
+      el.innerHTML = "<p>No contact messages yet.</p>";
+      return;
+    }
+    el.innerHTML = `<table class="admin-table">
+      <thead><tr><th>Name</th><th>Email</th><th>Message</th><th>Time</th></tr></thead>
+      <tbody>${data.map((r) => `<tr>
+        <td>${r.name}</td>
+        <td>${r.email}</td>
+        <td>${r.message}</td>
+        <td>${r.created_at}</td>
+      </tr>`).join("")}</tbody>
+    </table>`;
+  } catch {
+    el.innerHTML = "<p>Failed to load contact data.</p>";
+  }
+}
+
 function handleVisitorSubmit(event) {
   event.preventDefault();
   if (visitorState.notesInput) {
     visitorState.answers.notes = visitorState.notesInput.value.trim();
   }
+
+  fetch(`${API_BASE}/api/visitor`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(visitorState.answers),
+  }).catch(() => {});
 
   visitorState.panel.classList.add("hidden");
   visitorState.panel.setAttribute("aria-hidden", "true");
