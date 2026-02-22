@@ -1455,6 +1455,7 @@ function initAuthProfile() {
       if (response?.ok) {
         PROFILE_STATE.name = newName;
         PROFILE_NAMES.add(newName.toLowerCase());
+        updateNavProfileBadge();
       }
     }
   });
@@ -1484,6 +1485,7 @@ function initAuthProfile() {
     if (response?.ok) {
       PROFILE_STATE.avatar = avatarData;
       renderProfileAvatar(avatarData);
+      updateNavProfileBadge();
     }
   });
 
@@ -1515,6 +1517,30 @@ function updateProfileUI() {
     profileGuest.classList.remove("hidden");
     profileUser.classList.add("hidden");
   }
+  updateNavProfileBadge();
+}
+
+function updateNavProfileBadge() {
+  const navProfileItem = document.querySelector('.nav-item[data-view="profile"]');
+  const navAvatar = navProfileItem?.querySelector(".profile-avatar");
+  const navLabel = navProfileItem?.querySelector(".nav-label");
+  if (!navAvatar || !navLabel) {
+    return;
+  }
+
+  if (PROFILE_STATE.isLoggedIn) {
+    navLabel.textContent = PROFILE_STATE.name || "Profile";
+    if (PROFILE_STATE.avatar) {
+      navAvatar.style.backgroundImage = `url("${PROFILE_STATE.avatar}")`;
+      navAvatar.classList.add("has-image");
+      return;
+    }
+  } else {
+    navLabel.textContent = "Profile";
+  }
+
+  navAvatar.style.backgroundImage = "";
+  navAvatar.classList.remove("has-image");
 }
 
 async function restoreSession() {
