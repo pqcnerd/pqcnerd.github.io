@@ -14,6 +14,7 @@
     <div class="stars stars--small"></div>
     <div class="stars stars--medium"></div>
     <div class="stars stars--large"></div>
+    <div class="poem-overlay" id="poem-overlay"></div>
     <div class="moon"></div>
     <div class="shooting-star"></div>
     <div class="birds">
@@ -387,6 +388,71 @@
     </div>
     <script src="./js/main.js"></script>
     <!-- <script src="./js/audio.js"></script> -->
+    <script>
+      (function () {
+        const CHAR_DELAY = 38;
+        const LINE_DELAY = 620;
+        const STANZA_DELAY = 900;
+        const START_DELAY = 3200;
+
+        const poem = [
+          { type: "title", text: "With a Flower" },
+          { type: "author", text: "Emily Dickinson" },
+          { type: "break" },
+          { type: "line", text: "I hide myself within my flower," },
+          { type: "line", text: "That wearing on your breast," },
+          { type: "line", text: "You, unsuspecting, wear me too —" },
+          { type: "line", text: "And angels know the rest." },
+          { type: "break" },
+          { type: "line", text: "I hide myself within my flower," },
+          { type: "line", text: "That, fading from your vase," },
+          { type: "line", text: "You, unsuspecting, feel for me" },
+          { type: "line", text: "Almost a loneliness." }
+        ];
+
+        function wait(ms) {
+          return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+
+        async function typeLine(el, text) {
+          for (const ch of text) {
+            const span = document.createElement("span");
+            span.className = "poem-char";
+            span.textContent = ch === " " ? "\u00A0" : ch;
+            el.appendChild(span);
+            await wait(CHAR_DELAY);
+          }
+        }
+
+        async function runPoem() {
+          await wait(START_DELAY);
+          const container = document.getElementById("poem-overlay");
+          if (!container) {
+            return;
+          }
+          let stanza = 0;
+
+          for (const seg of poem) {
+            if (seg.type === "break") {
+              const br = document.createElement("div");
+              br.className = "poem-break";
+              container.appendChild(br);
+              stanza += 1;
+              await wait(STANZA_DELAY);
+              continue;
+            }
+
+            const p = document.createElement("p");
+            p.className = "poem-line poem-" + seg.type + " poem-stanza-" + (stanza % 3);
+            container.appendChild(p);
+            await typeLine(p, seg.text);
+            await wait(LINE_DELAY);
+          }
+        }
+
+        window.addEventListener("load", runPoem);
+      })();
+    </script>
 
     
   </body>

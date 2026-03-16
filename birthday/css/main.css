@@ -2239,4 +2239,93 @@ body {
           animation-delay: 16s !important;
 }
 
+.poem-overlay {
+  position: fixed;
+  top: 8vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(72vw, 540px);
+  z-index: 4;
+  pointer-events: none;
+  text-align: center;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.poem-line {
+  margin: 0 0 0.18em;
+  font-size: clamp(0.8rem, 1.5vw, 1.05rem);
+  line-height: 1.55;
+  opacity: 0.72;
+  color: #d6e8ff;
+  letter-spacing: 0.02em;
+}
+
+.poem-title {
+  font-size: clamp(0.9rem, 1.8vw, 1.18rem);
+  font-style: italic;
+  opacity: 0.85;
+  color: #e8d5ff;
+  margin-bottom: 0.1em;
+}
+
+.poem-author {
+  font-size: clamp(0.72rem, 1.2vw, 0.88rem);
+  opacity: 0.55;
+  color: #b8cfe8;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.poem-break {
+  height: 0.9em;
+}
+
+.poem-stanza-0 {
+  color: #c9dff5;
+}
+
+.poem-stanza-1 {
+  color: #dcc9f5;
+}
+
+.poem-stanza-2 {
+  color: #c9f0e8;
+}
+
+.poem-char {
+  display: inline-block;
+  -webkit-animation: poemCharPop 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+          animation: poemCharPop 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@-webkit-keyframes poemCharPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.68);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.14);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes poemCharPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.68);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.14);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 /*# sourceMappingURL=main.css.map */
