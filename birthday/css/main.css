@@ -1347,4 +1347,577 @@ body {
 .container * {
   -webkit-animation-play-state: paused !important;
           animation-play-state: paused !important;
-}/*# sourceMappingURL=main.css.map */
+}
+
+/* Scene Overhaul: roses, wildlife, color, and sky layers */
+.night {
+  z-index: 0;
+  filter: none;
+  background-image: radial-gradient(ellipse at top, #050510 0%, #080b2b 28%, #0d1b4b 55%, #0a3d0a 100%);
+}
+
+.stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 62%, transparent 100%);
+  -webkit-animation: twinkle 5.5s ease-in-out infinite;
+          animation: twinkle 5.5s ease-in-out infinite;
+}
+
+.stars::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+}
+
+.stars--small {
+  -webkit-animation-duration: 3.8s;
+          animation-duration: 3.8s;
+}
+
+.stars--small::before {
+  width: 1px;
+  height: 1px;
+  box-shadow: 32.38vw 10.56vh rgba(255,255,255,0.77), 7.24vw 37.51vh rgba(255,255,255,0.59), 5.8vw 35.52vh rgba(255,255,255,0.37), 43.36vw 4.89vh rgba(255,255,255,0.41), 42.45vw 57.88vh rgba(255,255,255,0.43), 22.32vw 43.92vh rgba(255,255,255,0.97), 57.71vw 27.77vh rgba(255,255,255,0.98), 4.66vw 60.09vh rgba(255,255,255,0.54), 14.43vw 8.25vh rgba(255,255,255,0.55), 81.61vw 12.65vh rgba(255,255,255,0.73), 63.89vw 26.07vh rgba(255,255,255,0.71), 6.28vw 4.17vh rgba(255,255,255,0.48), 68.04vw 29.93vh rgba(255,255,255,0.55), 58.56vw 31.72vh rgba(255,255,255,0.54), 79.44vw 48.93vh rgba(255,255,255,0.51), 57.44vw 36.76vh rgba(255,255,255,0.92), 72.94vw 20.16vh rgba(255,255,255,0.99), 11.81vw 29.27vh rgba(255,255,255,0.84), 15.2vw 34.23vh rgba(255,255,255,0.38), 66.82vw 53.52vh rgba(255,255,255,0.72), 87.55vw 21.96vh rgba(255,255,255,0.8), 59.44vw 40.59vh rgba(255,255,255,0.65), 84vw 66.13vh rgba(255,255,255,0.66), 66.42vw 4.25vh rgba(255,255,255,0.81), 64.71vw 69.52vh rgba(255,255,255,0.88), 28.46vw 27.01vh rgba(255,255,255,0.78), 2.26vw 32.32vh rgba(255,255,255,0.46), 11.71vw 4.13vh rgba(255,255,255,0.85), 12.93vw 17.33vh rgba(255,255,255,0.6), 87.14vw 5.64vh rgba(255,255,255,0.64), 54.94vw 61.84vh rgba(255,255,255,0.88), 86.4vw 19.49vh rgba(255,255,255,0.62), 35.88vw 61.89vh rgba(255,255,255,0.97), 15.09vw 12.34vh rgba(255,255,255,0.5), 23.33vw 33.95vh rgba(255,255,255,0.73), 26.27vw 0.29vh rgba(255,255,255,0.62), 36.93vw 39.64vh rgba(255,255,255,0.97), 69.05vw 36.08vh rgba(255,255,255,0.75), 67.62vw 3.78vh rgba(255,255,255,0.93), 78vw 61.22vh rgba(255,255,255,0.87), 39.24vw 27.93vh rgba(255,255,255,0.42), 63.43vw 4.36vh rgba(255,255,255,0.39), 20.88vw 11.36vh rgba(255,255,255,0.57), 5.26vw 0.02vh rgba(255,255,255,0.45), 10.15vw 25.45vh rgba(255,255,255,0.37), 87.43vw 42.98vh rgba(255,255,255,0.45), 25.23vw 24.32vh rgba(255,255,255,0.59), 12.28vw 59.43vh rgba(255,255,255,1), 46.6vw 33.87vh rgba(255,255,255,0.41), 10.22vw 23.98vh rgba(255,255,255,0.52), 82.89vw 11.3vh rgba(255,255,255,0.37), 95.1vw 36.98vh rgba(255,255,255,0.45), 54.32vw 1.89vh rgba(255,255,255,0.69), 97.85vw 60.43vh rgba(255,255,255,0.8), 26.11vw 25.67vh rgba(255,255,255,0.46), 77.19vw 37.28vh rgba(255,255,255,0.86), 32.97vw 15.61vh rgba(255,255,255,0.88), 98.49vw 59.68vh rgba(255,255,255,0.87), 81.83vw 51.79vh rgba(255,255,255,0.5), 51.76vw 24.89vh rgba(255,255,255,0.37), 2.79vw 19.56vh rgba(255,255,255,0.52), 69.25vw 66.96vh rgba(255,255,255,0.64), 93.7vw 69.16vh rgba(255,255,255,0.97), 36.46vw 15.43vh rgba(255,255,255,0.5), 19.67vw 14.31vh rgba(255,255,255,0.76), 90.03vw 58.83vh rgba(255,255,255,0.66), 65.3vw 55.98vh rgba(255,255,255,0.41), 66.06vw 63.68vh rgba(255,255,255,0.86), 75.01vw 33.46vh rgba(255,255,255,0.47), 78.91vw 23.28vh rgba(255,255,255,0.87), 97.17vw 27.71vh rgba(255,255,255,0.61), 94.68vw 50.74vh rgba(255,255,255,0.46), 12.7vw 10.58vh rgba(255,255,255,0.94), 80.65vw 10.23vh rgba(255,255,255,0.89), 98.03vw 46.01vh rgba(255,255,255,0.58), 54.87vw 9.17vh rgba(255,255,255,0.36), 97.09vw 45.48vh rgba(255,255,255,0.69), 93.36vw 30.37vh rgba(255,255,255,0.92), 82.62vw 14.77vh rgba(255,255,255,0.51), 29.3vw 16.84vh rgba(255,255,255,0.73), 25.94vw 29.33vh rgba(255,255,255,0.44), 91vw 24.76vh rgba(255,255,255,0.65), 58.33vw 63.3vh rgba(255,255,255,0.62), 91.77vw 35.12vh rgba(255,255,255,0.7), 52.35vw 1.31vh rgba(255,255,255,0.64), 18.31vw 0.28vh rgba(255,255,255,0.87), 17.23vw 33.14vh rgba(255,255,255,0.82), 55.65vw 22.82vh rgba(255,255,255,0.69), 55.54vw 54.9vh rgba(255,255,255,0.42), 56.03vw 17.39vh rgba(255,255,255,0.53), 77.23vw 35.54vh rgba(255,255,255,0.72), 76vw 63.87vh rgba(255,255,255,0.64), 61.25vw 35.39vh rgba(255,255,255,0.68), 69.27vw 31.66vh rgba(255,255,255,0.7), 47.8vw 65.91vh rgba(255,255,255,0.8), 87.65vw 65.95vh rgba(255,255,255,0.52), 55.95vw 66.03vh rgba(255,255,255,0.9), 13.71vw 8.51vh rgba(255,255,255,0.64), 7.25vw 16.84vh rgba(255,255,255,0.4), 66.95vw 54.88vh rgba(255,255,255,0.93), 15.44vw 50.13vh rgba(255,255,255,0.78), 14.3vw 61.8vh rgba(255,255,255,0.98), 21.96vw 66.68vh rgba(255,255,255,0.61), 48.73vw 69.29vh rgba(255,255,255,0.89), 16.15vw 30.21vh rgba(255,255,255,0.69), 33.91vw 13.7vh rgba(255,255,255,0.56), 72.22vw 1.36vh rgba(255,255,255,0.71), 44.05vw 1.27vh rgba(255,255,255,0.57), 62.39vw 35.86vh rgba(255,255,255,0.39), 98.51vw 55.19vh rgba(255,255,255,0.98), 10.48vw 18.59vh rgba(255,255,255,0.38), 77.9vw 18.93vh rgba(255,255,255,0.43), 42.23vw 63.8vh rgba(255,255,255,0.88), 25.86vw 10.46vh rgba(255,255,255,0.95), 57.06vw 49.03vh rgba(255,255,255,0.41), 5.75vw 48.17vh rgba(255,255,255,0.63), 7.24vw 65.68vh rgba(255,255,255,0.76), 80.16vw 5.86vh rgba(255,255,255,0.91), 6.66vw 60.39vh rgba(255,255,255,0.64), 33.92vw 38.71vh rgba(255,255,255,0.95), 26.79vw 9.05vh rgba(255,255,255,0.69), 23.84vw 7.66vh rgba(255,255,255,0.45), 5.04vw 14.12vh rgba(255,255,255,0.55), 30.5vw 53.16vh rgba(255,255,255,0.54), 50.01vw 12.45vh rgba(255,255,255,0.58), 1.82vw 17.53vh rgba(255,255,255,0.36), 73.31vw 38.57vh rgba(255,255,255,0.47), 47.48vw 65.42vh rgba(255,255,255,0.42), 81.89vw 30.25vh rgba(255,255,255,0.67), 83.46vw 27.52vh rgba(255,255,255,0.68), 68.77vw 68.77vh rgba(255,255,255,0.57), 83.23vw 49.47vh rgba(255,255,255,0.76), 40.47vw 24.33vh rgba(255,255,255,0.39), 12.98vw 4.95vh rgba(255,255,255,0.83), 25.56vw 11.43vh rgba(255,255,255,0.4), 84.13vw 60.94vh rgba(255,255,255,0.79), 28.19vw 16.95vh rgba(255,255,255,0.54), 45.95vw 11.03vh rgba(255,255,255,0.64), 26.32vw 67.33vh rgba(255,255,255,0.98), 54.71vw 17.11vh rgba(255,255,255,0.98), 30.95vw 24.96vh rgba(255,255,255,0.35), 38.16vw 33.23vh rgba(255,255,255,0.68), 20.1vw 35.33vh rgba(255,255,255,0.35), 26.42vw 6.28vh rgba(255,255,255,0.61), 4.17vw 1.57vh rgba(255,255,255,0.55), 23.28vw 40.99vh rgba(255,255,255,0.69), 75.05vw 46.03vh rgba(255,255,255,0.82), 87.91vw 27.27vh rgba(255,255,255,0.56), 98.47vw 10.46vh rgba(255,255,255,0.82), 64.32vw 3.07vh rgba(255,255,255,0.89), 89.19vw 43.91vh rgba(255,255,255,0.83), 81.22vw 9.75vh rgba(255,255,255,0.69), 50.44vw 58.45vh rgba(255,255,255,0.87), 82.64vw 40.88vh rgba(255,255,255,0.93), 68.29vw 48.53vh rgba(255,255,255,0.5), 3.12vw 9.32vh rgba(255,255,255,0.58), 10.49vw 58.51vh rgba(255,255,255,0.71), 62.78vw 43.84vh rgba(255,255,255,0.79), 48.93vw 0.23vh rgba(255,255,255,0.87), 74.83vw 35.21vh rgba(255,255,255,0.7), 65.93vw 4.62vh rgba(255,255,255,0.83), 25.22vw 5.21vh rgba(255,255,255,0.52), 72.93vw 14.37vh rgba(255,255,255,0.83), 97.57vw 34.58vh rgba(255,255,255,0.6), 47.9vw 47.86vh rgba(255,255,255,0.85), 61.7vw 44.99vh rgba(255,255,255,0.4), 14.74vw 17.78vh rgba(255,255,255,0.83), 30.44vw 39.74vh rgba(255,255,255,0.36), 6.07vw 18.81vh rgba(255,255,255,0.79), 69.22vw 47.3vh rgba(255,255,255,0.54), 51.65vw 32.53vh rgba(255,255,255,0.65), 11.85vw 62.56vh rgba(255,255,255,0.48), 97.81vw 65.54vh rgba(255,255,255,0.36), 45.9vw 57.39vh rgba(255,255,255,0.98), 44.95vw 18.81vh rgba(255,255,255,0.49), 94.56vw 14.75vh rgba(255,255,255,0.73), 14.17vw 36.68vh rgba(255,255,255,0.97), 13.26vw 57.42vh rgba(255,255,255,0.68), 88.69vw 49.23vh rgba(255,255,255,0.5), 89.77vw 34.03vh rgba(255,255,255,0.37), 0.36vw 34.42vh rgba(255,255,255,0.64), 30.2vw 9.85vh rgba(255,255,255,0.57), 31.61vw 58.82vh rgba(255,255,255,0.35), 75.07vw 58.74vh rgba(255,255,255,0.43), 92.64vw 49.91vh rgba(255,255,255,0.94), 28.98vw 26.06vh rgba(255,255,255,0.61), 99.88vw 41.24vh rgba(255,255,255,0.58), 42.81vw 19.26vh rgba(255,255,255,0.38), 10.17vw 58.43vh rgba(255,255,255,0.54), 93.56vw 17.45vh rgba(255,255,255,0.52), 51.1vw 13.29vh rgba(255,255,255,0.59), 95.62vw 61.9vh rgba(255,255,255,0.88), 63.09vw 63.94vh rgba(255,255,255,0.96), 54.92vw 50.37vh rgba(255,255,255,0.38), 73.24vw 31.56vh rgba(255,255,255,0.84), 64.45vw 20.03vh rgba(255,255,255,0.38), 92.68vw 8.91vh rgba(255,255,255,0.66), 34.37vw 20.84vh rgba(255,255,255,0.83), 97.63vw 18.21vh rgba(255,255,255,0.78), 30.08vw 39.01vh rgba(255,255,255,0.61);
+}
+
+.stars--medium {
+  -webkit-animation-duration: 5.7s;
+          animation-duration: 5.7s;
+  -webkit-animation-delay: 0.9s;
+          animation-delay: 0.9s;
+}
+
+.stars--medium::before {
+  width: 2px;
+  height: 2px;
+  box-shadow: 16.73vw 10.51vh rgba(255,255,255,0.49), 90.6vw 32.31vh rgba(255,255,255,0.49), 90.63vw 64.77vh rgba(255,255,255,0.64), 13.96vw 12.51vh rgba(255,255,255,0.41), 34.2vw 5.92vh rgba(255,255,255,0.51), 25.84vw 37.03vh rgba(255,255,255,0.93), 74.97vw 26.83vh rgba(255,255,255,0.62), 52.42vw 24.5vh rgba(255,255,255,0.57), 6.21vw 18.04vh rgba(255,255,255,0.98), 12.59vw 32.72vh rgba(255,255,255,0.76), 86.29vw 14.04vh rgba(255,255,255,0.53), 24.85vw 25.98vh rgba(255,255,255,0.64), 95.39vw 55.16vh rgba(255,255,255,0.92), 2.18vw 2.1vh rgba(255,255,255,0.81), 89.57vw 30.76vh rgba(255,255,255,0.73), 0.02vw 25.45vh rgba(255,255,255,0.95), 82.56vw 55.61vh rgba(255,255,255,0.98), 24.85vw 7.09vh rgba(255,255,255,0.45), 52.24vw 44.33vh rgba(255,255,255,0.96), 72.17vw 42.08vh rgba(255,255,255,0.85), 45.73vw 35.85vh rgba(255,255,255,0.38), 78.23vw 15.12vh rgba(255,255,255,0.95), 64.55vw 19.75vh rgba(255,255,255,0.43), 25.18vw 41.36vh rgba(255,255,255,0.8), 11.21vw 4.57vh rgba(255,255,255,0.69), 58.29vw 25.23vh rgba(255,255,255,0.5), 60.11vw 0.68vh rgba(255,255,255,0.55), 46.07vw 62.33vh rgba(255,255,255,0.77), 88.38vw 30.89vh rgba(255,255,255,0.5), 24.71vw 62.44vh rgba(255,255,255,0.81), 30.74vw 1.42vh rgba(255,255,255,0.67), 67.45vw 27.3vh rgba(255,255,255,0.52), 66.74vw 60.14vh rgba(255,255,255,0.5), 3.41vw 21.97vh rgba(255,255,255,0.62), 68.26vw 12.88vh rgba(255,255,255,0.87), 73.91vw 32.82vh rgba(255,255,255,0.48), 96.99vw 20.26vh rgba(255,255,255,0.88), 23.08vw 14.39vh rgba(255,255,255,0.84), 29.49vw 61.88vh rgba(255,255,255,0.67), 18.73vw 14.52vh rgba(255,255,255,0.62), 66.53vw 61.67vh rgba(255,255,255,0.45), 39.35vw 13.84vh rgba(255,255,255,0.98), 14.19vw 3.37vh rgba(255,255,255,0.39), 39.33vw 58.38vh rgba(255,255,255,0.92), 73.27vw 64.84vh rgba(255,255,255,0.96), 32.92vw 12.06vh rgba(255,255,255,0.96), 74.63vw 2.07vh rgba(255,255,255,0.78), 37.86vw 24.3vh rgba(255,255,255,0.57), 16.93vw 0.19vh rgba(255,255,255,0.53), 35.15vw 62.11vh rgba(255,255,255,0.43), 96.43vw 13.48vh rgba(255,255,255,0.58), 82.16vw 53.43vh rgba(255,255,255,0.63), 4.93vw 30.78vh rgba(255,255,255,0.59), 91.95vw 12.55vh rgba(255,255,255,0.59), 89.7vw 1.97vh rgba(255,255,255,0.62), 81.18vw 49.83vh rgba(255,255,255,0.38), 3.49vw 4.07vh rgba(255,255,255,0.95), 25.7vw 48.57vh rgba(255,255,255,0.93), 33.91vw 17.7vh rgba(255,255,255,0.97), 61.7vw 17.04vh rgba(255,255,255,0.82), 31.65vw 17.92vh rgba(255,255,255,0.35), 75.57vw 59.57vh rgba(255,255,255,0.76), 94.33vw 1.58vh rgba(255,255,255,0.5), 47.52vw 62.19vh rgba(255,255,255,0.97), 38.65vw 16.32vh rgba(255,255,255,0.63), 49.35vw 60.33vh rgba(255,255,255,0.47), 80.26vw 48vh rgba(255,255,255,0.88), 77.28vw 39.47vh rgba(255,255,255,0.56), 31.95vw 23.52vh rgba(255,255,255,0.86), 7.9vw 12.83vh rgba(255,255,255,0.84), 24.73vw 4.21vh rgba(255,255,255,0.37), 55.26vw 21.17vh rgba(255,255,255,0.99), 88.35vw 64.21vh rgba(255,255,255,0.52), 8.41vw 6.27vh rgba(255,255,255,0.67), 70.98vw 29.05vh rgba(255,255,255,0.5), 41.68vw 40.32vh rgba(255,255,255,0.79), 74.8vw 55.05vh rgba(255,255,255,0.78), 12.12vw 54.66vh rgba(255,255,255,0.54), 56.69vw 24.24vh rgba(255,255,255,0.83), 19.92vw 16.08vh rgba(255,255,255,0.51), 15.33vw 57.47vh rgba(255,255,255,0.73), 32.63vw 25.74vh rgba(255,255,255,1), 50.73vw 15.04vh rgba(255,255,255,0.88), 65.33vw 64.41vh rgba(255,255,255,0.42), 47.48vw 53.24vh rgba(255,255,255,0.9), 91.44vw 2.62vh rgba(255,255,255,0.54), 11.92vw 12.32vh rgba(255,255,255,0.98), 58.32vw 60.46vh rgba(255,255,255,0.59), 86.61vw 29.19vh rgba(255,255,255,0.52), 77.78vw 61.47vh rgba(255,255,255,0.42), 59.61vw 40.3vh rgba(255,255,255,0.49), 36.87vw 9.19vh rgba(255,255,255,0.48), 25.49vw 38.96vh rgba(255,255,255,0.77), 20.34vw 0.74vh rgba(255,255,255,0.56), 67.83vw 12.03vh rgba(255,255,255,0.55), 20.34vw 51.69vh rgba(255,255,255,0.71), 6.33vw 6.59vh rgba(255,255,255,0.61), 55.01vw 41.55vh rgba(255,255,255,0.41), 16.37vw 45.2vh rgba(255,255,255,0.62), 28.33vw 19.99vh rgba(255,255,255,0.97);
+}
+
+.stars--large {
+  -webkit-animation-duration: 6.4s;
+          animation-duration: 6.4s;
+  -webkit-animation-delay: 1.8s;
+          animation-delay: 1.8s;
+}
+
+.stars--large::before {
+  width: 3px;
+  height: 3px;
+  box-shadow: 31.24vw 33.99vh rgba(255,255,255,0.58), 41.64vw 51.85vh rgba(255,255,255,1), 36.38vw 11.83vh rgba(255,255,255,0.82), 20.37vw 0.35vh rgba(255,255,255,0.94), 42.38vw 49.22vh rgba(255,255,255,0.61), 88.28vw 27.65vh rgba(255,255,255,0.46), 1.48vw 33.09vh rgba(255,255,255,0.77), 90.98vw 5.34vh rgba(255,255,255,0.75), 37.08vw 30.27vh rgba(255,255,255,0.44), 28.33vw 31.27vh rgba(255,255,255,0.95), 10.88vw 29.43vh rgba(255,255,255,0.87), 96.69vw 11.84vh rgba(255,255,255,0.43), 94.31vw 58.53vh rgba(255,255,255,0.66), 5.34vw 55.57vh rgba(255,255,255,0.6), 90.42vw 37.22vh rgba(255,255,255,0.89), 16.03vw 47.15vh rgba(255,255,255,0.49), 40.45vw 50.78vh rgba(255,255,255,0.89), 18.3vw 13.09vh rgba(255,255,255,0.61), 51.79vw 23.01vh rgba(255,255,255,0.43), 24.71vw 43.49vh rgba(255,255,255,0.93), 4.11vw 33.74vh rgba(255,255,255,0.84), 3.81vw 50.29vh rgba(255,255,255,0.43), 59.95vw 33vh rgba(255,255,255,0.76), 30.62vw 25.2vh rgba(255,255,255,0.73), 42.57vw 39.53vh rgba(255,255,255,0.64), 43.84vw 1.4vh rgba(255,255,255,0.75), 48.95vw 14.12vh rgba(255,255,255,0.85), 78vw 27.5vh rgba(255,255,255,0.47), 47.32vw 6.42vh rgba(255,255,255,0.43), 43.06vw 5.5vh rgba(255,255,255,0.64), 51.02vw 2.45vh rgba(255,255,255,0.76), 8.22vw 44.01vh rgba(255,255,255,0.86), 51.15vw 3.26vh rgba(255,255,255,0.68), 37.79vw 57.05vh rgba(255,255,255,0.44), 85.71vw 59.77vh rgba(255,255,255,0.83), 81.5vw 11.62vh rgba(255,255,255,0.99), 49.19vw 57.4vh rgba(255,255,255,0.95), 16.51vw 47.3vh rgba(255,255,255,0.95), 6.55vw 21.05vh rgba(255,255,255,0.84), 15.88vw 53.79vh rgba(255,255,255,0.53), 81.56vw 8.61vh rgba(255,255,255,0.68), 91.99vw 12.5vh rgba(255,255,255,0.52), 50.6vw 19.14vh rgba(255,255,255,0.37), 18.21vw 9.67vh rgba(255,255,255,0.96), 67.97vw 53.72vh rgba(255,255,255,0.46), 78.49vw 6.9vh rgba(255,255,255,0.69), 63.63vw 21.59vh rgba(255,255,255,0.92), 55.52vw 34.8vh rgba(255,255,255,0.92), 10.46vw 59.58vh rgba(255,255,255,0.76), 39.43vw 47.86vh rgba(255,255,255,0.52);
+}
+
+.moon {
+  position: fixed;
+  top: 6vh;
+  right: 9vw;
+  width: 8vmin;
+  height: 8vmin;
+  border-radius: 50%;
+  z-index: 2;
+  background: radial-gradient(circle at 30% 30%, #ffffff, #dce7ff 62%, #b9c8ff 100%);
+  box-shadow: 0 0 2vmin rgba(255, 255, 255, 0.45), 0 0 6vmin rgba(255, 255, 255, 0.2);
+  -webkit-animation: moon-glow 6s ease-in-out infinite;
+          animation: moon-glow 6s ease-in-out infinite;
+}
+
+.shooting-star {
+  position: fixed;
+  top: 8vh;
+  left: -15vw;
+  width: 12vmin;
+  height: 0.24vmin;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+  filter: drop-shadow(0 0 0.8vmin rgba(255, 255, 255, 0.8));
+  transform: rotate(-22deg);
+  -webkit-animation: shooting-star-move 8s linear infinite 1.2s backwards;
+          animation: shooting-star-move 8s linear infinite 1.2s backwards;
+}
+
+.flowers {
+  z-index: 8;
+}
+
+.flower--1 {
+  --rose-outer: #c0392b;
+  --rose-inner: #922b21;
+  --rose-center-light: #ff836e;
+  --rose-glow: rgba(206, 72, 75, 0.5);
+  --rose-dust: rgba(255, 140, 130, 0.84);
+}
+
+.flower--2 {
+  --rose-outer: #e91e8c;
+  --rose-inner: #ad1457;
+  --rose-center-light: #ff79ba;
+  --rose-glow: rgba(229, 66, 153, 0.45);
+  --rose-dust: rgba(255, 145, 206, 0.82);
+}
+
+.flower--3 {
+  --rose-outer: #8e24aa;
+  --rose-inner: #6a1b9a;
+  --rose-center-light: #bc78ff;
+  --rose-glow: rgba(164, 102, 255, 0.42);
+  --rose-dust: rgba(194, 145, 255, 0.82);
+}
+
+.flower .flower__leafs::after {
+  background-color: var(--rose-glow);
+  box-shadow: 0 0 3vmin var(--rose-glow);
+}
+
+.flower .flower__leaf {
+  border-radius: 60% 40% 50% 50%/60% 50% 40% 50%;
+  background-color: var(--rose-outer);
+  background-image: radial-gradient(circle at 40% 20%, var(--rose-center-light), var(--rose-outer) 46%, var(--rose-inner) 100%);
+  box-shadow: inset -0.4vmin -0.7vmin 1.6vmin rgba(45, 0, 18, 0.35), inset 0 0 1.8vmin rgba(255, 255, 255, 0.18);
+}
+
+.flower .flower__leaf--4 {
+  border-radius: 56% 44% 63% 37%/61% 46% 54% 39%;
+  background-image: radial-gradient(circle at 30% 28%, var(--rose-center-light), var(--rose-outer) 50%, var(--rose-inner) 100%);
+}
+
+.flower__inner-leaf {
+  position: absolute;
+  left: 50%;
+  top: -0.8vmin;
+  width: 4.7vmin;
+  height: 6.2vmin;
+  border-radius: 62% 38% 55% 45%/63% 49% 41% 37%;
+  transform-origin: bottom center;
+  opacity: 0.96;
+  background-image: radial-gradient(circle at 40% 25%, rgba(255, 255, 255, 0.4), var(--rose-center-light) 38%, var(--rose-outer) 70%);
+  box-shadow: inset -0.3vmin -0.5vmin 1vmin rgba(35, 0, 25, 0.28);
+  z-index: 2;
+}
+
+.flower__inner-leaf--1 {
+  transform: translate(-50%, -8%) rotate(-8deg) scale(0.62);
+}
+
+.flower__inner-leaf--2 {
+  transform: translate(-50%, -14%) rotate(38deg) scale(0.6);
+}
+
+.flower__inner-leaf--3 {
+  transform: translate(-52%, -9%) rotate(82deg) scale(0.58);
+}
+
+.flower__inner-leaf--4 {
+  transform: translate(-46%, -6%) rotate(130deg) scale(0.6);
+}
+
+.flower .flower__white-circle {
+  background: radial-gradient(circle at 30% 35%, #ffe38d, #ffd700 45%, #e6a817 100%);
+  box-shadow: 0 0 1.4vmin rgba(255, 200, 60, 0.6);
+}
+
+.flower .flower__white-circle::after {
+  background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.34), rgba(255, 220, 130, 0.22) 40%, rgba(161, 90, 0, 0.35) 100%);
+}
+
+.flower .flower__light {
+  background-color: var(--rose-dust);
+  box-shadow: 0 0 0.8vmin var(--rose-dust);
+}
+
+.flower .flower__light:nth-child(odd) {
+  background-color: var(--rose-center-light);
+}
+
+.flower__line {
+  background-image: linear-gradient(to left, rgba(0, 0, 0, 0.25), transparent, rgba(255, 255, 255, 0.18)), linear-gradient(to top, transparent 8%, #054a05, #0a6b0a);
+}
+
+.flower__line__leaf {
+  background-image: linear-gradient(to top, rgba(10, 87, 10, 0.55), #0d9a0d);
+}
+
+.flower__grass,
+.flower__g-long,
+.long-g .leaf {
+  --c: #0a6b0a;
+}
+
+.flower__g-front__line {
+  background-image: linear-gradient(to top, transparent, #0f8511, transparent 100%);
+}
+
+.flower__g-front__leaf,
+.flower__g-fr__leaf {
+  background-image: linear-gradient(to bottom left, transparent, var(--dark-color)), linear-gradient(to bottom right, #0f8511 50%, transparent 50%, transparent);
+}
+
+.flower__g-right .leaf,
+.flower__g-fr .leaf {
+  border-left-color: #0a6b0a;
+  -webkit-mask-image: linear-gradient(to top, transparent 30%, #0a6b0a 60%);
+}
+
+.butterfly {
+  position: absolute;
+  width: 4.8vmin;
+  height: 3.3vmin;
+  z-index: 35;
+  transform-origin: center center;
+  -webkit-animation-fill-mode: backwards;
+          animation-fill-mode: backwards;
+}
+
+.butterfly__wing {
+  position: absolute;
+  width: 2.3vmin;
+  height: 2.9vmin;
+  top: 0;
+  box-shadow: inset 0 0 0.45vmin rgba(255, 255, 255, 0.25), 0 0 0.3vmin rgba(0, 0, 0, 0.3);
+}
+
+.butterfly__wing--left {
+  left: 0.2vmin;
+  border-radius: 50% 0 50% 50%;
+  transform-origin: right center;
+  -webkit-animation: butterfly-flap-left 0.25s ease-in-out infinite alternate;
+          animation: butterfly-flap-left 0.25s ease-in-out infinite alternate;
+}
+
+.butterfly__wing--right {
+  right: 0.2vmin;
+  border-radius: 0 50% 50% 50%;
+  transform-origin: left center;
+  -webkit-animation: butterfly-flap-right 0.25s ease-in-out infinite alternate;
+          animation: butterfly-flap-right 0.25s ease-in-out infinite alternate;
+}
+
+.butterfly__body {
+  position: absolute;
+  left: 50%;
+  top: 0.35vmin;
+  transform: translateX(-50%);
+  width: 0.55vmin;
+  height: 2.35vmin;
+  border-radius: 999px;
+  background: linear-gradient(to bottom, #252525, #070707);
+}
+
+.butterfly--1 {
+  -webkit-animation: butterfly-path-1 14s linear infinite 2.6s backwards;
+          animation: butterfly-path-1 14s linear infinite 2.6s backwards;
+}
+
+.butterfly--1 .butterfly__wing {
+  background: radial-gradient(circle at 62% 36%, #ffe08c, #f18f01 58%, #181818 100%);
+}
+
+.butterfly--2 {
+  -webkit-animation: butterfly-path-2 17s linear infinite 3.2s backwards;
+          animation: butterfly-path-2 17s linear infinite 3.2s backwards;
+}
+
+.butterfly--2 .butterfly__wing {
+  background: radial-gradient(circle at 62% 36%, #98f8ff, #1c9ce0 58%, #0f3350 100%);
+}
+
+.butterfly--3 {
+  -webkit-animation: butterfly-path-3 12s linear infinite 2.9s backwards;
+          animation: butterfly-path-3 12s linear infinite 2.9s backwards;
+}
+
+.butterfly--3 .butterfly__wing {
+  background: radial-gradient(circle at 62% 36%, #f0b0ff, #9b35d2 58%, #2a183a 100%);
+}
+
+.birds {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.bird {
+  position: absolute;
+  top: 10vh;
+  left: -12vw;
+  width: 2.6vmin;
+  height: 1.3vmin;
+  opacity: 0.8;
+}
+
+.bird::before,
+.bird::after {
+  content: "";
+  position: absolute;
+  width: 1.3vmin;
+  height: 0.8vmin;
+  border-radius: 50% 50% 0 0/50% 50% 0 0;
+  border-top: 0.22vmin solid rgba(10, 10, 30, 0.78);
+}
+
+.bird::before {
+  left: 0;
+  transform: rotate(12deg);
+}
+
+.bird::after {
+  right: 0;
+  transform: rotate(-12deg);
+}
+
+.bird--1 {
+  top: 8vh;
+  -webkit-animation: fly-bird-1 12s linear infinite 1.2s backwards;
+          animation: fly-bird-1 12s linear infinite 1.2s backwards;
+}
+
+.bird--2 {
+  top: 14vh;
+  -webkit-animation: fly-bird-2 17s linear infinite 0.4s backwards;
+          animation: fly-bird-2 17s linear infinite 0.4s backwards;
+}
+
+.bird--3 {
+  top: 22vh;
+  -webkit-animation: fly-bird-3 20s linear infinite 2.1s backwards;
+          animation: fly-bird-3 20s linear infinite 2.1s backwards;
+}
+
+.bird--4 {
+  top: 17vh;
+  -webkit-animation: fly-bird-4 10s linear infinite 3s backwards;
+          animation: fly-bird-4 10s linear infinite 3s backwards;
+}
+
+.bird--5 {
+  top: 27vh;
+  -webkit-animation: fly-bird-5 15s linear infinite 1.8s backwards;
+          animation: fly-bird-5 15s linear infinite 1.8s backwards;
+}
+
+.fireflies {
+  position: fixed;
+  inset: 0;
+  z-index: 26;
+  pointer-events: none;
+}
+
+.firefly {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 180, 0.95);
+  box-shadow: 0 0 8px rgba(255, 255, 150, 0.9), 0 0 16px rgba(190, 255, 120, 0.5);
+  -webkit-animation: firefly-glow 2.2s ease-in-out infinite alternate;
+          animation: firefly-glow 2.2s ease-in-out infinite alternate;
+}
+
+.firefly--1 { left: 22vw; top: 66vh; -webkit-animation: firefly-glow 1.8s ease-in-out infinite alternate, firefly-move-1 8s linear infinite 1.4s backwards; animation: firefly-glow 1.8s ease-in-out infinite alternate, firefly-move-1 8s linear infinite 1.4s backwards; }
+.firefly--2 { left: 28vw; top: 71vh; -webkit-animation: firefly-glow 2.6s ease-in-out infinite alternate, firefly-move-2 10s linear infinite 0.6s backwards; animation: firefly-glow 2.6s ease-in-out infinite alternate, firefly-move-2 10s linear infinite 0.6s backwards; }
+.firefly--3 { left: 35vw; top: 62vh; -webkit-animation: firefly-glow 1.6s ease-in-out infinite alternate, firefly-move-3 7s linear infinite 2.2s backwards; animation: firefly-glow 1.6s ease-in-out infinite alternate, firefly-move-3 7s linear infinite 2.2s backwards; }
+.firefly--4 { left: 42vw; top: 74vh; -webkit-animation: firefly-glow 2.3s ease-in-out infinite alternate, firefly-move-4 9s linear infinite 1.2s backwards; animation: firefly-glow 2.3s ease-in-out infinite alternate, firefly-move-4 9s linear infinite 1.2s backwards; }
+.firefly--5 { left: 48vw; top: 68vh; -webkit-animation: firefly-glow 1.9s ease-in-out infinite alternate, firefly-move-5 8.5s linear infinite 0.8s backwards; animation: firefly-glow 1.9s ease-in-out infinite alternate, firefly-move-5 8.5s linear infinite 0.8s backwards; }
+.firefly--6 { left: 54vw; top: 73vh; -webkit-animation: firefly-glow 2.7s ease-in-out infinite alternate, firefly-move-6 9.5s linear infinite 1.6s backwards; animation: firefly-glow 2.7s ease-in-out infinite alternate, firefly-move-6 9.5s linear infinite 1.6s backwards; }
+.firefly--7 { left: 60vw; top: 65vh; -webkit-animation: firefly-glow 2.1s ease-in-out infinite alternate, firefly-move-7 7.8s linear infinite 2.8s backwards; animation: firefly-glow 2.1s ease-in-out infinite alternate, firefly-move-7 7.8s linear infinite 2.8s backwards; }
+.firefly--8 { left: 66vw; top: 70vh; -webkit-animation: firefly-glow 1.7s ease-in-out infinite alternate, firefly-move-8 8.8s linear infinite 1.1s backwards; animation: firefly-glow 1.7s ease-in-out infinite alternate, firefly-move-8 8.8s linear infinite 1.1s backwards; }
+.firefly--9 { left: 72vw; top: 63vh; -webkit-animation: firefly-glow 2.4s ease-in-out infinite alternate, firefly-move-9 10.2s linear infinite 0.9s backwards; animation: firefly-glow 2.4s ease-in-out infinite alternate, firefly-move-9 10.2s linear infinite 0.9s backwards; }
+.firefly--10 { left: 76vw; top: 69vh; -webkit-animation: firefly-glow 1.8s ease-in-out infinite alternate, firefly-move-10 8.3s linear infinite 2s backwards; animation: firefly-glow 1.8s ease-in-out infinite alternate, firefly-move-10 8.3s linear infinite 2s backwards; }
+.firefly--11 { left: 82vw; top: 66vh; -webkit-animation: firefly-glow 2.5s ease-in-out infinite alternate, firefly-move-11 9.2s linear infinite 1.5s backwards; animation: firefly-glow 2.5s ease-in-out infinite alternate, firefly-move-11 9.2s linear infinite 1.5s backwards; }
+.firefly--12 { left: 88vw; top: 72vh; -webkit-animation: firefly-glow 2s ease-in-out infinite alternate, firefly-move-12 7.6s linear infinite 2.5s backwards; animation: firefly-glow 2s ease-in-out infinite alternate, firefly-move-12 7.6s linear infinite 2.5s backwards; }
+
+@-webkit-keyframes twinkle {
+  0%, 100% { opacity: 0.28; }
+  50% { opacity: 0.95; }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.28; }
+  50% { opacity: 0.95; }
+}
+
+@-webkit-keyframes moon-glow {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.04); }
+}
+
+@keyframes moon-glow {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.04); }
+}
+
+@-webkit-keyframes shooting-star-move {
+  0%, 78% { opacity: 0; transform: translate(-10vw, -5vh) rotate(-22deg); }
+  82% { opacity: 1; }
+  100% { opacity: 0; transform: translate(130vw, 42vh) rotate(-22deg); }
+}
+
+@keyframes shooting-star-move {
+  0%, 78% { opacity: 0; transform: translate(-10vw, -5vh) rotate(-22deg); }
+  82% { opacity: 1; }
+  100% { opacity: 0; transform: translate(130vw, 42vh) rotate(-22deg); }
+}
+
+@-webkit-keyframes butterfly-flap-left {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(70deg); }
+}
+
+@keyframes butterfly-flap-left {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(70deg); }
+}
+
+@-webkit-keyframes butterfly-flap-right {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(-70deg); }
+}
+
+@keyframes butterfly-flap-right {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(-70deg); }
+}
+
+@-webkit-keyframes butterfly-path-1 {
+  0% { transform: translate(8vw, 65vh) scale(0.9); }
+  25% { transform: translate(24vw, 50vh) scale(0.95); }
+  50% { transform: translate(42vw, 58vh) scale(1); }
+  75% { transform: translate(57vw, 46vh) scale(0.9); }
+  100% { transform: translate(80vw, 63vh) scale(0.92); }
+}
+
+@keyframes butterfly-path-1 {
+  0% { transform: translate(8vw, 65vh) scale(0.9); }
+  25% { transform: translate(24vw, 50vh) scale(0.95); }
+  50% { transform: translate(42vw, 58vh) scale(1); }
+  75% { transform: translate(57vw, 46vh) scale(0.9); }
+  100% { transform: translate(80vw, 63vh) scale(0.92); }
+}
+
+@-webkit-keyframes butterfly-path-2 {
+  0% { transform: translate(84vw, 62vh) scale(0.86); }
+  30% { transform: translate(66vw, 44vh) scale(0.94); }
+  55% { transform: translate(48vw, 52vh) scale(0.9); }
+  80% { transform: translate(28vw, 40vh) scale(0.96); }
+  100% { transform: translate(12vw, 58vh) scale(0.88); }
+}
+
+@keyframes butterfly-path-2 {
+  0% { transform: translate(84vw, 62vh) scale(0.86); }
+  30% { transform: translate(66vw, 44vh) scale(0.94); }
+  55% { transform: translate(48vw, 52vh) scale(0.9); }
+  80% { transform: translate(28vw, 40vh) scale(0.96); }
+  100% { transform: translate(12vw, 58vh) scale(0.88); }
+}
+
+@-webkit-keyframes butterfly-path-3 {
+  0% { transform: translate(40vw, 72vh) scale(0.8); }
+  20% { transform: translate(55vw, 57vh) scale(0.86); }
+  45% { transform: translate(70vw, 63vh) scale(0.82); }
+  70% { transform: translate(58vw, 47vh) scale(0.9); }
+  100% { transform: translate(36vw, 68vh) scale(0.8); }
+}
+
+@keyframes butterfly-path-3 {
+  0% { transform: translate(40vw, 72vh) scale(0.8); }
+  20% { transform: translate(55vw, 57vh) scale(0.86); }
+  45% { transform: translate(70vw, 63vh) scale(0.82); }
+  70% { transform: translate(58vw, 47vh) scale(0.9); }
+  100% { transform: translate(36vw, 68vh) scale(0.8); }
+}
+
+@-webkit-keyframes fly-bird-1 {
+  0% { transform: translateX(-18vw) translateY(0) scale(0.85); }
+  100% { transform: translateX(130vw) translateY(-1vh) scale(0.85); }
+}
+
+@keyframes fly-bird-1 {
+  0% { transform: translateX(-18vw) translateY(0) scale(0.85); }
+  100% { transform: translateX(130vw) translateY(-1vh) scale(0.85); }
+}
+
+@-webkit-keyframes fly-bird-2 {
+  0% { transform: translateX(-20vw) translateY(1vh) scale(0.7); }
+  100% { transform: translateX(130vw) translateY(-2vh) scale(0.7); }
+}
+
+@keyframes fly-bird-2 {
+  0% { transform: translateX(-20vw) translateY(1vh) scale(0.7); }
+  100% { transform: translateX(130vw) translateY(-2vh) scale(0.7); }
+}
+
+@-webkit-keyframes fly-bird-3 {
+  0% { transform: translateX(-16vw) translateY(2vh) scale(0.95); }
+  100% { transform: translateX(128vw) translateY(-1vh) scale(0.95); }
+}
+
+@keyframes fly-bird-3 {
+  0% { transform: translateX(-16vw) translateY(2vh) scale(0.95); }
+  100% { transform: translateX(128vw) translateY(-1vh) scale(0.95); }
+}
+
+@-webkit-keyframes fly-bird-4 {
+  0% { transform: translateX(-22vw) translateY(-1vh) scale(0.6); }
+  100% { transform: translateX(132vw) translateY(2vh) scale(0.6); }
+}
+
+@keyframes fly-bird-4 {
+  0% { transform: translateX(-22vw) translateY(-1vh) scale(0.6); }
+  100% { transform: translateX(132vw) translateY(2vh) scale(0.6); }
+}
+
+@-webkit-keyframes fly-bird-5 {
+  0% { transform: translateX(-18vw) translateY(0.6vh) scale(0.76); }
+  100% { transform: translateX(130vw) translateY(-2.8vh) scale(0.76); }
+}
+
+@keyframes fly-bird-5 {
+  0% { transform: translateX(-18vw) translateY(0.6vh) scale(0.76); }
+  100% { transform: translateX(130vw) translateY(-2.8vh) scale(0.76); }
+}
+
+@-webkit-keyframes firefly-glow {
+  0% { opacity: 0.2; box-shadow: 0 0 2px rgba(255, 255, 150, 0.4), 0 0 8px rgba(190, 255, 120, 0.2); }
+  100% { opacity: 1; box-shadow: 0 0 8px rgba(255, 255, 150, 0.95), 0 0 18px rgba(190, 255, 120, 0.65); }
+}
+
+@keyframes firefly-glow {
+  0% { opacity: 0.2; box-shadow: 0 0 2px rgba(255, 255, 150, 0.4), 0 0 8px rgba(190, 255, 120, 0.2); }
+  100% { opacity: 1; box-shadow: 0 0 8px rgba(255, 255, 150, 0.95), 0 0 18px rgba(190, 255, 120, 0.65); }
+}
+
+@-webkit-keyframes firefly-move-1 { 0% { transform: translate(0, 0); } 20% { transform: translate(3vw, -4vh); } 45% { transform: translate(-2vw, -7vh); } 75% { transform: translate(5vw, -2vh); } 100% { transform: translate(0, 0); } }
+@keyframes firefly-move-1 { 0% { transform: translate(0, 0); } 20% { transform: translate(3vw, -4vh); } 45% { transform: translate(-2vw, -7vh); } 75% { transform: translate(5vw, -2vh); } 100% { transform: translate(0, 0); } }
+@-webkit-keyframes firefly-move-2 { 0% { transform: translate(0, 0); } 25% { transform: translate(-4vw, -3vh); } 50% { transform: translate(-1vw, -9vh); } 80% { transform: translate(2vw, -4vh); } 100% { transform: translate(0, 0); } }
+@keyframes firefly-move-2 { 0% { transform: translate(0, 0); } 25% { transform: translate(-4vw, -3vh); } 50% { transform: translate(-1vw, -9vh); } 80% { transform: translate(2vw, -4vh); } 100% { transform: translate(0, 0); } }
+@-webkit-keyframes firefly-move-3 { 0% { transform: translate(0, 0); } 30% { transform: translate(2vw, -6vh); } 55% { transform: translate(6vw, -8vh); } 85% { transform: translate(1vw, -3vh); } 100% { transform: translate(0, 0); } }
+@keyframes firefly-move-3 { 0% { transform: translate(0, 0); } 30% { transform: translate(2vw, -6vh); } 55% { transform: translate(6vw, -8vh); } 85% { transform: translate(1vw, -3vh); } 100% { transform: translate(0, 0); } }
+@-webkit-keyframes firefly-move-4 { 0% { transform: translate(0, 0); } 20% { transform: translate(-3vw, -2vh); } 40% { transform: translate(-6vw, -7vh); } 75% { transform: translate(-2vw, -8vh); } 100% { transform: translate(0, 0); } }
+@keyframes firefly-move-4 { 0% { transform: translate(0, 0); } 20% { transform: translate(-3vw, -2vh); } 40% { transform: translate(-6vw, -7vh); } 75% { transform: translate(-2vw, -8vh); } 100% { transform: translate(0, 0); } }
+@-webkit-keyframes firefly-move-5 { 0% { transform: translate(0, 0); } 30% { transform: translate(3vw, -3vh); } 52% { transform: translate(5vw, -10vh); } 78% { transform: translate(-1vw, -6vh); } 100% { transform: translate(0, 0); } }
+@keyframes firefly-move-5 { 0% { transform: translate(0, 0); } 30% { transform: translate(3vw, -3vh); } 52% { transform: translate(5vw, -10vh); } 78% { transform: translate(-1vw, -6vh); } 100% { transform: translate(0, 0); } }
+@-webkit-keyframes firefly-move-6 { 0% { transform: translate(0, 0); } 18% { transform: translate(-2vw, -5vh); } 44% { transform: translate(2vw, -8vh); } 76% { transform: translate(4vw, -3vh); } 100% { transform: translate(0, 0); } }
+@keyframes firefly-move-6 { 0% { transform: translate(0, 0); } 18% { transform: translate(-2vw, -5vh); } 44% { transform: translate(2vw, -8vh); } 76% { transform: translate(4vw, -3vh); } 100% { transform: translate(0, 0); } }
+@-webkit-keyframes firefly-move-7 { 0% { transform: translate(0, 0); } 22% { transform: translate(1vw, -6vh); } 48% { transform: translate(-3vw, -8vh); } 72% { transform: translate(2vw, -5vh); } 100% { transform: translate(0, 0); } }
+@keyframes firefly-move-7 { 0% { transform: translate(0, 0); } 22% { transform: translate(1vw, -6vh); } 48% { transform: translate(-3vw, -8vh); } 72% { transform: translate(2vw, -5vh); } 100% { transform: translate(0, 0); } }
+@-webkit-keyframes firefly-move-8 { 0% { transform: translate(0, 0); } 28% { transform: translate(-5vw, -4vh); } 55% { transform: translate(-2vw, -7vh); } 83% { transform: translate(3vw, -4vh); } 100% { transform: translate(0, 0); } }
+@keyframes firefly-move-8 { 0% { transform: translate(0, 0); } 28% { transform: translate(-5vw, -4vh); } 55% { transform: translate(-2vw, -7vh); } 83% { transform: translate(3vw, -4vh); } 100% { transform: translate(0, 0); } }
+@-webkit-keyframes firefly-move-9 { 0% { transform: translate(0, 0); } 20% { transform: translate(2vw, -3vh); } 50% { transform: translate(4vw, -8vh); } 80% { transform: translate(-1vw, -6vh); } 100% { transform: translate(0, 0); } }
+@keyframes firefly-move-9 { 0% { transform: translate(0, 0); } 20% { transform: translate(2vw, -3vh); } 50% { transform: translate(4vw, -8vh); } 80% { transform: translate(-1vw, -6vh); } 100% { transform: translate(0, 0); } }
+@-webkit-keyframes firefly-move-10 { 0% { transform: translate(0, 0); } 24% { transform: translate(-3vw, -6vh); } 51% { transform: translate(-6vw, -9vh); } 79% { transform: translate(-2vw, -2vh); } 100% { transform: translate(0, 0); } }
+@keyframes firefly-move-10 { 0% { transform: translate(0, 0); } 24% { transform: translate(-3vw, -6vh); } 51% { transform: translate(-6vw, -9vh); } 79% { transform: translate(-2vw, -2vh); } 100% { transform: translate(0, 0); } }
+@-webkit-keyframes firefly-move-11 { 0% { transform: translate(0, 0); } 26% { transform: translate(4vw, -5vh); } 56% { transform: translate(1vw, -9vh); } 84% { transform: translate(-2vw, -3vh); } 100% { transform: translate(0, 0); } }
+@keyframes firefly-move-11 { 0% { transform: translate(0, 0); } 26% { transform: translate(4vw, -5vh); } 56% { transform: translate(1vw, -9vh); } 84% { transform: translate(-2vw, -3vh); } 100% { transform: translate(0, 0); } }
+@-webkit-keyframes firefly-move-12 { 0% { transform: translate(0, 0); } 22% { transform: translate(-2vw, -4vh); } 47% { transform: translate(2vw, -8vh); } 75% { transform: translate(5vw, -5vh); } 100% { transform: translate(0, 0); } }
+@keyframes firefly-move-12 { 0% { transform: translate(0, 0); } 22% { transform: translate(-2vw, -4vh); } 47% { transform: translate(2vw, -8vh); } 75% { transform: translate(5vw, -5vh); } 100% { transform: translate(0, 0); } }
+
+/*# sourceMappingURL=main.css.map */
