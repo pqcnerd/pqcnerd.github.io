@@ -1971,45 +1971,45 @@ body {
 }
 
 .flower .flower__leaf--1 {
-  transform: translate(-118%, -2%) rotate(-56deg);
+  transform: translate(-92%, -6%) rotate(-48deg);
 }
 
 .flower .flower__leaf--2 {
-  transform: translate(-88%, -38%) rotate(-28deg);
+  transform: translate(-70%, -24%) rotate(-24deg);
 }
 
 .flower .flower__leaf--3 {
-  transform: translate(-50%, -48%) rotate(0deg);
+  transform: translate(-50%, -30%) rotate(0deg);
 }
 
 .flower .flower__leaf--4 {
   width: 6.2vmin;
   height: 8.6vmin;
-  transform: translate(-14%, -38%) rotate(28deg);
+  transform: translate(-30%, -24%) rotate(24deg);
 }
 
 .flower .flower__leaf--5 {
   width: 6.4vmin;
   height: 8.7vmin;
-  transform: translate(18%, -2%) rotate(56deg);
+  transform: translate(-8%, -6%) rotate(48deg);
 }
 
 .flower .flower__leaf--6 {
   width: 5.8vmin;
   height: 8vmin;
-  transform: translate(6%, 24%) rotate(102deg) scale(0.95);
+  transform: translate(-20%, 12%) rotate(98deg) scale(0.9);
 }
 
 .flower .flower__leaf--7 {
   width: 5.8vmin;
   height: 8vmin;
-  transform: translate(-104%, 24%) rotate(-102deg) scale(0.95);
+  transform: translate(-80%, 12%) rotate(-98deg) scale(0.9);
 }
 
 .flower .flower__leaf--8 {
   width: 5.9vmin;
   height: 7.8vmin;
-  transform: translate(-50%, 34%) rotate(180deg) scale(0.9);
+  transform: translate(-50%, 18%) rotate(180deg) scale(0.86);
 }
 
 .flower__inner-leaf {
