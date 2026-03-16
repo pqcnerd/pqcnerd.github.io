@@ -2095,6 +2095,10 @@ body {
   display: none;
 }
 
+.flower__inner-leaf {
+  display: none;
+}
+
 .flower__line {
   -webkit-animation-duration: 20s !important;
           animation-duration: 20s !important;
