@@ -1953,6 +1953,7 @@ body {
 .flower .flower__leaf {
   width: 7.2vmin;
   height: 10.2vmin;
+  z-index: 2;
   border-radius: 74% 39% 62% 44%/72% 51% 46% 34%;
   opacity: 0.96;
   background-image: radial-gradient(circle at 36% 22%, rgba(255, 255, 255, 0.26), var(--rose-center-light) 30%, var(--rose-outer) 55%, var(--rose-inner) 100%);
@@ -2017,6 +2018,7 @@ body {
   top: -2.2vmin;
   width: 4.8vmin;
   height: 4.6vmin;
+  z-index: 8;
   border-radius: 52% 48% 55% 45%/53% 42% 58% 47%;
   background: radial-gradient(circle at 45% 38%, #ffe6a2 0%, #ffd56a 35%, #b67a20 72%, #6d3f12 100%);
   box-shadow: 0 0 0.8vmin rgba(227, 164, 58, 0.38), inset 0 0 0.6vmin rgba(118, 67, 16, 0.35);
