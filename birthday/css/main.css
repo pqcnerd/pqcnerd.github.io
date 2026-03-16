@@ -1951,10 +1951,10 @@ body {
 }
 
 .flower .flower__leaf {
-  width: 7.2vmin;
-  height: 10.2vmin;
+  width: 6.4vmin;
+  height: 8.8vmin;
   z-index: 2;
-  border-radius: 74% 39% 62% 44%/72% 51% 46% 34%;
+  border-radius: 70% 44% 62% 48%/72% 54% 48% 38%;
   opacity: 0.96;
   background-image: radial-gradient(circle at 36% 22%, rgba(255, 255, 255, 0.26), var(--rose-center-light) 30%, var(--rose-outer) 55%, var(--rose-inner) 100%);
   box-shadow: inset -0.6vmin -0.8vmin 1.5vmin rgba(26, 9, 13, 0.42), inset 0.22vmin 0.3vmin 0.9vmin rgba(255, 255, 255, 0.16);
@@ -1971,46 +1971,45 @@ body {
 }
 
 .flower .flower__leaf--1 {
-  transform: translate(-8%, 3%) rotateY(32deg) rotateX(-40deg) rotate(-4deg);
+  transform: translate(-118%, -2%) rotate(-56deg);
 }
 
 .flower .flower__leaf--2 {
-  transform: translate(-50%, -8%) rotateX(35deg) rotate(2deg);
+  transform: translate(-88%, -38%) rotate(-28deg);
 }
 
 .flower .flower__leaf--3 {
-  transform: translate(-92%, 3%) rotateY(38deg) rotateX(42deg) rotate(6deg);
+  transform: translate(-50%, -48%) rotate(0deg);
 }
 
 .flower .flower__leaf--4 {
-  width: 7.4vmin;
-  height: 7.2vmin;
-  border-radius: 68% 43% 65% 41%/72% 56% 49% 35%;
-  transform: translate(-2%, 20%) rotateX(67deg) rotate(-34deg);
+  width: 6.2vmin;
+  height: 8.6vmin;
+  transform: translate(-14%, -38%) rotate(28deg);
 }
 
 .flower .flower__leaf--5 {
-  width: 6.9vmin;
-  height: 9.6vmin;
-  transform: translate(-50%, -20%) rotateX(26deg) rotate(44deg);
+  width: 6.4vmin;
+  height: 8.7vmin;
+  transform: translate(18%, -2%) rotate(56deg);
 }
 
 .flower .flower__leaf--6 {
-  width: 6.8vmin;
-  height: 9.4vmin;
-  transform: translate(-74%, -13%) rotateY(22deg) rotateX(30deg) rotate(78deg);
+  width: 5.8vmin;
+  height: 8vmin;
+  transform: translate(6%, 24%) rotate(102deg) scale(0.95);
 }
 
 .flower .flower__leaf--7 {
-  width: 6.8vmin;
-  height: 9.4vmin;
-  transform: translate(-28%, -10%) rotateY(-20deg) rotateX(30deg) rotate(-72deg);
+  width: 5.8vmin;
+  height: 8vmin;
+  transform: translate(-104%, 24%) rotate(-102deg) scale(0.95);
 }
 
 .flower .flower__leaf--8 {
-  width: 6.5vmin;
-  height: 8.8vmin;
-  transform: translate(-50%, 6%) rotateX(58deg) rotate(176deg);
+  width: 5.9vmin;
+  height: 7.8vmin;
+  transform: translate(-50%, 34%) rotate(180deg) scale(0.9);
 }
 
 .flower__inner-leaf {
