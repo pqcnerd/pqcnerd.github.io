@@ -2241,22 +2241,23 @@ body {
 
 .poem-overlay {
   position: fixed;
-  top: 8vh;
+  top: 5vh;
   left: 50%;
   transform: translateX(-50%);
-  width: min(72vw, 540px);
-  z-index: 4;
+  width: min(80vw, 720px);
+  z-index: 60;
   pointer-events: none;
   text-align: center;
   font-family: Georgia, "Times New Roman", serif;
+  text-shadow: 0 0 0.8vmin rgba(10, 20, 60, 0.55);
 }
 
 .poem-line {
   margin: 0 0 0.18em;
-  font-size: clamp(0.8rem, 1.5vw, 1.05rem);
+  font-size: clamp(0.88rem, 1.7vw, 1.15rem);
   line-height: 1.55;
-  opacity: 0.72;
-  color: #d6e8ff;
+  opacity: 0.9;
+  color: #e5f0ff;
   letter-spacing: 0.02em;
 }
 
@@ -2270,8 +2271,8 @@ body {
 
 .poem-author {
   font-size: clamp(0.72rem, 1.2vw, 0.88rem);
-  opacity: 0.55;
-  color: #b8cfe8;
+  opacity: 0.72;
+  color: #cfddf2;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }

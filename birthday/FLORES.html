@@ -394,6 +394,7 @@
         const LINE_DELAY = 620;
         const STANZA_DELAY = 900;
         const START_DELAY = 3200;
+        let poemStarted = false;
 
         const poem = [
           { type: "title", text: "With a Flower" },
@@ -425,11 +426,16 @@
         }
 
         async function runPoem() {
+          if (poemStarted) {
+            return;
+          }
+          poemStarted = true;
           await wait(START_DELAY);
           const container = document.getElementById("poem-overlay");
           if (!container) {
             return;
           }
+          container.textContent = "";
           let stanza = 0;
 
           for (const seg of poem) {
@@ -450,7 +456,12 @@
           }
         }
 
-        window.addEventListener("load", runPoem);
+        if (document.readyState === "complete" || document.readyState === "interactive") {
+          window.setTimeout(runPoem, 120);
+        } else {
+          document.addEventListener("DOMContentLoaded", runPoem, { once: true });
+          window.addEventListener("load", runPoem, { once: true });
+        }
       })();
     </script>
 
