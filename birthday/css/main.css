@@ -160,7 +160,7 @@ body {
   transform: translate(-50%, -100%);
   width: 8vmin;
   height: 8vmin;
-  background-color: #1aaa15;
+  background-color: #7c3aed;
   filter: blur(10vmin);
 }
 .flower__leaf {
@@ -170,11 +170,12 @@ body {
   width: 8vmin;
   height: 11vmin;
   border-radius: 51% 49% 47% 53%/44% 45% 55% 69%;
-  background-color: #1aaa15;
-  background-image: linear-gradient(to top, #fce700, #fce700);
+  background-color: #7c3aed;
+  background-image: linear-gradient(to top, #c084fc, #7c3aed);
   transform-origin: bottom center;
   opacity: 0.9;
-  box-shadow: inset 0 0 2vmin rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 0 2vmin rgba(255, 255, 255, 0.3);
+  filter: drop-shadow(0 0 4px rgba(168,85,247,0.5));
 }
 .flower__leaf--1 {
   transform: translate(-10%, 1%) rotateY(40deg) rotateX(-50deg);
@@ -191,7 +192,7 @@ body {
   transform-origin: bottom left;
   border-radius: 4vmin 10vmin 4vmin 4vmin;
   transform: translate(0%, 18%) rotateX(70deg) rotate(-43deg);
-  background-image: linear-gradient(to top, #fce700, #fce700);
+  background-image: linear-gradient(to top, #c084fc, #7c3aed);
   z-index: 1;
   opacity: 0.8;
 }
@@ -239,8 +240,8 @@ body {
   height: 55vmin;
   width: 1.5vmin;
   background-image: linear-gradient(to left, rgba(0, 0, 0, 0.2), transparent, 
-  rgba(255, 255, 255, 0.2)), linear-gradient(to top, transparent 10%, #064600, #064600);
-  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.5);
+  rgba(255, 255, 255, 0.15)), linear-gradient(to top, transparent 10%, #3b0764, #5b21b6);
+  box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.5), 0 0 6px rgba(124,58,237,0.3);
   -webkit-animation: grow-flower-tree 4s backwards;
           animation: grow-flower-tree 4s backwards;
 }
@@ -254,7 +255,7 @@ body {
   height: var(--h);
   border-top-right-radius: var(--h);
   border-bottom-left-radius: var(--h);
-  background-image: linear-gradient(to top, rgba(20, 122, 20, 0.4), #1aaa15);
+  background-image: linear-gradient(to top, rgba(124, 58, 237, 0.4), #7c3aed);
 }
 .flower__line__leaf--1 {
   transform: rotate(70deg) rotateY(30deg);
@@ -341,7 +342,7 @@ body {
           animation-delay: 3.5s;
 }
 .flower__grass {
-  --c: #00b815;
+  --c: #7c3aed;
   --line-w: 1.5vmin;
   position: absolute;
   bottom: 12vmin;
@@ -2333,21 +2334,32 @@ body {
    MULTI-SCENE SYSTEM
    ═══════════════════════════════════════════════════════════ */
 
-/* Scene container base */
+/* Scene container base — slide-fade transitions */
 .scene {
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
   opacity: 0;
+  transform: translateY(28px);
   pointer-events: none;
-  transition: opacity 1.4s ease;
+  transition: opacity 1.1s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 1.1s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
 }
 
-.scene.scene--active {
+.scene.scene--active:not(.scene--exiting) {
   opacity: 1;
+  transform: translateY(0);
   pointer-events: all;
+}
+
+/* Exiting scene slides up and fades on departure */
+.scene.scene--exiting {
+  opacity: 0 !important;
+  transform: translateY(-28px) !important;
+  pointer-events: none !important;
+  transition: opacity 0.72s ease, transform 0.72s ease !important;
 }
 
 /* Flowers scene wraps all existing elements — mirrors original body flex layout */
@@ -2356,55 +2368,68 @@ body {
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  /* Override base transform so flowers enter cleanly on first load */
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: all;
 }
 
 /* Next button — floats bottom-center on each scene */
 .scene-next-btn {
   position: absolute;
-  bottom: 5vh;
+  bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 200;
-  background: rgba(124, 58, 237, 0.18);
-  border: 1px solid rgba(168, 85, 247, 0.5);
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: rgba(124, 58, 237, 0.2);
+  border: 1px solid rgba(168, 85, 247, 0.6);
   color: #c084fc;
-  font-family: 'Poppins', sans-serif;
-  font-size: clamp(0.75rem, 1.6vw, 0.95rem);
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  padding: 0.65em 2em;
-  border-radius: 50px;
+  font-size: 1.3rem;
+  line-height: 1;
   cursor: pointer;
-  backdrop-filter: blur(8px);
-  transition: background 0.25s, color 0.25s, box-shadow 0.25s, transform 0.2s;
+  display: flex; align-items: center; justify-content: center;
   opacity: 0;
-  animation: btn-fade-in 1s ease forwards;
+  animation: btn-fade-in 0.8s ease forwards, btn-pulse-ring 2.5s ease-in-out 1s infinite;
+  transition: background 0.2s, transform 0.15s;
+  backdrop-filter: blur(6px);
 }
 
 .scene-next-btn:hover {
-  background: rgba(168, 85, 247, 0.35);
+  background: rgba(168, 85, 247, 0.4);
+  transform: translateX(-50%) scale(1.12);
   color: #fff;
-  box-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
-  transform: translateX(-50%) translateY(-3px);
 }
 
 @keyframes btn-fade-in {
-  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+@keyframes btn-pulse-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(168,85,247,0.45); }
+  50%       { box-shadow: 0 0 0 10px rgba(168,85,247,0); }
 }
 
 /* Flowers scene next button appears late (after bloom) */
 .scene--flowers .scene-next-btn {
-  animation-delay: 22s;
+  animation-delay: 22s, 23s;
 }
+
+/* Scenes that need manual delay overrides */
+.scene--anniversary .scene-next-btn  { animation-delay: 5s, 6s; }
+.scene--ldr         .scene-next-btn  { animation-delay: 10s, 11s; }
+.scene--safe        .scene-next-btn  { animation-delay: 8s, 9s; }
+.scene--nerd        .scene-next-btn  { animation-delay: 10s, 11s; }
+.scene--birthday    .scene-next-btn  { animation-delay: 6s, 7s; }
 
 /* ═══════════════════════════════════════════════════════════
    SCENE 2 — DANCING CATS
    ═══════════════════════════════════════════════════════════ */
 
 .scene--cats {
-  z-index: 2;
+  z-index: 3;
   background: radial-gradient(ellipse at 50% 40%, #1a0030 0%, #0d0015 60%, #000 100%);
   display: flex;
   flex-direction: column;
@@ -2536,7 +2561,7 @@ body {
    ═══════════════════════════════════════════════════════════ */
 
 .scene--anniversary {
-  z-index: 3;
+  z-index: 2;
   background: radial-gradient(ellipse at 50% 20%, #050d2a 0%, #020510 55%, #000 100%);
   display: flex;
   flex-direction: column;
@@ -2688,7 +2713,7 @@ body {
    ═══════════════════════════════════════════════════════════ */
 
 .scene--poem {
-  z-index: 4;
+  z-index: 7;
   background: radial-gradient(ellipse at 50% 50%, #0c0618 0%, #06060f 100%);
   display: flex;
   align-items: center;
@@ -2764,177 +2789,1656 @@ body {
   pointer-events: none;
 }
 
+/* Buttons revealed by JS — all start hidden */
+#wishes-next-btn,
+#songlet-next-btn,
+#little-next-btn,
+#audio-next-btn,
+#webcam-next-btn,
+#proposal-finale-next {
+  -webkit-animation: none !important;
+          animation: none !important;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   FLOWER POEM OVERLAY
+   ═══════════════════════════════════════════════════════════ */
+
+.flower-poem {
+  position: absolute;
+  top: 7vh;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  text-align: center;
+  pointer-events: none;
+  width: min(520px, 88vw);
+}
+
+.flower-poem-line {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(0.9rem, 2.1vw, 1.22rem);
+  color: rgba(220, 200, 255, 0.9);
+  line-height: 1.5;
+  margin: 0 0 0.18em;
+  opacity: 0;
+  -webkit-animation: poem-line-in 1.2s ease forwards;
+          animation: poem-line-in 1.2s ease forwards;
+  text-shadow: 0 0 18px rgba(168, 85, 247, 0.5);
+}
+
+@-webkit-keyframes poem-line-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes poem-line-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   KUROMI DECORATIONS
+   ═══════════════════════════════════════════════════════════ */
+
+.kuromi-peek {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: clamp(55px, 8vw, 105px);
+  z-index: 150;
+  pointer-events: none;
+  opacity: 0;
+  border-radius: 12px;
+  -webkit-animation: none;
+          animation: none;
+}
+
+.kuromi-peek.kuromi-visible {
+  -webkit-animation: kuromi-appear 0.8s ease forwards;
+          animation: kuromi-appear 0.8s ease forwards;
+}
+
+@-webkit-keyframes kuromi-appear {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes kuromi-appear {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.kuromi-float {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.2rem;
+  width: clamp(38px, 5.5vw, 70px);
+  z-index: 150;
+  pointer-events: none;
+  opacity: 0;
+  border-radius: 10px;
+  -webkit-animation: none;
+          animation: none;
+}
+
+.kuromi-float.kuromi-visible {
+  -webkit-animation: kuromi-float-in 0.8s ease 0.3s forwards, kuromi-bob 3.2s ease-in-out 1.1s infinite;
+          animation: kuromi-float-in 0.8s ease 0.3s forwards, kuromi-bob 3.2s ease-in-out 1.1s infinite;
+}
+
+@-webkit-keyframes kuromi-float-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes kuromi-float-in {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@-webkit-keyframes kuromi-bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%       { transform: translateY(-8px) rotate(2deg); }
+}
+
+@keyframes kuromi-bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%       { transform: translateY(-8px) rotate(2deg); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCENE 3 — PLAYLIST
+   ═══════════════════════════════════════════════════════════ */
+
+.scene--playlist {
+  z-index: 6;
+  background: radial-gradient(ellipse at 50% 10%, #120428 0%, #07030f 65%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6rem;
+}
+
+/* Floating music note particles */
+.playlist-notes {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.playlist-note {
+  position: absolute;
+  font-size: clamp(0.9rem, 2vw, 1.4rem);
+  color: rgba(168, 85, 247, 0.25);
+  -webkit-animation: note-float linear infinite;
+          animation: note-float linear infinite;
+}
+
+.playlist-note:nth-child(1)  { left: 5%;  bottom: -5%; animation-duration: 14s; animation-delay: 0s;   }
+.playlist-note:nth-child(2)  { left: 20%; bottom: -5%; animation-duration: 18s; animation-delay: 2s;   }
+.playlist-note:nth-child(3)  { left: 35%; bottom: -5%; animation-duration: 12s; animation-delay: 0.5s; }
+.playlist-note:nth-child(4)  { left: 52%; bottom: -5%; animation-duration: 16s; animation-delay: 3s;   }
+.playlist-note:nth-child(5)  { left: 68%; bottom: -5%; animation-duration: 20s; animation-delay: 1.5s; }
+.playlist-note:nth-child(6)  { left: 82%; bottom: -5%; animation-duration: 15s; animation-delay: 4s;   }
+.playlist-note:nth-child(7)  { left: 92%; bottom: -5%; animation-duration: 13s; animation-delay: 0.8s; }
+.playlist-note:nth-child(8)  { left: 10%; bottom: -5%; animation-duration: 17s; animation-delay: 5s;   }
+
+@-webkit-keyframes note-float {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.5; }
+  100% { transform: translateY(-110vh) rotate(30deg); opacity: 0; }
+}
+
+@keyframes note-float {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.5; }
+  100% { transform: translateY(-110vh) rotate(30deg); opacity: 0; }
+}
+
+.playlist-eyebrow {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.65rem, 1.3vw, 0.82rem);
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: rgba(168, 85, 247, 0.7);
+  position: relative;
+  z-index: 5;
+}
+
+.playlist-heading {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+  color: #e8d5ff;
+  position: relative;
+  z-index: 5;
+  text-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+  margin: 0;
+}
+
+.playlist-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  width: min(500px, 88vw);
+  position: relative;
+  z-index: 5;
+}
+
+.song-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(168, 85, 247, 0.28);
+  border-radius: 12px;
+  padding: 0.6rem 1.1rem;
+  opacity: 0;
+  backdrop-filter: blur(6px);
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.song-card:hover {
+  background: rgba(124, 58, 237, 0.22);
+  border-color: rgba(168, 85, 247, 0.55);
+}
+
+.song-card.song-visible {
+  -webkit-animation: song-slide-in 0.6s cubic-bezier(0.22, 0.9, 0.36, 1) forwards;
+          animation: song-slide-in 0.6s cubic-bezier(0.22, 0.9, 0.36, 1) forwards;
+}
+
+@-webkit-keyframes song-slide-in {
+  from { opacity: 0; transform: translateX(-22px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes song-slide-in {
+  from { opacity: 0; transform: translateX(-22px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.song-icon {
+  font-size: 1rem;
+  opacity: 0.6;
+}
+
+.song-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.song-title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(0.88rem, 1.8vw, 1.05rem);
+  color: #e8d5ff;
+  line-height: 1.2;
+}
+
+.song-artist {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.68rem, 1.2vw, 0.8rem);
+  font-weight: 300;
+  color: #a855f7;
+  letter-spacing: 0.04em;
+}
+
+.playlist-quote {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(0.88rem, 1.9vw, 1.1rem);
+  color: rgba(200, 170, 255, 0.65);
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  opacity: 0;
+  padding: 0 1.5rem;
+}
+
+.playlist-quote.quote-visible {
+  -webkit-animation: poem-line-in 1.2s ease forwards;
+          animation: poem-line-in 1.2s ease forwards;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCENE 4 — LITTLE THINGS
+   ═══════════════════════════════════════════════════════════ */
+
+.scene--little {
+  z-index: 5;
+  background: radial-gradient(ellipse at 30% 70%, #0e0530 0%, #07030f 65%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.little-eyebrow {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.65rem, 1.3vw, 0.82rem);
+  font-weight: 300;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(196, 168, 255, 0.6);
+}
+
+.little-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: min(480px, 86vw);
+  text-align: center;
+}
+
+.little-item {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(0.95rem, 2.2vw, 1.25rem);
+  color: rgba(220, 200, 255, 0.88);
+  opacity: 0;
+  line-height: 1.4;
+  text-shadow: 0 0 14px rgba(168, 85, 247, 0.3);
+}
+
+.little-item.item-visible {
+  -webkit-animation: poem-line-in 0.9s ease forwards;
+          animation: poem-line-in 0.9s ease forwards;
+}
+
+.little-item.item-emphasis {
+  color: #e879f9;
+  font-size: clamp(1rem, 2.4vw, 1.4rem);
+  text-shadow: 0 0 20px rgba(232, 121, 249, 0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCENE 7 — HEARTFELT + PROPOSAL
+   ═══════════════════════════════════════════════════════════ */
+
+.scene--proposal {
+  z-index: 11;
+  background: radial-gradient(ellipse at 50% 50%, #130828 0%, #07030f 70%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Part A — heartfelt message */
+.proposal-a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+  opacity: 0;
+  width: min(600px, 90vw);
+}
+
+.proposal-a.a-visible {
+  -webkit-animation: poem-line-in 1.4s ease forwards;
+          animation: poem-line-in 1.4s ease forwards;
+}
+
+.heartfelt-text {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(1rem, 2.2vw, 1.3rem);
+  color: rgba(225, 210, 255, 0.92);
+  text-align: center;
+  line-height: 1.85;
+  text-shadow: 0 0 16px rgba(168, 85, 247, 0.25);
+}
+
+.heartfelt-sig {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.75rem, 1.4vw, 0.9rem);
+  font-weight: 300;
+  color: rgba(168, 85, 247, 0.7);
+  letter-spacing: 0.12em;
+}
+
+/* Inner continue button (within scene, not a scene-next-btn) */
+.proposal-inner-btn {
+  display: inline-block;
+  cursor: pointer;
+  background: rgba(124, 58, 237, 0.18);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  color: #c084fc;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.7rem, 1.4vw, 0.88rem);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.6em 1.8em;
+  border-radius: 50px;
+  backdrop-filter: blur(8px);
+  transition: background 0.25s, color 0.25s, box-shadow 0.25s;
+}
+
+.proposal-inner-btn:hover {
+  background: rgba(168, 85, 247, 0.35);
+  color: #fff;
+  box-shadow: 0 0 18px rgba(168, 85, 247, 0.45);
+}
+
+/* Part B — proposal question */
+.proposal-b {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+  text-align: center;
+  padding: 2rem;
+  opacity: 0;
+}
+
+.proposal-b.b-visible {
+  -webkit-animation: poem-line-in 1s ease forwards;
+          animation: poem-line-in 1s ease forwards;
+}
+
+.proposal-question {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(1.3rem, 3.5vw, 2.2rem);
+  color: #e8d5ff;
+  line-height: 1.3;
+  text-shadow: 0 0 25px rgba(168, 85, 247, 0.5);
+}
+
+.proposal-btns {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-yes {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-weight: 500;
+  padding: 0.75em 2.5em;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(135deg, #7c3aed, #e879f9);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(232, 121, 249, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-yes:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 35px rgba(232, 121, 249, 0.65);
+}
+
+.btn-no {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  font-weight: 300;
+  padding: 0.55em 1.5em;
+  border-radius: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.4);
+  transition: transform 0.3s ease, font-size 0.4s ease, padding 0.4s ease, opacity 0.4s ease;
+}
+
+.no-joke {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.82rem, 1.7vw, 1rem);
+  font-weight: 300;
+  color: rgba(196, 168, 255, 0.7);
+  min-height: 1.5em;
+  text-align: center;
+  font-style: italic;
+  opacity: 0;
+  -webkit-animation: none;
+          animation: none;
+}
+
+.no-joke.joke-visible {
+  -webkit-animation: poem-line-in 0.6s ease forwards;
+          animation: poem-line-in 0.6s ease forwards;
+}
+
+/* Proposal finale — YES celebration */
+.proposal-finale {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  text-align: center;
+  opacity: 0;
+}
+
+.proposal-finale.finale-visible {
+  -webkit-animation: poem-line-in 1.5s ease forwards;
+          animation: poem-line-in 1.5s ease forwards;
+}
+
+.finale-heart {
+  font-size: clamp(3rem, 8vw, 5.5rem);
+  -webkit-animation: heart-pulse 1.2s ease-in-out infinite;
+          animation: heart-pulse 1.2s ease-in-out infinite;
+}
+
+.finale-msg {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(1.8rem, 5vw, 3.5rem);
+  color: #fff;
+  text-shadow: 0 0 30px rgba(232, 121, 249, 0.7), 0 0 70px rgba(124, 58, 237, 0.5);
+  line-height: 1.2;
+}
+
+.finale-sub {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.85rem, 1.8vw, 1.05rem);
+  font-weight: 300;
+  color: rgba(200, 170, 255, 0.75);
+  letter-spacing: 0.08em;
+}
+
+/* Confetti particles — CSS only, triggered by .proposal-confetti class on scene */
+.confetti-particle {
+  position: absolute;
+  top: -20px;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  opacity: 0;
+  pointer-events: none;
+  -webkit-animation: confetti-burst linear forwards;
+          animation: confetti-burst linear forwards;
+}
+
+@-webkit-keyframes confetti-burst {
+  0%   { transform: translateY(0) rotate(0deg);    opacity: 0; }
+  5%   { opacity: 1; }
+  90%  { opacity: 0.8; }
+  100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+}
+
+@keyframes confetti-burst {
+  0%   { transform: translateY(0) rotate(0deg);    opacity: 0; }
+  5%   { opacity: 1; }
+  90%  { opacity: 0.8; }
+  100% { transform: translateY(105vh) rotate(720deg); opacity: 0; }
+}
+
 /* ═══════════════════════════════════════════════════════════
    SCENE 5 — MINECRAFT CHAT
    ═══════════════════════════════════════════════════════════ */
 
-.scene--minecraft {
-  z-index: 5;
-  background: #1d1d1d;
+/* ═══════════════════════════════════════════════════════════
+   AMBIENT CATS — Global fixed overlays
+   ═══════════════════════════════════════════════════════════ */
+
+.cat-ambient {
+  position: fixed;
+  z-index: 80;
+  pointer-events: none;
+  width: clamp(45px, 6vw, 80px);
+  opacity: 0;
+  animation: none;
+  transition: left 1.8s cubic-bezier(0.45, 0, 0.55, 1),
+              top  1.8s cubic-bezier(0.45, 0, 0.55, 1);
+}
+
+/* Corner hints hidden by default — JS overrides on celebrate */
+.cat-ambient--bl { bottom: 0; left: 0;   }
+.cat-ambient--tr { top: 0;   right: 0;  }
+.cat-ambient--br { bottom: 0; right: 0;  }
+.cat-ambient--tl { top: 0;   left: 0;   }
+.cat-ambient--cr { top: 40%; right: 0;  }
+
+body.cats-celebrate .cat-ambient {
+  width: clamp(90px, 16vw, 160px) !important;
+  opacity: 1 !important;
+  animation: cat-party 1.1s ease-in-out infinite !important;
+  z-index: 900;
+  bottom: auto !important;
+  right:  auto !important;
+}
+
+@keyframes cat-party {
+  0%   { transform: rotate(0deg)   scale(1); }
+  25%  { transform: rotate(14deg)  scale(1.06); }
+  50%  { transform: rotate(-10deg) scale(0.94); }
+  75%  { transform: rotate(16deg)  scale(1.08); }
+  100% { transform: rotate(0deg)   scale(1); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCENE 2 — BOSTON TO HONG KONG (LDR)
+   ═══════════════════════════════════════════════════════════ */
+
+.scene--ldr {
+  z-index: 3;
+  background: radial-gradient(ellipse at 40% 50%, #0f0724 0%, #000 100%);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 1.8rem;
+  padding: 2rem;
 }
 
-/* Minecraft dirt texture background pattern */
-.mc-bg {
-  position: absolute;
-  inset: 0;
-  opacity: 0.06;
-  background-image:
-    repeating-linear-gradient(0deg, rgba(255,255,255,0.15) 0px, rgba(255,255,255,0.15) 1px, transparent 1px, transparent 8px),
-    repeating-linear-gradient(90deg, rgba(255,255,255,0.1) 0px, rgba(255,255,255,0.1) 1px, transparent 1px, transparent 8px);
-  background-size: 8px 8px;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.mc-window {
+.ldr-map {
   position: relative;
-  z-index: 10;
-  width: min(640px, 92vw);
-  max-height: 80vh;
-  background: rgba(0, 0, 0, 0.82);
-  border: 2px solid #555;
-  box-shadow: 4px 4px 0 #000, inset 0 0 0 1px rgba(255,255,255,0.05);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  width: min(700px, 90vw);
 }
 
-.mc-titlebar {
-  background: #2a2a2a;
-  border-bottom: 2px solid #555;
-  padding: 0.5em 0.8em;
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
+.map-arc {
+  width: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 10px rgba(168,85,247,0.7));
 }
 
-.mc-titlebar-dot {
-  width: 10px;
-  height: 10px;
-  border: 2px solid #555;
-  background: #3a3a3a;
-  display: inline-block;
+.arc-path {
+  fill: none;
+  stroke: #a855f7;
+  stroke-width: 2;
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  stroke-linecap: round;
 }
 
-.mc-titlebar-text {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.5rem;
-  color: #aaa;
-  letter-spacing: 0.05em;
-  margin-left: 0.3em;
+.scene--ldr.scene--active .arc-path {
+  animation: draw-arc 3s ease 0.5s forwards;
 }
 
-.mc-chat-area {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0.8em 1em;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-  scrollbar-width: thin;
-  scrollbar-color: #444 transparent;
-  min-height: 220px;
+@keyframes draw-arc {
+  to { stroke-dashoffset: 0; }
 }
 
-.mc-msg {
-  font-family: 'Press Start 2P', monospace;
-  font-size: clamp(0.42rem, 1vw, 0.58rem);
-  line-height: 1.9;
-  word-break: break-word;
+.city-dot {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #e879f9;
+  box-shadow: 0 0 12px #e879f9, 0 0 24px #e879f9;
+  transform: translate(-50%, -50%);
+  animation: city-pulse 2s ease-in-out infinite;
+}
+
+.city-dot--boston { left: 12.5%; top: 66%; }
+.city-dot--hk     { left: 87.5%; top: 66%; }
+
+@keyframes city-pulse {
+  0%, 100% { box-shadow: 0 0 8px  #e879f9, 0 0 16px #e879f9; }
+  50%       { box-shadow: 0 0 16px #e879f9, 0 0 32px #e879f9; }
+}
+
+.city-label {
+  position: absolute;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.58rem, 1.4vw, 0.82rem);
+  font-weight: 500;
+  color: #e879f9;
+  white-space: nowrap;
+  letter-spacing: 0.06em;
+}
+
+.city-label--boston { left: 4%;   top: 78%; text-align: center; }
+.city-label--hk     { left: 83%; top: 78%; text-align: center; }
+
+.ldr-center {
+  text-align: center;
+}
+
+.ldr-miles {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.05rem, 2.8vw, 1.5rem);
+  color: #fff;
   opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-  white-space: pre-wrap;
 }
 
-.mc-msg.mc-visible {
+.ldr-sub {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(0.78rem, 1.9vw, 1rem);
+  color: #c084fc;
+  font-style: italic;
+  margin-top: 0.6rem;
+  opacity: 0;
+  line-height: 1.5;
+}
+
+.scene--ldr.scene--active .ldr-miles {
+  animation: ldr-fade-in 1.2s ease 3.2s forwards;
+}
+
+.scene--ldr.scene--active .ldr-sub {
+  animation: ldr-fade-in 1.2s ease 4.4s forwards;
+}
+
+@keyframes ldr-fade-in {
+  to { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCENE 3 — 知音 SONG LETTER
+   ═══════════════════════════════════════════════════════════ */
+
+.scene--songlet {
+  z-index: 4;
+  background: radial-gradient(ellipse at 50% 40%, #12002a 0%, #000 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1.5rem, 5vw, 3rem);
+  overflow-y: auto;
+  gap: 0.5rem;
+}
+
+.songlet-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 6vw, 3.8rem);
+  color: #e879f9;
+  text-shadow: 0 0 22px rgba(232, 121, 249, 0.55);
+  letter-spacing: 0.05em;
+  text-align: center;
+  line-height: 1;
+}
+
+.songlet-meaning {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.65rem, 1.6vw, 0.88rem);
+  color: #c084fc;
+  font-style: italic;
+  text-align: center;
+  margin-bottom: 1.6rem;
+  letter-spacing: 0.1em;
+}
+
+.song-letter-body {
+  max-width: min(620px, 88vw);
+  text-align: center;
+}
+
+.song-para {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(0.88rem, 2.1vw, 1.12rem);
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 2.1;
+  margin-bottom: 1.6rem;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+.song-para.para-visible {
   opacity: 1;
   transform: none;
 }
 
-.mc-msg .mc-name--carwashed {
-  color: #FFFF55;
+.song-ref {
+  color: #e879f9;
+  font-style: italic;
+  text-shadow: 0 0 10px rgba(232, 121, 249, 0.5);
+  font-weight: 700;
 }
 
-.mc-msg .mc-name--cs {
-  color: #55FFFF;
-}
+/* ═══════════════════════════════════════════════════════════
+   SCENE 5 — SAFE PLACE
+   ═══════════════════════════════════════════════════════════ */
 
-.mc-msg .mc-text {
-  color: #fff;
-}
-
-.mc-msg .mc-bracket {
-  color: #aaa;
-}
-
-/* Input bar (decorative) */
-.mc-input-bar {
-  border-top: 2px solid #555;
-  padding: 0.5em 0.8em;
-  background: #1a1a1a;
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-}
-
-.mc-input-caret {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.52rem;
-  color: #666;
-}
-
-.mc-input-blink {
-  display: inline-block;
-  width: 0.5em;
-  height: 0.85em;
-  background: #aaa;
-  vertical-align: middle;
-  animation: mc-blink 1.1s step-start infinite;
-}
-
-@keyframes mc-blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
-}
-
-/* Final birthday sign — fades in after chat */
-.mc-finale {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.94);
+.scene--safe {
+  z-index: 6;
+  background: radial-gradient(ellipse at 50% 60%, #1a0838 0%, #0a001a 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
-  z-index: 20;
-  opacity: 0;
+  padding: clamp(2rem, 6vw, 4rem);
+}
+
+.safe-particles {
+  position: absolute;
+  inset: 0;
   pointer-events: none;
-  transition: opacity 1.5s ease;
+  overflow: hidden;
 }
 
-.mc-finale.mc-finale--visible {
-  opacity: 1;
-  pointer-events: all;
+.safe-particle {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(192, 132, 252, 0.45);
+  animation: safe-drift linear infinite;
 }
 
-.mc-finale-text {
-  font-family: 'Press Start 2P', monospace;
-  font-size: clamp(0.8rem, 2.5vw, 1.4rem);
-  color: #fff;
+@keyframes safe-drift {
+  from { transform: translateY(-10px); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 0.5; }
+  to   { transform: translateY(110vh); opacity: 0; }
+}
+
+.safe-content {
+  position: relative;
+  z-index: 1;
+  max-width: min(540px, 88vw);
   text-align: center;
-  line-height: 1.8;
-  text-shadow: 0 0 14px rgba(168, 85, 247, 0.8), 0 0 40px rgba(124, 58, 237, 0.5);
 }
 
-.mc-finale-heart {
-  font-size: clamp(2rem, 6vw, 4rem);
-  animation: heart-pulse 1.4s ease-in-out infinite;
-  line-height: 1;
+.safe-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1rem, 2.6vw, 1.3rem);
+  color: #f3e8ff;
+  line-height: 2.3;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  animation: safe-fade-in 2s ease 0.6s forwards;
 }
+
+.safe-divider {
+  display: block;
+  margin: 0.8rem 0;
+}
+
+.safe-em {
+  color: #e879f9;
+  font-style: normal;
+}
+
+@keyframes safe-fade-in {
+  to { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCENE 6 — INTERACTIVE POEM (TAP TO REVEAL)
+   ═══════════════════════════════════════════════════════════ */
+
+.poem-tap-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 2rem;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.poem-instruction {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.65rem, 1.8vw, 0.85rem);
+  color: rgba(192, 132, 252, 0.55);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  position: absolute;
+  bottom: 2.4rem;
+  animation: poem-tap-blink 2.2s ease-in-out infinite;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+
+.poem-instruction.hint-hidden {
+  opacity: 0;
+}
+
+@keyframes poem-tap-blink {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+
+.poem-stanzas-container {
+  max-width: min(500px, 88vw);
+  text-align: center;
+}
+
+.poem-stanza {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+  margin-bottom: 1.9rem;
+}
+
+.poem-stanza.stanza-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.poem-stanza p {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(0.92rem, 2.3vw, 1.15rem);
+  color: #f3e8ff;
+  line-height: 2;
+  margin: 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   SCENE 8 — BIRTHDAY CELEBRATION
+   ═══════════════════════════════════════════════════════════ */
+
+.scene--birthday {
+  z-index: 10;
+  background: radial-gradient(ellipse at 50% 40%, #1a0040 0%, #080010 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6rem;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.bday-floaters {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bday-floater {
+  position: absolute;
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  animation: bday-float linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes bday-float {
+  from { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+  10%  { opacity: 0.7; }
+  90%  { opacity: 0.5; }
+  to   { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
+
+/* CSS Birthday Cake */
+.cake-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+}
+
+.cake-candles-row {
+  display: flex;
+  gap: clamp(6px, 1.2vw, 12px);
+  position: relative;
+  margin-bottom: -2px;
+  z-index: 2;
+}
+
+.cake-candle {
+  width: clamp(6px, 1vw, 10px);
+  height: clamp(20px, 4vw, 32px);
+  background: linear-gradient(to bottom, #fbbf24, #f97316);
+  border-radius: 2px;
+  position: relative;
+}
+
+.cake-candle::before {
+  content: '';
+  position: absolute;
+  top: clamp(-14px, -2.5vw, -10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(8px, 1.5vw, 12px);
+  height: clamp(12px, 2.5vw, 18px);
+  background: radial-gradient(ellipse at 50% 80%, #fff 0%, #fef08a 30%, #fbbf24 60%, transparent 100%);
+  border-radius: 50% 50% 30% 30%;
+  animation: flame-flicker 0.7s ease-in-out infinite alternate;
+  filter: blur(0.5px);
+}
+
+@keyframes flame-flicker {
+  from { transform: translateX(-50%) scaleX(1)   scaleY(1);    opacity: 1; }
+  to   { transform: translateX(-50%) scaleX(0.85) scaleY(1.12); opacity: 0.9; }
+}
+
+.cake-tier {
+  border-radius: 6px 6px 0 0;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+}
+
+.cake-tier--top {
+  width: clamp(80px, 14vw, 120px);
+  height: clamp(38px, 7vw, 56px);
+  background: linear-gradient(to bottom, #f0abfc, #d946ef);
+  border-radius: 8px 8px 0 0;
+}
+
+.cake-tier--mid {
+  width: clamp(120px, 20vw, 170px);
+  height: clamp(46px, 8vw, 65px);
+  background: linear-gradient(to bottom, #c084fc, #9333ea);
+}
+
+.cake-tier--bot {
+  width: clamp(160px, 26vw, 220px);
+  height: clamp(52px, 9vw, 72px);
+  background: linear-gradient(to bottom, #a855f7, #7c3aed);
+  border-radius: 0 0 8px 8px;
+}
+
+.cake-frosting {
+  position: absolute;
+  top: -5px;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  filter: blur(1px);
+  opacity: 0.85;
+}
+
+.cake-plate {
+  width: clamp(180px, 30vw, 250px);
+  height: 8px;
+  background: linear-gradient(to bottom, #d0c0e8, #b8a0d0);
+  border-radius: 4px;
+  margin-top: -2px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+}
+
+.bday-copy {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.bday-heading {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 5vw, 3rem);
+  color: #fff;
+  text-shadow: 0 0 25px rgba(232, 121, 249, 0.6), 0 0 60px rgba(168,85,247,0.3);
+  opacity: 0;
+  animation: bday-heading-in 1.2s ease 0.4s forwards;
+}
+
+.bday-sub {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.75rem, 2vw, 1rem);
+  color: #c084fc;
+  font-weight: 300;
+  margin-top: 0.4rem;
+  font-style: italic;
+  opacity: 0;
+  animation: bday-heading-in 1.2s ease 1.2s forwards;
+}
+
+.bday-age {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.65rem, 1.6vw, 0.85rem);
+  color: rgba(192, 132, 252, 0.6);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-top: 0.6rem;
+  opacity: 0;
+  animation: bday-heading-in 1.2s ease 2s forwards;
+}
+
+@keyframes bday-heading-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCENE 7 — MARK'S BIRTHDAY AUDIO
+   ═══════════════════════════════════════════════════════════ */
+
+.scene--audio-mark {
+  z-index: 8;
+  background: radial-gradient(ellipse at 50% 40%, #0d0020 0%, #060008 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.8rem;
+}
+
+.audio-eyebrow {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.62rem, 1.4vw, 0.82rem);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(192, 132, 252, 0.55);
+}
+
+.vinyl {
+  width: clamp(120px, 22vw, 200px);
+  height: clamp(120px, 22vw, 200px);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50%, #3a1a5e 0%, #1a0a2e 30%, transparent 31%),
+    repeating-conic-gradient(#1a0a2e 0deg, #0d0020 2deg, #1a0a2e 4deg);
+  box-shadow:
+    0 0 50px rgba(168, 85, 247, 0.4),
+    0 0 100px rgba(168, 85, 247, 0.15),
+    inset 0 0 30px rgba(0, 0, 0, 0.6);
+  -webkit-animation: vinyl-spin 3s linear infinite;
+          animation: vinyl-spin 3s linear infinite;
+  -webkit-animation-play-state: paused;
+          animation-play-state: paused;
+  position: relative;
+  cursor: default;
+}
+
+.vinyl::after {
+  content: '';
+  position: absolute;
+  width: 20%;
+  height: 20%;
+  border-radius: 50%;
+  background: radial-gradient(circle, #c084fc, #7c3aed);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.6);
+}
+
+.vinyl.playing {
+  -webkit-animation-play-state: running;
+          animation-play-state: running;
+}
+
+@-webkit-keyframes vinyl-spin { to { transform: rotate(360deg); } }
+@keyframes vinyl-spin         { to { transform: rotate(360deg); } }
+
+.audio-play-btn {
+  width: clamp(52px, 9vw, 76px);
+  height: clamp(52px, 9vw, 76px);
+  border-radius: 50%;
+  background: rgba(124, 58, 237, 0.18);
+  border: 2px solid rgba(168, 85, 247, 0.5);
+  color: #c084fc;
+  font-size: clamp(1rem, 2.2vw, 1.4rem);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+}
+
+.audio-play-btn:hover:not(:disabled) {
+  background: rgba(168, 85, 247, 0.35);
+  color: #fff;
+  box-shadow: 0 0 22px rgba(168, 85, 247, 0.55);
+}
+
+.audio-hint {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.6rem, 1.3vw, 0.76rem);
+  color: rgba(192, 132, 252, 0.4);
+  letter-spacing: 0.1em;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCENE 11 — WEBCAM CONNECTION
+   ═══════════════════════════════════════════════════════════ */
+
+.scene--webcam {
+  z-index: 12;
+  background: radial-gradient(ellipse at 50% 50%, #0f0228 0%, #060010 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6rem;
+  padding: 2rem;
+}
+
+.webcam-title {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(1.1rem, 2.8vw, 1.7rem);
+  color: #e879f9;
+  text-align: center;
+  text-shadow: 0 0 24px rgba(232, 121, 249, 0.4);
+}
+
+.webcam-split {
+  display: flex;
+  gap: clamp(1rem, 3vw, 2.5rem);
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.webcam-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.webcam-frame {
+  width: clamp(130px, 26vw, 300px);
+  height: clamp(130px, 26vw, 300px);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 2px solid rgba(168, 85, 247, 0.4);
+  box-shadow: 0 0 28px rgba(168, 85, 247, 0.18);
+  background: #0a001a;
+  position: relative;
+}
+
+.heart-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+#webcam-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+.webcam-no-cam {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 0.72rem;
+  color: rgba(192, 132, 252, 0.45);
+  text-align: center;
+  padding: 1rem;
+}
+
+.webcam-name {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.6rem, 1.3vw, 0.78rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(196, 168, 255, 0.55);
+}
+
+.webcam-btn {
+  cursor: pointer;
+  background: rgba(124, 58, 237, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  color: #c084fc;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.58rem, 1.2vw, 0.74rem);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.55em 1.5em;
+  border-radius: 50px;
+  transition: background 0.25s, color 0.25s;
+}
+
+.webcam-btn:hover:not(:disabled) {
+  background: rgba(168, 85, 247, 0.3);
+  color: #fff;
+}
+
+.webcam-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.webcam-captured-label {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  color: #e879f9;
+  font-size: clamp(0.82rem, 1.7vw, 0.98rem);
+  text-align: center;
+  margin-top: 0.4rem;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SCENE 12 — ANNIE'S AUDIO + SUBMISSION
+   ═══════════════════════════════════════════════════════════ */
+
+.scene--annie-audio {
+  z-index: 13;
+  background: radial-gradient(ellipse at 50% 60%, #1a0030 0%, #080010 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  padding: 2rem;
+}
+
+.annie-audio-prompt {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.1rem, 3vw, 1.8rem);
+  color: #f3e8ff;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.annie-audio-sub {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  color: #c084fc;
+  text-align: center;
+}
+
+.recording-ui {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.recording-viz {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  height: 60px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.recording-viz.viz-active { opacity: 1; }
+
+.recording-viz-bar {
+  width: 4px;
+  border-radius: 2px;
+  background: #e879f9;
+  box-shadow: 0 0 8px rgba(232, 121, 249, 0.5);
+  -webkit-animation: viz-bar 0.6s ease-in-out infinite alternate;
+          animation: viz-bar 0.6s ease-in-out infinite alternate;
+}
+
+@-webkit-keyframes viz-bar {
+  from { height: 6px; }
+  to   { height: 50px; }
+}
+
+@keyframes viz-bar {
+  from { height: 6px; }
+  to   { height: 50px; }
+}
+
+.annie-record-btn {
+  cursor: pointer;
+  background: rgba(232, 121, 249, 0.12);
+  border: 2px solid rgba(232, 121, 249, 0.45);
+  color: #e879f9;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.7rem, 1.5vw, 0.88rem);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  padding: 0.85em 2.2em;
+  border-radius: 50px;
+  transition: background 0.25s, transform 0.15s, box-shadow 0.25s;
+  -webkit-user-select: none;
+          user-select: none;
+  touch-action: none;
+}
+
+.annie-record-btn.recording {
+  background: rgba(232, 121, 249, 0.3);
+  transform: scale(1.06);
+  box-shadow: 0 0 22px rgba(232, 121, 249, 0.45);
+}
+
+.annie-submit-btn {
+  cursor: pointer;
+  background: linear-gradient(135deg, #a855f7, #e879f9);
+  border: none;
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.76rem, 1.7vw, 0.96rem);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  padding: 0.9em 2.6em;
+  border-radius: 50px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 22px rgba(168, 85, 247, 0.4);
+}
+
+.annie-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(168, 85, 247, 0.65);
+}
+
+.annie-submit-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.annie-audio-playback {
+  width: min(280px, 78vw);
+  accent-color: #a855f7;
+}
+
+/* Submission confirmation overlay */
+.submission-confirmation {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 50%, #1a0040 0%, #06000f 100%);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  z-index: 10;
+  display: none;
+}
+
+.confirm-heart {
+  font-size: clamp(3rem, 8vw, 5rem);
+  color: #e879f9;
+  -webkit-animation: heart-pulse 1.4s ease-in-out infinite;
+          animation: heart-pulse 1.4s ease-in-out infinite;
+}
+
+.confirm-msg {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.4rem, 4vw, 2.4rem);
+  color: #fff;
+  text-shadow: 0 0 22px rgba(232, 121, 249, 0.5);
+  text-align: center;
+}
+
+.confirm-sub {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.72rem, 1.7vw, 0.92rem);
+  color: rgba(192, 132, 252, 0.65);
+  font-style: italic;
+  text-align: center;
+}
+
+.confirm-link {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.6rem, 1.3vw, 0.78rem);
+  color: rgba(192, 132, 252, 0.45);
+  letter-spacing: 0.1em;
+  text-decoration: none;
+  margin-top: 1rem;
+  border-bottom: 1px solid rgba(192, 132, 252, 0.25);
+  transition: color 0.2s;
+}
+
+.confirm-link:hover { color: #c084fc; }
 
 /*# sourceMappingURL=main.css.map */
+
+/* ─────────────────────────────────────────────────────────────
+   V2 ADDITIONS
+───────────────────────────────────────────────────────────── */
+
+/* ── Scene Timer Bar (auto-advance indicator) ─────────────── */
+.scene-timer-bar {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 3px; width: 0%;
+  background: linear-gradient(to right, #7c3aed, #e879f9);
+  border-radius: 0 2px 2px 0;
+  pointer-events: none;
+  z-index: 200;
+}
+
+/* ── D3 LDR Map ───────────────────────────────────────────── */
+.ldr-d3-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.ldr-d3-wrap svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ── Song Cards (Spotify-style pills) ─────────────────────── */
+.song-ref {
+  position: relative;
+  display: inline-block;
+}
+
+.song-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  color: #e8d5ff;
+  background: rgba(30, 215, 96, 0.15);
+  border: 1px solid rgba(30, 215, 96, 0.5);
+  border-radius: 4px;
+  padding: 1px 7px;
+  margin-left: 6px;
+  vertical-align: middle;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  transition: transform 0.2s, background 0.2s;
+  cursor: default;
+  opacity: 1;
+}
+
+.song-badge:hover {
+  transform: scale(1.08);
+  background: rgba(30, 215, 96, 0.28);
+}
+
+/* ── Nerd / Obsidian Scene ────────────────────────────────── */
+.scene--nerd {
+  background: #0d1117;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.4rem;
+  padding: 1.2rem 1.5rem 0.8rem;
+  z-index: 6;
+}
+
+.nerd-header {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.nerd-eyebrow {
+  font-family: 'Poppins', monospace;
+  font-size: clamp(0.65rem, 1.4vw, 0.8rem);
+  color: #4ade80;
+  letter-spacing: 0.18em;
+  margin: 0 0 0.25rem;
+}
+
+.nerd-query {
+  font-family: 'Poppins', monospace;
+  font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+  color: #a855f7;
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+#nerd-graph {
+  width: min(860px, 96vw);
+  height: min(520px, 68vh);
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+#nerd-graph svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.nerd-footer {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(0.85rem, 1.8vw, 1.1rem);
+  color: rgba(232, 213, 255, 0.65);
+  font-style: italic;
+  margin: 0.5rem 0 0;
+  text-align: center;
+}
+
+
+/* ── Scene 9 — 21 Wishes ──────────────────────────────────── */
+.scene--wishes {
+  z-index: 9;
+  background: radial-gradient(ellipse at 50% 20%, #120823 0%, #08020f 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 3.5rem 1.5rem 5rem;
+  gap: 1.2rem;
+  overflow: hidden;
+}
+
+.wishes-eyebrow {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.62rem, 1.4vw, 0.82rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(192, 132, 252, 0.6);
+  margin: 0;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.wishes-list {
+  width: min(580px, 92vw);
+  max-height: 72vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  scrollbar-width: none;
+}
+
+.wishes-list::-webkit-scrollbar { display: none; }
+
+.wish-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.wish-item.wish-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.wish-num {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+  color: #a855f7;
+  min-width: 1.6rem;
+  text-align: right;
+  flex-shrink: 0;
+  line-height: 1.5;
+  text-shadow: 0 0 10px rgba(168,85,247,0.5);
+}
+
+.wish-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(0.78rem, 1.55vw, 0.95rem);
+  font-weight: 300;
+  color: rgba(232, 213, 255, 0.88);
+  line-height: 1.55;
+}
+
+/* last wish — slightly elevated style */
+.wish-item:last-child .wish-text {
+  font-style: italic;
+  color: #e879f9;
+}
+
+@keyframes wish-glow-pulse {
+  0%, 100% { text-shadow: 0 0 8px rgba(168,85,247,0.3); }
+  50%       { text-shadow: 0 0 18px rgba(232,121,249,0.7); }
+}
+
+.wish-item:last-child .wish-num {
+  animation: wish-glow-pulse 2.4s ease-in-out infinite;
+}
+
+/* ── Webcam: ensure layout is correct after panel swap ───── */
+.webcam-panel--annie { order: 1; }
+.webcam-panel--mark  { order: 2; }

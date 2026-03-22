@@ -9,13 +9,35 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@300;500&family=Press+Start+2P&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
     <title>Happy Birthday, Annie ♥</title>
   </head>
 
   <body class="container">
 
     <!-- ═══════════════════════════════════════════════════
-         SCENE 1 — FLOWERS (Blue · Purple · Indigo)
+         GLOBAL CATS — invisible until cats-celebrate
+    ════════════════════════════════════════════════════════ -->
+    <img class="cat-ambient cat-ambient--bl"
+         src="../cat-dancing-sticker-cat-dancing-dancing-cat.gif"
+         alt="" aria-hidden="true" loading="lazy" />
+    <img class="cat-ambient cat-ambient--tr"
+         src="../silly-cat-dance-sticker-silly-cat-dance.gif"
+         alt="" aria-hidden="true" loading="lazy" />
+    <img class="cat-ambient cat-ambient--br"
+         src="../dancing-cat-oppa-gangnam-style-sticker-dancing-cat-oppa-gang.gif"
+         alt="" aria-hidden="true" loading="lazy" />
+    <img class="cat-ambient cat-ambient--tl"
+         src="../small-dancing-white-cat-dance-funny-sticker-small-dancing-wh.gif"
+         alt="" aria-hidden="true" loading="lazy" />
+    <img class="cat-ambient cat-ambient--cr"
+         src="../cat-dance-sticker-cat-dance-gangnam-style.gif"
+         alt="" aria-hidden="true" loading="lazy" />
+
+
+    <!-- ═══════════════════════════════════════════════════
+         SCENE 0 — FLOWERS + GROWING POEM
     ════════════════════════════════════════════════════════ -->
     <div class="scene scene--flowers scene--active">
 
@@ -48,6 +70,8 @@
         <div class="firefly firefly--11"></div>
         <div class="firefly firefly--12"></div>
       </div>
+
+      <div class="flower-poem" id="flower-poem" aria-live="polite"></div>
 
       <div class="flowers">
         <div class="flower flower--1">
@@ -188,43 +212,22 @@
         </div>
 
         <div class="grow-ans" style="--d: 2.4s">
-          <div class="flower__g-right flower__g-right--1">
-            <div class="leaf"></div>
-          </div>
+          <div class="flower__g-right flower__g-right--1"><div class="leaf"></div></div>
         </div>
-
         <div class="grow-ans" style="--d: 2.8s">
-          <div class="flower__g-right flower__g-right--2">
-            <div class="leaf"></div>
-          </div>
+          <div class="flower__g-right flower__g-right--2"><div class="leaf"></div></div>
         </div>
 
         <div class="grow-ans" style="--d: 2.8s">
           <div class="flower__g-front">
-            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--1">
-              <div class="flower__g-front__leaf"></div>
-            </div>
-            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--2">
-              <div class="flower__g-front__leaf"></div>
-            </div>
-            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--3">
-              <div class="flower__g-front__leaf"></div>
-            </div>
-            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--4">
-              <div class="flower__g-front__leaf"></div>
-            </div>
-            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--5">
-              <div class="flower__g-front__leaf"></div>
-            </div>
-            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--6">
-              <div class="flower__g-front__leaf"></div>
-            </div>
-            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--7">
-              <div class="flower__g-front__leaf"></div>
-            </div>
-            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--8">
-              <div class="flower__g-front__leaf"></div>
-            </div>
+            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--1"><div class="flower__g-front__leaf"></div></div>
+            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--2"><div class="flower__g-front__leaf"></div></div>
+            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--3"><div class="flower__g-front__leaf"></div></div>
+            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--4"><div class="flower__g-front__leaf"></div></div>
+            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--5"><div class="flower__g-front__leaf"></div></div>
+            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--6"><div class="flower__g-front__leaf"></div></div>
+            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--7"><div class="flower__g-front__leaf"></div></div>
+            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--8"><div class="flower__g-front__leaf"></div></div>
             <div class="flower__g-front__line"></div>
           </div>
         </div>
@@ -309,51 +312,15 @@
         </div>
       </div>
 
-      <button class="scene-next-btn" aria-label="Next scene">Continue &rarr;</button>
+      <button class="scene-next-btn" aria-label="Next">↓</button>
     </div><!-- /scene--flowers -->
 
 
     <!-- ═══════════════════════════════════════════════════
-         SCENE 2 — DANCING CATS
-    ════════════════════════════════════════════════════════ -->
-    <div class="scene scene--cats">
-      <div class="cats-stars"></div>
-
-      <p class="cats-title">she came with cats, and I didn&rsquo;t mind</p>
-
-      <div class="cats-row">
-        <div class="cat-card">
-          <img src="../cat-dance-sticker-cat-dance-gangnam-style.gif" alt="gangnam cat" loading="lazy" />
-          <span class="cat-caption">gangnam style</span>
-        </div>
-        <div class="cat-card">
-          <img src="../cat-dancing-sticker-cat-dancing-dancing-cat.gif" alt="dancing cat" loading="lazy" />
-          <span class="cat-caption">vibing</span>
-        </div>
-        <div class="cat-card">
-          <img src="../silly-cat-dance-sticker-silly-cat-dance.gif" alt="silly dancing cat" loading="lazy" />
-          <span class="cat-caption">silly</span>
-        </div>
-        <div class="cat-card">
-          <img src="../dancing-cat-oppa-gangnam-style-sticker-dancing-cat-oppa-gang.gif" alt="oppa cat" loading="lazy" />
-          <span class="cat-caption">oppa</span>
-        </div>
-        <div class="cat-card">
-          <img src="../small-dancing-white-cat-dance-funny-sticker-small-dancing-wh.gif" alt="white dancing cat" loading="lazy" />
-          <span class="cat-caption">floaty</span>
-        </div>
-      </div>
-
-      <button class="scene-next-btn" aria-label="Next scene">Continue &rarr;</button>
-    </div><!-- /scene--cats -->
-
-
-    <!-- ═══════════════════════════════════════════════════
-         SCENE 3 — ANNIVERSARY · JANUARY 5TH
+         SCENE 1 — ANNIVERSARY · JANUARY 5TH, 2026
     ════════════════════════════════════════════════════════ -->
     <div class="scene scene--anniversary">
 
-      <!-- Snowflakes -->
       <div class="snowflake">❄</div>
       <div class="snowflake">❅</div>
       <div class="snowflake">❆</div>
@@ -376,241 +343,1222 @@
       <div class="snowflake">❅</div>
 
       <div class="anniv-content">
-        <p class="anniv-eyebrow">our anniversary</p>
+        <p class="anniv-eyebrow">the day everything started</p>
         <div class="anniv-date">January 5</div>
         <div class="anniv-heart" aria-hidden="true"></div>
-        <p class="anniv-subtitle">the night everything changed</p>
+        <p class="anniv-subtitle">2026</p>
         <p class="anniv-message">
-          One year ago the world decided to do something right,
-          and put you in my life. Every single day since has been better for it.
+          2.5 months ago, you said yes. It&rsquo;s the shortest amount of time
+          that&rsquo;s ever felt like the whole world.
+        </p>
+        <p class="anniv-message" style="margin-top:0.8rem;font-size:clamp(0.7rem,1.4vw,0.85rem);color:rgba(196,168,255,0.5);font-style:italic;">
+          &ldquo;Ain&rsquo;t No Sunshine when you&rsquo;re gone &mdash; but January 5th brought a lot of it.&rdquo;
         </p>
       </div>
 
-      <button class="scene-next-btn" aria-label="Next scene">Continue &rarr;</button>
+      <button class="scene-next-btn" aria-label="Next">↓</button>
     </div><!-- /scene--anniversary -->
 
 
     <!-- ═══════════════════════════════════════════════════
-         SCENE 4 — POEM
+         SCENE 2 — BOSTON TO HONG KONG
+    ════════════════════════════════════════════════════════ -->
+    <div class="scene scene--ldr">
+
+      <div class="ldr-d3-wrap">
+        <svg id="ldr-map-svg" aria-hidden="true"></svg>
+      </div>
+
+      <div class="ldr-center">
+        <p class="ldr-miles">9,000 miles. Still the first person I want to talk to every day.</p>
+        <p class="ldr-sub">I can&rsquo;t wait to finally see your face &mdash; not on a screen.</p>
+      </div>
+
+      <button class="scene-next-btn" aria-label="Next">↓</button>
+    </div><!-- /scene--ldr -->
+
+
+    <!-- ═══════════════════════════════════════════════════
+         SCENE 3 — 知音 SONG LETTER
+    ════════════════════════════════════════════════════════ -->
+    <div class="scene scene--songlet">
+
+      <p class="songlet-title">知音</p>
+      <p class="songlet-meaning">zh&#299; y&#299;n &mdash; kindred spirit &mdash; someone who truly understands you</p>
+
+      <div class="song-letter-body">
+        <p class="song-para" id="sl-p1">
+          <em class="song-ref">At last<span class="song-badge">Etta James</span></em> &mdash;
+          I <em class="song-ref">can&rsquo;t help falling in love<span class="song-badge">Elvis Presley</span></em>.
+          You are <em class="song-ref">the only exception<span class="song-badge">Paramore</span></em>
+          I ever thought I&rsquo;d make,
+          and I&rsquo;d make it a thousand times over.
+        </p>
+
+        <p class="song-para" id="sl-p2">
+          <em class="song-ref">My love, mine all mine<span class="song-badge">Mitski</span></em> &mdash;
+          I want to <em class="song-ref">look after you<span class="song-badge">The Fray</span></em>,
+          be your <em class="song-ref">soft spot<span class="song-badge">keshi</span></em>.
+          <em class="song-ref">Still into you<span class="song-badge">Paramore</span></em>,
+          every single morning.
+        </p>
+
+        <p class="song-para" id="sl-p3">
+          <em class="song-ref">Time in a bottle<span class="song-badge">Jim Croce</span></em> wouldn&rsquo;t be enough.
+          <em class="song-ref">I will always love you<span class="song-badge">Whitney Houston</span></em> &mdash;
+          not as a promise, but as a fact.
+          <br /><br />
+          知音. That&rsquo;s what you are.
+        </p>
+      </div>
+
+      <button id="songlet-next-btn" class="scene-next-btn" aria-label="Next">↓</button>
+    </div><!-- /scene--songlet -->
+
+
+    <!-- ═══════════════════════════════════════════════════
+         SCENE 4 — LITTLE THINGS
+    ════════════════════════════════════════════════════════ -->
+    <div class="scene scene--little">
+
+      <img
+        class="kuromi-float"
+        src="../kumori-corner-peak-sticker-kumori-corner-peak-peaking.gif"
+        alt="Kuromi peeking"
+        aria-hidden="true"
+        id="little-kuromi"
+      />
+
+      <p class="little-eyebrow">things I think about</p>
+
+      <div class="little-list" id="little-list">
+        <p class="little-item" data-idx="0">the way you exist on the other side of the world and still feel close</p>
+        <p class="little-item" data-idx="1">how you make <em>carwashed</em> sound like the best thing to be called</p>
+        <p class="little-item" data-idx="2">every march 31st for as long as I have</p>
+        <p class="little-item" data-idx="3">the playlist titled 知音 that you made</p>
+        <p class="little-item" data-idx="4">the fact that you are, fundamentally, a cat</p>
+        <p class="little-item item-emphasis" data-idx="5">you. just you.</p>
+      </div>
+
+      <button id="little-next-btn" class="scene-next-btn" aria-label="Next">↓</button>
+    </div><!-- /scene--little -->
+
+
+    <!-- ═══════════════════════════════════════════════════
+         SCENE 5 — SAFE PLACE
+    ════════════════════════════════════════════════════════ -->
+    <div class="scene scene--safe">
+
+      <div class="safe-particles" id="safe-particles" aria-hidden="true"></div>
+
+      <div class="safe-content">
+        <p class="safe-text">
+          I know the world hasn&rsquo;t always been kind to you.
+          <span class="safe-divider"></span>
+          That changes now.
+          <span class="safe-divider"></span>
+          With me, you are <em class="safe-em">safe</em>.
+          You will always be safe.
+          <span class="safe-divider"></span>
+          I will be your softest place to land
+          and the loudest voice in your corner
+          for as long as you&rsquo;ll have me.
+        </p>
+      </div>
+
+      <button class="scene-next-btn" aria-label="Next">↓</button>
+    </div><!-- /scene--safe -->
+
+
+    <!-- ═══════════════════════════════════════════════════
+         SCENE 6 — NERD / OBSIDIAN GRAPH
+    ════════════════════════════════════════════════════════ -->
+    <div class="scene scene--nerd">
+
+      <div class="nerd-header">
+        <p class="nerd-eyebrow">// mark.obsidian &nbsp;·&nbsp; i'm the nerd here</p>
+        <p class="nerd-query">dataview: every word i'd use to describe her</p>
+      </div>
+
+      <div id="nerd-graph" aria-hidden="true"></div>
+
+      <p class="nerd-footer">i&rsquo;ll be a nerd for you. always.</p>
+
+      <button class="scene-next-btn" aria-label="Next">↓</button>
+    </div><!-- /scene--nerd -->
+
+
+    <!-- ═══════════════════════════════════════════════════
+         SCENE 7 — INTERACTIVE POEM (tap to reveal)
     ════════════════════════════════════════════════════════ -->
     <div class="scene scene--poem">
-      <div class="poem-scene-overlay" id="poem-scene-container"></div>
-      <button class="scene-next-btn" id="poem-next-btn" style="opacity:0;pointer-events:none;" aria-label="Next scene">Continue &rarr;</button>
+
+      <div class="poem-tap-overlay" id="poem-tap-overlay" role="button"
+           aria-label="Tap to reveal the next stanza">
+        <div class="poem-stanzas-container" id="poem-stanzas" aria-live="polite"></div>
+        <p class="poem-instruction" id="poem-instruction">tap anywhere to read</p>
+      </div>
+
+      <button id="poem-next-btn" class="scene-next-btn" aria-label="Next">↓</button>
     </div><!-- /scene--poem -->
 
 
     <!-- ═══════════════════════════════════════════════════
-         SCENE 5 — MINECRAFT CHAT
+         SCENE 8 — MARK'S BIRTHDAY AUDIO
     ════════════════════════════════════════════════════════ -->
-    <div class="scene scene--minecraft">
-      <div class="mc-bg" aria-hidden="true"></div>
+    <div class="scene scene--audio-mark">
 
-      <div class="mc-window" role="log" aria-label="Minecraft chat">
-        <div class="mc-titlebar" aria-hidden="true">
-          <span class="mc-titlebar-dot"></span>
-          <span class="mc-titlebar-dot"></span>
-          <span class="mc-titlebar-dot"></span>
-          <span class="mc-titlebar-text">Multiplayer — Direct Connect</span>
+      <p class="audio-eyebrow">a message for you</p>
+
+      <div class="vinyl" id="vinyl" aria-hidden="true"></div>
+
+      <audio id="bday-audio" src="./audio/happy-birthday.mp3" preload="none"></audio>
+
+      <button id="audio-play-btn" class="audio-play-btn" aria-label="Play audio message">
+        &#9654;
+      </button>
+
+      <p class="audio-hint">press play to hear from mark</p>
+
+      <button id="audio-next-btn" class="scene-next-btn" aria-label="Next">↓</button>
+    </div><!-- /scene--audio-mark -->
+
+
+    <!-- ═══════════════════════════════════════════════════
+         SCENE 9 — 18 WISHES FOR YOUR 18TH
+    ════════════════════════════════════════════════════════ -->
+    <div class="scene scene--wishes">
+
+      <p class="wishes-eyebrow">18 things I wish for you on your 18th</p>
+
+      <div class="wishes-list" id="wishes-list" aria-live="polite"></div>
+
+      <button id="wishes-next-btn" class="scene-next-btn" aria-label="Next">↓</button>
+    </div><!-- /scene--wishes -->
+
+
+    <!-- ═══════════════════════════════════════════════════
+         SCENE 10 — BIRTHDAY CELEBRATION
+    ════════════════════════════════════════════════════════ -->
+    <div class="scene scene--birthday">
+
+      <div class="bday-floaters" aria-hidden="true">
+        <span class="bday-floater" style="left:8%;  animation-duration:6s; animation-delay:0s;">🎂</span>
+        <span class="bday-floater" style="left:22%; animation-duration:8s; animation-delay:1.2s;">✨</span>
+        <span class="bday-floater" style="left:38%; animation-duration:7s; animation-delay:0.4s;">🎉</span>
+        <span class="bday-floater" style="left:54%; animation-duration:9s; animation-delay:2s;">🎊</span>
+        <span class="bday-floater" style="left:70%; animation-duration:6.5s; animation-delay:0.8s;">🌸</span>
+        <span class="bday-floater" style="left:85%; animation-duration:8.5s; animation-delay:1.6s;">⭐</span>
+        <span class="bday-floater" style="left:15%; animation-duration:7.5s; animation-delay:3s;">🎁</span>
+        <span class="bday-floater" style="left:62%; animation-duration:6.2s; animation-delay:2.4s;">💜</span>
+        <span class="bday-floater" style="left:45%; animation-duration:9.5s; animation-delay:0.2s;">🎈</span>
+        <span class="bday-floater" style="left:78%; animation-duration:7.8s; animation-delay:1s;">✨</span>
+      </div>
+
+      <div class="cake-wrapper">
+        <div class="cake-candles-row">
+          <div class="cake-candle"></div>
+          <div class="cake-candle" style="animation-delay:0.1s"></div>
+          <div class="cake-candle" style="animation-delay:0.2s"></div>
         </div>
-        <div class="mc-chat-area" id="mc-chat-area"></div>
-        <div class="mc-input-bar" aria-hidden="true">
-          <span class="mc-input-caret">T</span>
-          <span class="mc-input-blink"></span>
+        <div class="cake-tier cake-tier--top">
+          <div class="cake-frosting"></div>
+        </div>
+        <div class="cake-tier cake-tier--mid">
+          <div class="cake-frosting"></div>
+        </div>
+        <div class="cake-tier cake-tier--bot">
+          <div class="cake-frosting"></div>
+        </div>
+        <div class="cake-plate"></div>
+      </div>
+
+      <div class="bday-copy">
+        <p class="bday-heading">Happy Birthday, Annie.</p>
+        <p class="bday-sub">You were born today and somehow I&rsquo;m the lucky one.</p>
+        <p class="bday-age">turning 18 and still the most interesting person I know</p>
+      </div>
+
+      <button class="scene-next-btn" aria-label="Next">↓</button>
+    </div><!-- /scene--birthday -->
+
+
+    <!-- ═══════════════════════════════════════════════════
+         SCENE 11 — HEARTFELT + PROPOSAL
+    ════════════════════════════════════════════════════════ -->
+    <div class="scene scene--proposal">
+
+      <!-- Part A: heartfelt message -->
+      <div class="proposal-a" id="proposal-a">
+        <p class="heartfelt-text">
+          Annie &mdash;<br /><br />
+          On March 31st, the world became a better place &mdash; it just didn&rsquo;t tell me yet.<br />
+          You are why I understand every love song I&rsquo;ve ever heard.<br />
+          You are my 知音.<br /><br />
+          I am so lucky you exist &mdash; and luckier still
+          that you chose me, across 9,000 miles, to be yours.<br /><br />
+          Thank you for being mine.
+        </p>
+        <p class="heartfelt-sig">with everything I have,<br>Computer_Science ♥</p>
+        <button class="proposal-inner-btn" id="proposal-a-next">one more thing &rarr;</button>
+      </div>
+
+      <!-- Part B: proposal question -->
+      <div class="proposal-b" id="proposal-b">
+        <p class="proposal-question">Will you spend the rest of your life with me?</p>
+        <p class="no-joke" id="no-joke"></p>
+        <div class="proposal-btns">
+          <button class="btn-yes" id="btn-yes">Yes ♥</button>
+          <button class="btn-no"  id="btn-no">No</button>
         </div>
       </div>
 
-      <div class="mc-finale" id="mc-finale" aria-live="polite">
-        <div class="mc-finale-heart" aria-hidden="true">♥</div>
-        <p class="mc-finale-text">Happy Birthday,<br>Annie.</p>
+      <!-- Finale (hidden until YES) -->
+      <div class="proposal-finale" id="proposal-finale">
+        <div class="finale-heart" aria-hidden="true">♥</div>
+        <p class="finale-msg">She said yes.</p>
+        <p class="finale-sub">happy birthday, Annie &mdash; forever starts now ♥</p>
+        <img
+          class="kuromi-peek kuromi-visible"
+          src="../kumori-corner-peak-sticker-kumori-corner-peak-peaking.gif"
+          alt="Kuromi celebrating"
+          aria-hidden="true"
+          style="position:relative;bottom:auto;right:auto;width:clamp(55px,7vw,90px);display:inline-block;"
+        />
       </div>
-    </div><!-- /scene--minecraft -->
+
+    </div><!-- /scene--proposal -->
+
+
+    <!-- ═══════════════════════════════════════════════════
+         SCENE 11 — WEBCAM + HEART CONNECTION
+    ════════════════════════════════════════════════════════ -->
+    <div class="scene scene--webcam">
+
+      <p class="webcam-title">reach out your hand ♥</p>
+
+      <div class="webcam-split">
+
+        <!-- Left: Annie's live webcam -->
+        <div class="webcam-panel webcam-panel--annie">
+          <div class="webcam-frame webcam-frame--live">
+            <video id="webcam-video" autoplay muted playsinline></video>
+            <canvas id="webcam-canvas" style="display:none" aria-hidden="true"></canvas>
+            <div class="webcam-no-cam" id="webcam-no-cam" style="display:none">
+              camera unavailable &mdash; that&rsquo;s okay ♥
+            </div>
+          </div>
+          <p class="webcam-name">annie</p>
+          <button id="webcam-capture-btn" class="webcam-btn" disabled>capture the moment</button>
+        </div>
+
+        <!-- Right: Mark's heart photo (right hand reaches left toward Annie) -->
+        <div class="webcam-panel webcam-panel--mark">
+          <div class="webcam-frame">
+            <img
+              src="../signal-2026-03-22-065509_002.jpeg"
+              class="heart-photo"
+              alt="Mark making a heart with his hands"
+            />
+          </div>
+          <p class="webcam-name">mark</p>
+        </div>
+
+      </div>
+
+      <div id="webcam-captured-preview" style="display:none;text-align:center">
+        <p class="webcam-captured-label">perfect ♥</p>
+      </div>
+
+    </div><!-- /scene--webcam -->
+
+
+    <!-- ═══════════════════════════════════════════════════
+         SCENE 12 — ANNIE'S AUDIO + SUBMISSION
+         (no scene-next-btn — submit is the final action)
+    ════════════════════════════════════════════════════════ -->
+    <div class="scene scene--annie-audio">
+
+      <p class="annie-audio-prompt">now it&rsquo;s your turn &mdash;</p>
+      <p class="annie-audio-sub">send me a voice message</p>
+
+      <div class="recording-ui">
+        <div class="recording-viz" id="recording-viz" aria-hidden="true"></div>
+        <button id="annie-record-btn" class="annie-record-btn">
+          hold to record
+        </button>
+        <audio id="annie-audio-playback" class="annie-audio-playback"
+               controls style="display:none;" aria-label="Your recording"></audio>
+      </div>
+
+      <button id="annie-submit-btn" class="annie-submit-btn" style="display:none;">
+        send ♥
+      </button>
+
+      <!-- Confirmation overlay -->
+      <div class="submission-confirmation" id="submission-confirmation">
+        <div class="confirm-heart" aria-hidden="true">♥</div>
+        <p class="confirm-msg">sent ♥</p>
+        <p class="confirm-sub">this moment is yours to keep ♥</p>
+      </div>
+
+    </div><!-- /scene--annie-audio -->
 
 
     <!-- ═══════════════════════════════════════════════════
          SCRIPTS
     ════════════════════════════════════════════════════════ -->
-    <script src="./js/main.js"></script>
+    <script src="./js/main.js" defer></script>
     <script>
     (function () {
       'use strict';
 
-      /* ── Scene Manager ──────────────────────────────── */
-      const scenes  = Array.from(document.querySelectorAll('.scene'));
-      const nextBtns = Array.from(document.querySelectorAll('.scene-next-btn'));
-      let current = 0;
+      /* ── Scene Manager ──────────────────────────────────────── */
+      var scenes   = Array.from(document.querySelectorAll('.scene'));
+      var nextBtns = Array.from(document.querySelectorAll('.scene-next-btn'));
+      var current  = 0;
 
+      /* 14 scenes: 0-Flowers 1-Anniversary 2-LDR 3-SongLetter
+         4-LittleThings 5-SafePlace 6-Nerd 7-Poem 8-MarkAudio
+         9-Minecraft 10-Birthday 11-Proposal 12-Webcam 13-AnnieAudio
+         11 next-buttons (indices 0-10) → goTo(1)-goTo(11)
+         proposal/webcam/annie-audio advance internally */
+
+      function goTo(nextIdx) {
+        if (nextIdx >= scenes.length || nextIdx < 0) return;
+        var exitIdx = current;
+        scenes[exitIdx].classList.add('scene--exiting');
+        setTimeout(function () {
+          scenes[exitIdx].classList.remove('scene--active', 'scene--exiting');
+        }, 850);
+        current = nextIdx;
+        scenes[current].classList.add('scene--active');
+        onSceneEnter(current);
+      }
+
+      /* Reveal a hidden next-btn by ID once an interactive scene finishes */
+      function revealBtn(id) {
+        var btn = id ? document.getElementById(id) : null;
+        if (!btn) return;
+        btn.style.transition  = 'opacity 0.6s ease';
+        btn.style.opacity     = '1';
+        btn.style.pointerEvents = 'all';
+      }
+
+      /* Wire click-to-advance on all next-btns */
       nextBtns.forEach(function (btn, i) {
-        btn.addEventListener('click', function () {
-          if (i + 1 >= scenes.length) return;
-          scenes[current].classList.remove('scene--active');
-          current = i + 1;
-          scenes[current].classList.add('scene--active');
-          onSceneEnter(current);
-        });
+        btn.addEventListener('click', function () { goTo(i + 1); });
       });
 
       function onSceneEnter(idx) {
-        if (idx === 3) { runPoem(); }
-        if (idx === 4) { runMinecraft(); }
+        if (idx === 2)  { initLdrMap(); }
+        if (idx === 3)  { runSongLetter(); }
+        if (idx === 4)  { runLittleThings(); }
+        if (idx === 5)  { initSafeParticles(); }
+        if (idx === 6)  { initNerdGraph(); }
+        if (idx === 7)  { initPoem(); }
+        if (idx === 8)  { initMarkAudio(); }
+        if (idx === 9)  { initWishes(); }
+        if (idx === 11) { runHeartfelt(); }
+        if (idx === 12) { startWebcam(); }
+        if (idx === 13) { initAnnieAudio(); }
       }
 
-
-      /* ── Shared helpers ─────────────────────────────── */
+      /* ── Shared helpers ─────────────────────────────────────── */
       function wait(ms) {
-        return new Promise(function (resolve) { setTimeout(resolve, ms); });
+        return new Promise(function (r) { setTimeout(r, ms); });
       }
 
-
-      /* ── Poem Scene ─────────────────────────────────── */
-      var poemRan = false;
-
-      var poem = [
-        { type: 'title',  text: 'For Annie' },
-        { type: 'break' },
-        { type: 'line',   text: 'You showed up like January does —' },
-        { type: 'line',   text: 'quietly, and all at once.' },
-        { type: 'line',   text: "I hadn't planned for you at all," },
-        { type: 'line',   text: 'which makes this twice as much.' },
-        { type: 'break' },
-        { type: 'line',   text: 'You laugh at cats who cannot dance' },
-        { type: 'line',   text: 'yet somehow teach them how.' },
-        { type: 'line',   text: 'The world grows softer where you are.' },
-        { type: 'line',   text: "I'm glad you're here right now." },
-        { type: 'break' },
-        { type: 'line',   text: 'So here is everything I have:' },
-        { type: 'line',   text: 'one year, and then the rest.' },
-        { type: 'line',   text: 'Happy Birthday, Annie —' },
-        { type: 'line',   text: 'you deserve the very best.' }
+      /* ── Flower poem lines ───────────────────────────────────── */
+      var flowerLines = [
+        [2000,  'Some things only bloom in their right season.'],
+        [6800,  'March ends \u2014 and everything that was waiting'],
+        [11400, 'steps forward into the light.'],
+        [16000, 'Eighteen years ago, the world acquired something'],
+        [21000, 'it did not know it was missing. That was you.'],
       ];
 
-      async function typePoemLine(el, text) {
-        var CHAR_DELAY = 36;
-        for (var ch of text) {
-          var span = document.createElement('span');
-          span.className = 'poem-scene-char';
-          span.textContent = ch === ' ' ? '\u00A0' : ch;
-          el.appendChild(span);
-          await wait(CHAR_DELAY);
+      var flowerPoem = document.getElementById('flower-poem');
+
+      function addFlowerLine(text) {
+        if (!flowerPoem) return;
+        var p = document.createElement('p');
+        p.className = 'flower-poem-line';
+        p.textContent = text;
+        flowerPoem.appendChild(p);
+      }
+
+      flowerLines.forEach(function (entry) {
+        setTimeout(function () { addFlowerLine(entry[1]); }, entry[0]);
+      });
+
+      /* ── D3 World Map (LDR scene) ───────────────────────────── */
+      var ldrMapInited = false;
+
+      function initLdrMap() {
+        if (ldrMapInited) return;
+        ldrMapInited = true;
+
+        var wrap = document.querySelector('.ldr-d3-wrap');
+        var svg  = document.getElementById('ldr-map-svg');
+        if (!wrap || !svg || typeof d3 === 'undefined' || typeof topojson === 'undefined') {
+          return; /* next-btn is visible via CSS animation-delay */
+        }
+
+        var W = window.innerWidth  || 1200;
+        var H = window.innerHeight || 700;
+
+        var projection = d3.geoNaturalEarth1()
+          .scale(Math.min(W, H) * 0.22)
+          .rotate([-170, 0])
+          .translate([W / 2, H / 2]);
+
+        var path = d3.geoPath().projection(projection);
+
+        d3.select(svg)
+          .attr('width', W)
+          .attr('height', H)
+          .attr('viewBox', '0 0 ' + W + ' ' + H);
+
+        d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+          .then(function (world) {
+            var countries = topojson.feature(world, world.objects.countries);
+
+            /* Ocean fill */
+            d3.select(svg).append('rect')
+              .attr('width', W).attr('height', H)
+              .attr('fill', '#0d0721');
+
+            /* Country fills */
+            d3.select(svg).append('g')
+              .selectAll('path')
+              .data(countries.features)
+              .join('path')
+              .attr('d', path)
+              .attr('fill', function (d) {
+                var id = +d.id;
+                if (id === 840) return 'rgba(124,58,237,0.22)'; /* USA */
+                if (id === 156 || id === 344) return 'rgba(124,58,237,0.22)'; /* China / HK */
+                return '#1a0a2e';
+              })
+              .attr('stroke', function (d) {
+                var id = +d.id;
+                return (id === 840 || id === 156 || id === 344) ? '#a855f7' : 'rgba(168,85,247,0.3)';
+              })
+              .attr('stroke-width', function (d) {
+                var id = +d.id;
+                return (id === 840 || id === 156 || id === 344) ? 0.9 : 0.4;
+              });
+
+            /* Cities */
+            var boston = [-71.06, 42.36];
+            var hk     = [114.16, 22.32];
+            var pB = projection(boston);
+            var pH = projection(hk);
+
+            /* True great-circle arc: Boston → Hong Kong over the Pacific */
+            var interp = d3.geoInterpolate(boston, hk);
+            var arcLine = {
+              type: 'LineString',
+              coordinates: (function () {
+                var pts = [];
+                for (var t = 0; t <= 1; t += 0.01) { pts.push(interp(t)); }
+                return pts;
+              })()
+            };
+
+            var arcPath = d3.select(svg).append('path')
+              .datum(arcLine)
+              .attr('d', path)
+              .attr('fill', 'none')
+              .attr('stroke', '#e879f9')
+              .attr('stroke-width', 1.8)
+              .attr('stroke-dasharray', function () {
+                var el = this;
+                var len = el.getTotalLength ? el.getTotalLength() : 500;
+                return len + ' ' + len;
+              })
+              .attr('stroke-dashoffset', function () {
+                var el = this;
+                return el.getTotalLength ? el.getTotalLength() : 500;
+              })
+              .attr('opacity', 0.85);
+
+            arcPath.transition()
+              .duration(3000)
+              .ease(d3.easeLinear)
+              .attr('stroke-dashoffset', 0);
+
+            /* Plane emoji along path */
+            var planeG = d3.select(svg).append('text')
+              .text('\u2708')
+              .attr('font-size', '18px')
+              .attr('fill', '#e879f9')
+              .attr('opacity', 0)
+              .attr('text-anchor', 'middle')
+              .attr('dominant-baseline', 'middle');
+
+            setTimeout(function () {
+              planeG.attr('opacity', 1);
+              var arcEl = arcPath.node();
+              if (!arcEl || !arcEl.getTotalLength) return;
+              var len = arcEl.getTotalLength();
+              var start = Date.now();
+              var dur = 4000;
+              (function tick() {
+                var elapsed = Date.now() - start;
+                var t = Math.min(elapsed / dur, 1);
+                var pt = arcEl.getPointAtLength(t * len);
+                planeG.attr('x', pt.x).attr('y', pt.y);
+                if (t < 1) requestAnimationFrame(tick);
+                else planeG.attr('opacity', 0);
+              })();
+            }, 3200);
+
+            /* City dots */
+            [[pB, 'Boston, MA'], [pH, 'Hong Kong']].forEach(function (item, i) {
+              var pt  = item[0];
+              var lbl = item[1];
+              if (!pt) return;
+              d3.select(svg).append('circle')
+                .attr('cx', pt[0]).attr('cy', pt[1]).attr('r', 6)
+                .attr('fill', '#e879f9')
+                .attr('stroke', '#fff').attr('stroke-width', 1.5)
+                .style('filter', 'drop-shadow(0 0 6px #e879f9)');
+
+              d3.select(svg).append('text')
+                .attr('x', pt[0] + (i === 0 ? 10 : -10))
+                .attr('y', pt[1] - 10)
+                .attr('fill', '#e8d5ff')
+                .attr('font-size', '11px')
+                .attr('font-family', 'Poppins, sans-serif')
+                .attr('text-anchor', i === 0 ? 'start' : 'end')
+                .text(lbl);
+            });
+
+          })
+          .catch(function () { /* map loads fine, button is already visible */ });
+      }
+
+      /* ── Song Letter ────────────────────────────────────────── */
+      var songLetterRan = false;
+
+      async function runSongLetter() {
+        if (songLetterRan) return;
+        songLetterRan = true;
+        var paras = ['sl-p1', 'sl-p2', 'sl-p3'].map(function (id) {
+          return document.getElementById(id);
+        });
+        for (var i = 0; i < paras.length; i++) {
+          await wait(1100);
+          if (paras[i]) paras[i].classList.add('para-visible');
+        }
+        await wait(1500);
+        revealBtn('songlet-next-btn');
+      }
+
+      /* ── Little Things ──────────────────────────────────────── */
+      var littleRan = false;
+
+      async function runLittleThings() {
+        if (littleRan) return;
+        littleRan = true;
+        var k = document.getElementById('little-kuromi');
+        if (k) k.classList.add('kuromi-visible');
+        var items = Array.from(document.querySelectorAll('.little-item'));
+        for (var i = 0; i < items.length; i++) {
+          await wait(750);
+          items[i].classList.add('item-visible');
+        }
+        await wait(1500);
+        revealBtn('little-next-btn');
+      }
+
+      /* ── Safe Place particles ───────────────────────────────── */
+      function initSafeParticles() {
+        var container = document.getElementById('safe-particles');
+        if (!container || container.childElementCount > 0) return;
+        for (var i = 0; i < 28; i++) {
+          var p = document.createElement('div');
+          p.className = 'safe-particle';
+          p.style.left              = Math.random() * 100 + '%';
+          p.style.top               = Math.random() * 100 + '%';
+          p.style.width             = (2 + Math.random() * 3) + 'px';
+          p.style.height            = p.style.width;
+          p.style.animationDuration = (8 + Math.random() * 14) + 's';
+          p.style.animationDelay    = (Math.random() * 10) + 's';
+          container.appendChild(p);
         }
       }
 
-      async function runPoem() {
+      /* ── Nerd / Obsidian D3 Graph ───────────────────────────── */
+      var nerdInited = false;
+
+      function initNerdGraph() {
+        if (nerdInited) return;
+        nerdInited = true;
+
+        var container = document.getElementById('nerd-graph');
+        if (!container || typeof d3 === 'undefined') return;
+
+        var W = 860;
+        var H = 520;
+
+        /* Every word / synonym that describes how Mark feels about Annie */
+        var nodes = [
+          { id: 'annie',         r: 20, label: '♥ annie',        col: '#f472b6' },
+          { id: 'beloved',       r: 7,  label: 'beloved',        col: '#c084fc' },
+          { id: 'cherished',     r: 6,  label: 'cherished',      col: '#a855f7' },
+          { id: 'mine',          r: 9,  label: 'mine',           col: '#e879f9' },
+          { id: 'home',          r: 10, label: 'home',           col: '#818cf8' },
+          { id: 'person',        r: 9,  label: 'my person',      col: '#c084fc' },
+          { id: 'darling',       r: 7,  label: 'darling',        col: '#a855f7' },
+          { id: 'treasure',      r: 6,  label: 'treasure',       col: '#e879f9' },
+          { id: 'chosen',        r: 8,  label: 'chosen',         col: '#818cf8' },
+          { id: 'lucky',         r: 7,  label: 'lucky',          col: '#c084fc' },
+          { id: 'irreplaceable', r: 7,  label: 'irreplaceable',  col: '#a855f7' },
+          { id: 'constant',      r: 6,  label: 'constant',       col: '#818cf8' },
+          { id: 'sun',           r: 8,  label: 'sunshine',       col: '#f9d879' },
+          { id: 'cat',           r: 8,  label: 'my cat',         col: '#e879f9' },
+          { id: 'zhi',           r: 9,  label: '知音',           col: '#a78bfa' },
+          { id: 'safe',          r: 7,  label: 'safe harbor',    col: '#818cf8' },
+          { id: 'tender',        r: 6,  label: 'tender',         col: '#c084fc' },
+          { id: 'extraordinary', r: 7,  label: 'extraordinary',  col: '#a855f7' },
+          { id: 'breathtaking',  r: 6,  label: 'breathtaking',   col: '#e879f9' },
+          { id: 'jan5',          r: 8,  label: 'jan 5 ♥',        col: '#f472b6' },
+          { id: 'marvel',        r: 6,  label: 'marvel',         col: '#818cf8' },
+          { id: 'infinite',      r: 7,  label: 'infinite',       col: '#c084fc' },
+          { id: 'forever',       r: 9,  label: 'forever',        col: '#a855f7' },
+          { id: 'adore',         r: 7,  label: 'adore',          col: '#e879f9' },
+          { id: 'devoted',       r: 6,  label: 'devoted',        col: '#818cf8' },
+          { id: 'ethereal',      r: 6,  label: 'ethereal',       col: '#c084fc' },
+          { id: 'unreal',        r: 6,  label: 'unreal',         col: '#a855f7' },
+          { id: 'enchanting',    r: 6,  label: 'enchanting',     col: '#e879f9' },
+          { id: 'kind',          r: 6,  label: 'kind',           col: '#818cf8' },
+          { id: 'brave',         r: 6,  label: 'brave',          col: '#c084fc' },
+          { id: 'kuromi',        r: 7,  label: 'kuromi girl',    col: '#a855f7' },
+          { id: 'miles',         r: 7,  label: '9k miles',       col: '#818cf8' },
+          { id: 'morning',       r: 6,  label: 'every morning',  col: '#c084fc' },
+        ];
+
+        /* All leaf nodes connect to annie */
+        var links = nodes.slice(1).map(function (n) {
+          return { source: 'annie', target: n.id };
+        });
+
+        var svg = d3.select(container).append('svg')
+          .attr('viewBox', '0 0 ' + W + ' ' + H)
+          .attr('preserveAspectRatio', 'xMidYMid meet')
+          .style('overflow', 'visible');
+
+        var sim = d3.forceSimulation(nodes)
+          .force('link', d3.forceLink(links).id(function (d) { return d.id; }).distance(110))
+          .force('charge', d3.forceManyBody().strength(-280))
+          .force('center', d3.forceCenter(W / 2, H / 2))
+          .force('collision', d3.forceCollide().radius(function (d) { return d.r + 10; }));
+
+        var link = svg.append('g')
+          .selectAll('line')
+          .data(links)
+          .join('line')
+          .attr('stroke', 'rgba(168,85,247,0.2)')
+          .attr('stroke-width', 0.8)
+          .attr('opacity', 0);
+
+        var node = svg.append('g')
+          .selectAll('g')
+          .data(nodes)
+          .join('g')
+          .attr('opacity', 0);
+
+        node.append('circle')
+          .attr('r', function (d) { return d.r; })
+          .attr('fill', function (d) { return d.col + '33'; })
+          .attr('stroke', function (d) { return d.col; })
+          .attr('stroke-width', 1.5)
+          .style('filter', 'drop-shadow(0 0 5px var(--c))');
+
+        node.append('text')
+          .text(function (d) { return d.label; })
+          .attr('font-size', function (d) { return d.id === 'annie' ? '12px' : '7.5px'; })
+          .attr('fill', function (d) { return d.col; })
+          .attr('font-family', 'Poppins, sans-serif')
+          .attr('text-anchor', 'middle')
+          .attr('dy', function (d) { return d.r + 10; });
+
+        sim.on('tick', function () {
+          link
+            .attr('x1', function (d) { return d.source.x; })
+            .attr('y1', function (d) { return d.source.y; })
+            .attr('x2', function (d) { return d.target.x; })
+            .attr('y2', function (d) { return d.target.y; });
+          node.attr('transform', function (d) {
+            return 'translate(' + d.x + ',' + d.y + ')';
+          });
+        });
+
+        /* Staggered fade-in */
+        setTimeout(function () {
+          link.transition().duration(800).attr('opacity', 1);
+          node.each(function (d, i) {
+            d3.select(this).transition().delay(i * 60).duration(500).attr('opacity', 1);
+          });
+        }, 400);
+      }
+
+      /* ── Interactive Poem ───────────────────────────────────── */
+      var poemRan  = false;
+      var poemStep = 0;
+
+      var poemStanzas = [
+        [
+          'There is a particular light that comes in the last days of March \u2014',
+          'low and lateral, pale as almond blossom,',
+          'the kind that makes ordinary windows look like altars,',
+          'that lands on everything and makes it briefly worth looking at.',
+          'That is the light you were born into.',
+          'I have come to believe it followed you here.'
+        ],
+        [
+          'You are nine thousand miles away.',
+          'I know this the way I know the shape of my own hands \u2014',
+          'by feel, by the dull ache that replaces things.',
+          'And yet there is not a single hour of that distance',
+          'I would trade away for the convenience of closer.',
+          'You are worth every mile. All nine thousand of them. Twice.'
+        ],
+        [
+          'I want to be the room where nothing can reach you,',
+          'the door that holds between you and whatever has been unkind.',
+          'I know I cannot always. The world is large and careless',
+          'and does not ask permission before it takes things.',
+          'But I will stand in its way as long as I am able,',
+          'and trying, for you, does not feel like effort.',
+          'It feels like the only obvious thing to do.'
+        ],
+        [
+          'Eighteen years. I try to hold the mathematics of it,',
+          'the full weight of what the calendar has carried to today,',
+          'and I find I cannot \u2014 the number keeps dissolving',
+          'into something less like time and more like wonder.',
+          'You have revised what I understand as possible.',
+          'You have made me braver by existing.',
+          'That is not a small thing. That is everything.'
+        ],
+        [
+          'You move through the world like someone who has decided,',
+          'quietly and finally, to take up the space she deserves \u2014',
+          'laughing at things that should not be funny,',
+          'caring about things with a fierceness',
+          'that embarrasses the rest of us into caring too.',
+          'I have watched you and thought: yes.',
+          'That is exactly how it should be done.'
+        ],
+        [
+          'So here is what I mean, plainly,',
+          'because you deserve plainness as well as the ornate:',
+          'I love you \u2014 the way you think, the way you worry,',
+          'the way you laugh past the point where most people would stop.',
+          'March thirty-first is a good day.',
+          'It was the day all of this became possible.',
+          'Happy birthday, Annie. You are so, so loved.'
+        ]
+      ];
+
+      function initPoem() {
         if (poemRan) return;
         poemRan = true;
+        var overlay     = document.getElementById('poem-tap-overlay');
+        var instruction = document.getElementById('poem-instruction');
+        var container   = document.getElementById('poem-stanzas');
+        if (!overlay || !container) return;
 
-        var LINE_DELAY   = 580;
-        var STANZA_DELAY = 820;
-
-        var container = document.getElementById('poem-scene-container');
-        if (!container) return;
-        container.textContent = '';
-
-        var stanza = 0;
-        for (var seg of poem) {
-          if (seg.type === 'break') {
-            var br = document.createElement('div');
-            br.className = 'poem-scene-break';
-            container.appendChild(br);
-            stanza += 1;
-            await wait(STANZA_DELAY);
-            continue;
+        overlay.addEventListener('click', function () {
+          if (poemStep === 0 && instruction) {
+            instruction.classList.add('hint-hidden');
           }
-          var p = document.createElement('p');
-          var cls = 'poem-scene-line';
-          if (seg.type === 'title') {
-            cls += ' poem-scene-title';
-          } else {
-            cls += ' poem-scene-stanza-' + (stanza % 3);
+          if (poemStep < poemStanzas.length) {
+            var lines = poemStanzas[poemStep];
+            var div   = document.createElement('div');
+            div.className = 'poem-stanza';
+            div.innerHTML = lines.map(function (l) {
+              return '<p>' + l + '</p>';
+            }).join('');
+            container.appendChild(div);
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () {
+                div.classList.add('stanza-visible');
+              });
+            });
+            poemStep++;
+            if (poemStep === poemStanzas.length) {
+              setTimeout(function () {
+                overlay.style.pointerEvents = 'none';
+                if (instruction) instruction.style.display = 'none';
+                revealBtn('poem-next-btn');
+              }, 800);
+            }
           }
-          p.className = cls;
-          container.appendChild(p);
-          await typePoemLine(p, seg.text);
-          await wait(LINE_DELAY);
-        }
-
-        /* Reveal Next button after poem finishes */
-        await wait(600);
-        var poemNext = document.getElementById('poem-next-btn');
-        if (poemNext) {
-          poemNext.style.opacity = '1';
-          poemNext.style.pointerEvents = 'all';
-          poemNext.style.transition = 'opacity 1s ease';
-        }
+        });
       }
 
+      /* ── Mark's Birthday Audio ──────────────────────────────── */
+      function initMarkAudio() {
+        var audio   = document.getElementById('bday-audio');
+        var vinyl   = document.getElementById('vinyl');
+        var playBtn = document.getElementById('audio-play-btn');
+        if (!audio || !vinyl || !playBtn) return;
 
-      /* ── Minecraft Chat Scene ───────────────────────── */
-      var mcRan = false;
+        playBtn.addEventListener('click', function () {
+          audio.play().catch(function () {
+            revealBtn('audio-next-btn');
+          });
+          vinyl.classList.add('playing');
+          playBtn.textContent = '\u266b';
+          playBtn.disabled = true;
+        });
 
-      var mcMessages = [
-        { user: 'carwashed',       text: 'hey are u online' },
-        { user: 'Computer_Science', text: 'always' },
-        { user: 'carwashed',       text: 'ok so… i made u something' },
-        { user: 'Computer_Science', text: 'what did u do' },
-        { user: 'carwashed',       text: 'a website' },
-        { user: 'Computer_Science', text: 'WHY' },
-        { user: 'carwashed',       text: "because it's ur birthday??" },
-        { user: 'Computer_Science', text: "that's actually really sweet" },
-        { user: 'carwashed',       text: 'january 5th was the best night of my life btw' },
-        { user: 'Computer_Science', text: 'stop im going to cry' },
-        { user: 'carwashed',       text: 'good' },
-        { user: 'carwashed',       text: 'happy birthday annie' },
-        { user: 'carwashed',       text: 'i love u \u2764' },
-        { user: 'Computer_Science', text: 'i love u too \u2764' },
-        { user: 'Computer_Science', text: 'ur insane' },
-        { user: 'carwashed',       text: 'insane about u :)' }
+        audio.addEventListener('ended', function () {
+          vinyl.classList.remove('playing');
+          setTimeout(function () { revealBtn('audio-next-btn'); }, 1500);
+        });
+
+        audio.addEventListener('error', function () {
+          revealBtn('audio-next-btn');
+        });
+      }
+
+      window._bdayWcDataUrl = null;
+
+      /* ── 21 Wishes (scene 9) ─────────────────────────────────── */
+      var wishesRan = false;
+
+      var wishList = [
+        'that every morning feels a little lighter than the last',
+        'that you always know how irreplaceable you are',
+        'a year full of things that make you laugh until you can\'t breathe',
+        'that Kuromi merch goes on sale at least once',
+        'that the distance between us gets smaller, and then gone',
+        'safety — always, in every room you walk into',
+        'that you let yourself be taken care of, unapologetically',
+        'a playlist that never skips at the wrong moment',
+        'that you feel as loved as you actually are',
+        'the courage to ask for everything you deserve',
+        'that the world is kinder to you this year than it has ever been',
+        'more mornings where you wake up and feel okay',
+        'that you never forget March 31st is worth celebrating, loudly',
+        'the kind of quiet that actually feels peaceful',
+        'a year so good it makes up for the hard ones',
+        'that you never stop being, fundamentally, a cat about things',
+        'someone who will always show up — that\'s me, by the way',
+        'this, and everything after it, with you'
       ];
 
-      async function runMinecraft() {
-        if (mcRan) return;
-        mcRan = true;
+      async function initWishes() {
+        if (wishesRan) return;
+        wishesRan = true;
 
-        var chatArea = document.getElementById('mc-chat-area');
-        if (!chatArea) return;
+        var list = document.getElementById('wishes-list');
+        if (!list) return;
 
-        var MSG_DELAY = 1350;
-
-        for (var msg of mcMessages) {
-          await wait(MSG_DELAY);
-          var el = document.createElement('div');
-          el.className = 'mc-msg';
-
-          var isCarwashed = msg.user === 'carwashed';
-          var nameClass   = isCarwashed ? 'mc-name--carwashed' : 'mc-name--cs';
-          var nameDisplay = isCarwashed ? 'carwashed' : 'Computer_Science';
-
-          el.innerHTML =
-            '<span class="mc-bracket">&lt;</span>' +
-            '<span class="' + nameClass + '">' + nameDisplay + '</span>' +
-            '<span class="mc-bracket">&gt;</span>' +
-            ' <span class="mc-text">' + escapeHtml(msg.text) + '</span>';
-
-          chatArea.appendChild(el);
-
-          /* Trigger visible transition on next frame */
-          requestAnimationFrame(function (elem) {
-            return function () {
-              requestAnimationFrame(function () { elem.classList.add('mc-visible'); });
-            };
-          }(el));
-
-          /* Auto-scroll */
-          chatArea.scrollTop = chatArea.scrollHeight;
+        for (var i = 0; i < wishList.length; i++) {
+          await wait(i === 0 ? 600 : 480);
+          var item = document.createElement('div');
+          item.className = 'wish-item';
+          item.innerHTML =
+            '<span class="wish-num">' + (i + 1) + '</span>' +
+            '<span class="wish-text">' + wishList[i] + '</span>';
+          list.appendChild(item);
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              var last = list.lastElementChild;
+              if (last) last.classList.add('wish-visible');
+              list.scrollTop = list.scrollHeight;
+            });
+          });
         }
 
-        /* Finale reveal */
-        await wait(2200);
-        var finale = document.getElementById('mc-finale');
-        if (finale) {
-          finale.classList.add('mc-finale--visible');
+        await wait(1200);
+        revealBtn('wishes-next-btn');
+      }
+
+      /* ── Heartfelt + Proposal ───────────────────────────────── */
+      var heartfeltRan = false;
+
+      async function runHeartfelt() {
+        if (heartfeltRan) return;
+        heartfeltRan = true;
+
+        await wait(300);
+        var partA = document.getElementById('proposal-a');
+        if (partA) partA.classList.add('a-visible');
+
+        var aNext = document.getElementById('proposal-a-next');
+        if (aNext) {
+          aNext.addEventListener('click', function () {
+            partA.style.display = 'none';
+            var partB = document.getElementById('proposal-b');
+            if (!partB) return;
+            partB.style.display = 'flex';
+            setTimeout(function () { partB.classList.add('b-visible'); }, 30);
+          });
         }
       }
 
-      function escapeHtml(str) {
-        return str
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;');
+      /* NO button joke cycle */
+      var noCount = 0;
+      var noJokes = [
+        'are you sure? \ud83e\udd72',
+        'i\u2019ll let you name all our cats',
+        'i\u2019ll get you every Kuromi thing in existence',
+        '\u201cMy Love Mine All Mine\u201d disagrees with you',
+        '\u2026okay the button is leaving now'
+      ];
+
+      var noBtn = document.getElementById('btn-no');
+      if (noBtn) {
+        noBtn.addEventListener('click', function () {
+          var joke = document.getElementById('no-joke');
+          if (joke) {
+            joke.className = 'no-joke';
+            void joke.offsetWidth;
+            joke.textContent = noJokes[noCount] || '';
+            joke.classList.add('joke-visible');
+          }
+          noCount++;
+          var scale = Math.max(0.05, 1 - noCount * 0.2);
+          noBtn.style.transform  = 'scale(' + scale + ')';
+          noBtn.style.opacity    = String(Math.max(0.05, 1 - noCount * 0.2));
+          if (noCount >= noJokes.length) noBtn.style.pointerEvents = 'none';
+        });
+      }
+
+      /* YES button — auto-advances to webcam after confetti moment */
+      var yesBtn = document.getElementById('btn-yes');
+      if (yesBtn) {
+        yesBtn.addEventListener('click', function () {
+          var partB  = document.getElementById('proposal-b');
+          var finale = document.getElementById('proposal-finale');
+
+          if (partB)  { partB.style.display = 'none'; }
+          if (finale) {
+            finale.style.display = 'flex';
+            setTimeout(function () { finale.classList.add('finale-visible'); }, 30);
+          }
+
+          document.body.classList.add('cats-celebrate');
+          roamCats();
+
+          var scene = document.querySelector('.scene--proposal');
+          if (scene) launchConfetti(scene);
+
+          /* auto-advance to webcam scene after 5 seconds */
+          setTimeout(function () { goTo(12); }, 5000);
+        });
+      }
+
+      function roamCats() {
+        var cats = Array.from(document.querySelectorAll('.cat-ambient'));
+        var pad  = 160; /* keep cats fully on-screen */
+
+        cats.forEach(function (cat, i) {
+          var timers = [];
+
+          function moveToRandom() {
+            var maxX = window.innerWidth  - pad;
+            var maxY = window.innerHeight - pad;
+            var x = pad * 0.3 + Math.random() * Math.max(0, maxX - pad * 0.3);
+            var y = pad * 0.3 + Math.random() * Math.max(0, maxY - pad * 0.3);
+            cat.style.left = x + 'px';
+            cat.style.top  = y + 'px';
+            /* Next move: 1.6–3.4 s, slightly offset per cat so they don't sync */
+            var delay = 1600 + Math.random() * 1800 + i * 200;
+            timers.push(setTimeout(moveToRandom, delay));
+          }
+
+          /* Initial scatter with a tiny stagger */
+          setTimeout(function () { moveToRandom(); }, i * 120);
+        });
+      }
+
+      function launchConfetti(parent) {
+        var colours = ['#e879f9', '#c084fc', '#7eb3ff', '#fbbf24', '#818cf8', '#fff'];
+        for (var i = 0; i < 70; i++) {
+          (function (idx) {
+            var el = document.createElement('div');
+            el.className = 'confetti-particle';
+            el.style.left              = Math.random() * 100 + '%';
+            el.style.background        = colours[idx % colours.length];
+            el.style.width             = (5 + Math.random() * 7) + 'px';
+            el.style.height            = (4 + Math.random() * 7) + 'px';
+            el.style.borderRadius      = Math.random() > 0.5 ? '50%' : '2px';
+            el.style.animationDuration = (3 + Math.random() * 5) + 's';
+            el.style.animationDelay    = (Math.random() * 1.8) + 's';
+            parent.appendChild(el);
+            setTimeout(function () { el.remove(); }, 9000);
+          })(i);
+        }
+      }
+
+      /* ── Webcam Scene ───────────────────────────────────────── */
+      var webcamStream = null;
+
+      function startWebcam() {
+        var video      = document.getElementById('webcam-video');
+        var captureBtn = document.getElementById('webcam-capture-btn');
+        var canvas     = document.getElementById('webcam-canvas');
+        var noCam      = document.getElementById('webcam-no-cam');
+
+        if (!video) return;
+
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+          .then(function (stream) {
+            webcamStream = stream;
+            video.srcObject = stream;
+            if (captureBtn) captureBtn.disabled = false;
+          })
+          .catch(function () {
+            if (noCam) noCam.style.display = 'flex';
+            /* graceful skip after a moment */
+            setTimeout(function () { goTo(13); }, 3000);
+          });
+
+        if (captureBtn) {
+          captureBtn.addEventListener('click', function () {
+            if (!canvas || !video) return;
+            canvas.width  = video.videoWidth  || 640;
+            canvas.height = video.videoHeight || 480;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            window._bdayWcDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+
+            if (webcamStream) {
+              webcamStream.getTracks().forEach(function (t) { t.stop(); });
+            }
+
+            var preview = document.getElementById('webcam-captured-preview');
+            if (preview) preview.style.display = 'block';
+
+            captureBtn.textContent = 'captured \u2665';
+            captureBtn.disabled    = true;
+
+            /* auto-advance after capture */
+            setTimeout(function () { goTo(13); }, 2500);
+          });
+        }
+      }
+
+      /* ── Annie's Audio Recording + Submission ───────────────── */
+      var annieMediaRecorder = null;
+      var annieAudioChunks   = [];
+      var annieAudioBase64   = null;
+
+      function initAnnieAudio() {
+        /* Build recording viz bars */
+        var viz = document.getElementById('recording-viz');
+        if (viz && viz.childElementCount === 0) {
+          for (var b = 0; b < 9; b++) {
+            var bar = document.createElement('div');
+            bar.className = 'recording-viz-bar';
+            bar.style.animationDelay    = (b * 0.09) + 's';
+            bar.style.animationDuration = (0.45 + Math.random() * 0.3) + 's';
+            viz.appendChild(bar);
+          }
+        }
+
+        var recordBtn = document.getElementById('annie-record-btn');
+        var playback  = document.getElementById('annie-audio-playback');
+        var submitBtn = document.getElementById('annie-submit-btn');
+
+        if (!recordBtn) return;
+
+        function startRecording(e) {
+          e.preventDefault();
+          if (annieMediaRecorder && annieMediaRecorder.state === 'recording') return;
+          annieAudioChunks = [];
+
+          navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(function (stream) {
+              annieMediaRecorder = new MediaRecorder(stream);
+
+              annieMediaRecorder.ondataavailable = function (ev) {
+                if (ev.data && ev.data.size > 0) annieAudioChunks.push(ev.data);
+              };
+
+              annieMediaRecorder.onstop = function () {
+                var blob = new Blob(annieAudioChunks, { type: 'audio/webm' });
+                var url  = URL.createObjectURL(blob);
+                if (playback) {
+                  playback.src = url;
+                  playback.style.display = 'block';
+                }
+                if (submitBtn) submitBtn.style.display = 'block';
+
+                /* Convert to base64 for API */
+                var reader = new FileReader();
+                reader.onload = function () { annieAudioBase64 = reader.result; };
+                reader.readAsDataURL(blob);
+
+                stream.getTracks().forEach(function (t) { t.stop(); });
+              };
+
+              annieMediaRecorder.start();
+              recordBtn.classList.add('recording');
+              recordBtn.textContent = 'recording \u2014 release to stop';
+              if (viz) viz.classList.add('viz-active');
+            })
+            .catch(function () {
+              /* Microphone not available — skip recording, allow submit */
+              if (submitBtn) submitBtn.style.display = 'block';
+            });
+        }
+
+        function stopRecording(e) {
+          e.preventDefault();
+          if (annieMediaRecorder && annieMediaRecorder.state === 'recording') {
+            annieMediaRecorder.stop();
+          }
+          recordBtn.classList.remove('recording');
+          recordBtn.textContent = 'record again';
+          if (viz) viz.classList.remove('viz-active');
+        }
+
+        recordBtn.addEventListener('mousedown',  startRecording);
+        recordBtn.addEventListener('touchstart', startRecording, { passive: false });
+        recordBtn.addEventListener('mouseup',    stopRecording);
+        recordBtn.addEventListener('touchend',   stopRecording,  { passive: false });
+
+        if (submitBtn) {
+          submitBtn.addEventListener('click', submitBirthdayResponse);
+        }
+      }
+
+      async function submitBirthdayResponse() {
+        var submitBtn = document.getElementById('annie-submit-btn');
+        if (submitBtn) {
+          submitBtn.textContent = 'sending\u2026';
+          submitBtn.disabled    = true;
+        }
+
+        var payload = {
+          type:         'birthday-annie-2026',
+          name:         'Annie',
+          webcam_photo: window._bdayWcDataUrl || null,
+          audio_response: annieAudioBase64  || null,
+          timestamp:    new Date().toISOString()
+        };
+
+        try {
+          await fetch('https://api.pqcnerd.com/api/visitor', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(payload)
+          });
+        } catch (_) {
+          /* Silent fail — confirmation still shows */
+        }
+
+        var confirm = document.getElementById('submission-confirmation');
+        if (confirm) confirm.style.display = 'flex';
       }
 
     })();
