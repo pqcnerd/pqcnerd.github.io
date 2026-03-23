@@ -71,9 +71,17 @@
         <div class="firefly firefly--12"></div>
       </div>
 
-      <div class="flower-poem" id="flower-poem" aria-live="polite"></div>
+      <div class="flower-layout" id="flower-layout">
+        <div class="flower-side-panel" id="flower-side-panel" aria-live="polite">
+          <div class="poem-scroll" id="poem-scroll-side"></div>
+        </div>
 
-      <div class="flowers">
+        <div class="flower-stage" id="flower-stage">
+          <div class="flower-poem-center" id="flower-poem-center" aria-live="polite">
+            <div class="poem-scroll" id="poem-scroll-center"></div>
+          </div>
+
+          <div class="flowers">
         <div class="flower flower--1">
           <div class="flower__leafs flower__leafs--1">
             <div class="flower__leaf flower__leaf--1"></div>
@@ -305,63 +313,21 @@
           <div class="butterfly__wing butterfly__wing--right"></div>
           <div class="butterfly__body"></div>
         </div>
-        <div class="butterfly butterfly--3">
-          <div class="butterfly__wing butterfly__wing--left"></div>
-          <div class="butterfly__wing butterfly__wing--right"></div>
-          <div class="butterfly__body"></div>
+          <div class="butterfly butterfly--3">
+            <div class="butterfly__wing butterfly__wing--left"></div>
+            <div class="butterfly__wing butterfly__wing--right"></div>
+            <div class="butterfly__body"></div>
+          </div>
         </div>
       </div>
+      </div>
 
-      <button class="scene-next-btn" aria-label="Next">↓</button>
+      <button id="flowers-next-btn" class="scene-next-btn" style="opacity:0;pointer-events:none" aria-label="Next">↓</button>
     </div><!-- /scene--flowers -->
 
 
     <!-- ═══════════════════════════════════════════════════
-         SCENE 1 — ANNIVERSARY · JANUARY 5TH, 2026
-    ════════════════════════════════════════════════════════ -->
-    <div class="scene scene--anniversary">
-
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❅</div>
-      <div class="snowflake">❆</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❅</div>
-      <div class="snowflake">❆</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❅</div>
-      <div class="snowflake">❆</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❅</div>
-      <div class="snowflake">❆</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❅</div>
-      <div class="snowflake">❆</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❅</div>
-      <div class="snowflake">❆</div>
-      <div class="snowflake">❄</div>
-      <div class="snowflake">❅</div>
-
-      <div class="anniv-content">
-        <p class="anniv-eyebrow">the day everything started</p>
-        <div class="anniv-date">January 5</div>
-        <div class="anniv-heart" aria-hidden="true"></div>
-        <p class="anniv-subtitle">2026</p>
-        <p class="anniv-message">
-          2.5 months ago, you said yes. It&rsquo;s the shortest amount of time
-          that&rsquo;s ever felt like the whole world.
-        </p>
-        <p class="anniv-message" style="margin-top:0.8rem;font-size:clamp(0.7rem,1.4vw,0.85rem);color:rgba(196,168,255,0.5);font-style:italic;">
-          &ldquo;Ain&rsquo;t No Sunshine when you&rsquo;re gone &mdash; but January 5th brought a lot of it.&rdquo;
-        </p>
-      </div>
-
-      <button class="scene-next-btn" aria-label="Next">↓</button>
-    </div><!-- /scene--anniversary -->
-
-
-    <!-- ═══════════════════════════════════════════════════
-         SCENE 2 — BOSTON TO HONG KONG
+         SCENE 1 — BOSTON TO HONG KONG
     ════════════════════════════════════════════════════════ -->
     <div class="scene scene--ldr">
 
@@ -384,31 +350,29 @@
     <div class="scene scene--songlet">
 
       <p class="songlet-title">知音</p>
-      <p class="songlet-meaning">zh&#299; y&#299;n &mdash; kindred spirit &mdash; someone who truly understands you</p>
+      <p class="songlet-meaning">if I wrote your birthday card in songs, it would sound something like this</p>
 
       <div class="song-letter-body">
         <p class="song-para" id="sl-p1">
-          <em class="song-ref">At last<span class="song-badge">Etta James</span></em> &mdash;
-          I <em class="song-ref">can&rsquo;t help falling in love<span class="song-badge">Elvis Presley</span></em>.
-          You are <em class="song-ref">the only exception<span class="song-badge">Paramore</span></em>
-          I ever thought I&rsquo;d make,
-          and I&rsquo;d make it a thousand times over.
+          It felt like <em class="song-ref">At Last<span class="song-badge">Etta James</span></em>
+          when you became real to me, and a little like
+          <em class="song-ref">Can&rsquo;t Help Falling in Love<span class="song-badge">Elvis Presley</span></em>
+          after that, because some things are less a decision and more a fact.
         </p>
 
         <p class="song-para" id="sl-p2">
-          <em class="song-ref">My love, mine all mine<span class="song-badge">Mitski</span></em> &mdash;
-          I want to <em class="song-ref">look after you<span class="song-badge">The Fray</span></em>,
-          be your <em class="song-ref">soft spot<span class="song-badge">keshi</span></em>.
-          <em class="song-ref">Still into you<span class="song-badge">Paramore</span></em>,
-          every single morning.
+          I want to <em class="song-ref">Look After You<span class="song-badge">The Fray</span></em>,
+          stay your <em class="song-ref">Soft Spot<span class="song-badge">keshi</span></em>,
+          and somehow still be <em class="song-ref">Still into You<span class="song-badge">Paramore</span></em>
+          on every ordinary day, not just the big ones.
         </p>
 
         <p class="song-para" id="sl-p3">
-          <em class="song-ref">Time in a bottle<span class="song-badge">Jim Croce</span></em> wouldn&rsquo;t be enough.
-          <em class="song-ref">I will always love you<span class="song-badge">Whitney Houston</span></em> &mdash;
-          not as a promise, but as a fact.
-          <br /><br />
-          知音. That&rsquo;s what you are.
+          If I could keep more of this, I&rsquo;d ask for
+          <em class="song-ref">Time in a Bottle<span class="song-badge">Jim Croce</span></em>.
+          Until then, the truest line I know is
+          <em class="song-ref">My Love Mine All Mine<span class="song-badge">Mitski</span></em>,
+          followed closely by <em class="song-ref">I Will Always Love You<span class="song-badge">Whitney Houston</span></em>.
         </p>
       </div>
 
@@ -433,11 +397,17 @@
 
       <div class="little-list" id="little-list">
         <p class="little-item" data-idx="0">the way you exist on the other side of the world and still feel close</p>
-        <p class="little-item" data-idx="1">how you make <em>carwashed</em> sound like the best thing to be called</p>
+        <p class="little-item" data-idx="1">how you make <em>daddy</em> sound like the best thing to be called</p>
         <p class="little-item" data-idx="2">every march 31st for as long as I have</p>
-        <p class="little-item" data-idx="3">the playlist titled 知音 that you made</p>
-        <p class="little-item" data-idx="4">the fact that you are, fundamentally, a cat</p>
-        <p class="little-item item-emphasis" data-idx="5">you. just you.</p>
+        <p class="little-item" data-idx="3">the playlist titled 知音 that we worked on together</p>
+        <p class="little-item" data-idx="4">the first conversation, and how I knew</p>
+        <p class="little-item" data-idx="5">the way we talked about where we'd go together, venice and the sort</p>
+        <p class="little-item" data-idx="6">how you're a cat person, and somehow also just a cat</p>
+        <p class="little-item" data-idx="7">how good you'll look in every outfit, no matter the day</p>
+        <p class="little-item" data-idx="8">the books you love, and the game worlds you make feel real</p>
+        <p class="little-item" data-idx="9">the fact that I'm gonna be cooking for my dearest everyday</p>
+        <p class="little-item" data-idx="10">"cutie patootie" — because you are, objectively</p>
+        <p class="little-item item-emphasis" data-idx="11">you. just you.</p>
       </div>
 
       <button id="little-next-btn" class="scene-next-btn" aria-label="Next">↓</button>
@@ -450,23 +420,19 @@
     <div class="scene scene--safe">
 
       <div class="safe-particles" id="safe-particles" aria-hidden="true"></div>
-
-      <div class="safe-content">
-        <p class="safe-text">
-          I know the world hasn&rsquo;t always been kind to you.
-          <span class="safe-divider"></span>
-          That changes now.
-          <span class="safe-divider"></span>
-          With me, you are <em class="safe-em">safe</em>.
-          You will always be safe.
-          <span class="safe-divider"></span>
-          I will be your softest place to land
-          and the loudest voice in your corner
-          for as long as you&rsquo;ll have me.
-        </p>
+      <div class="safe-visual" aria-hidden="true">
+        <div class="safe-orbit safe-orbit--1"></div>
+        <div class="safe-orbit safe-orbit--2"></div>
+        <div class="safe-orbit safe-orbit--3"></div>
+        <div class="safe-core"></div>
       </div>
 
-      <button class="scene-next-btn" aria-label="Next">↓</button>
+      <div class="safe-content" id="safe-content">
+        <p class="safe-heading">you are &mdash;</p>
+        <div class="safe-lines" id="safe-lines"></div>
+      </div>
+
+      <button class="scene-next-btn" style="opacity:0;pointer-events:none" aria-label="Next">↓</button>
     </div><!-- /scene--safe -->
 
 
@@ -476,35 +442,20 @@
     <div class="scene scene--nerd">
 
       <div class="nerd-header">
-        <p class="nerd-eyebrow">// mark.obsidian &nbsp;·&nbsp; i'm the nerd here</p>
-        <p class="nerd-query">dataview: every word i'd use to describe her</p>
+        <p class="nerd-eyebrow">// annie &nbsp;·&nbsp; a universe in one person</p>
+        <p class="nerd-query">every word she deserves</p>
       </div>
 
       <div id="nerd-graph" aria-hidden="true"></div>
 
-      <p class="nerd-footer">i&rsquo;ll be a nerd for you. always.</p>
+      <p class="nerd-footer">she contains multitudes.</p>
 
       <button class="scene-next-btn" aria-label="Next">↓</button>
     </div><!-- /scene--nerd -->
 
 
     <!-- ═══════════════════════════════════════════════════
-         SCENE 7 — INTERACTIVE POEM (tap to reveal)
-    ════════════════════════════════════════════════════════ -->
-    <div class="scene scene--poem">
-
-      <div class="poem-tap-overlay" id="poem-tap-overlay" role="button"
-           aria-label="Tap to reveal the next stanza">
-        <div class="poem-stanzas-container" id="poem-stanzas" aria-live="polite"></div>
-        <p class="poem-instruction" id="poem-instruction">tap anywhere to read</p>
-      </div>
-
-      <button id="poem-next-btn" class="scene-next-btn" aria-label="Next">↓</button>
-    </div><!-- /scene--poem -->
-
-
-    <!-- ═══════════════════════════════════════════════════
-         SCENE 8 — MARK'S BIRTHDAY AUDIO
+         SCENE 6 — MARK'S BIRTHDAY AUDIO
     ════════════════════════════════════════════════════════ -->
     <div class="scene scene--audio-mark">
 
@@ -576,7 +527,7 @@
       <div class="bday-copy">
         <p class="bday-heading">Happy Birthday, Annie.</p>
         <p class="bday-sub">You were born today and somehow I&rsquo;m the lucky one.</p>
-        <p class="bday-age">turning 18 and still the most interesting person I know</p>
+        <p class="bday-age">You're the most interesting person I know. You're turning 18 and I'm so proud of you.</p>
       </div>
 
       <button class="scene-next-btn" aria-label="Next">↓</button>
@@ -599,7 +550,7 @@
           that you chose me, across 9,000 miles, to be yours.<br /><br />
           Thank you for being mine.
         </p>
-        <p class="heartfelt-sig">with everything I have,<br>Computer_Science ♥</p>
+        <p class="heartfelt-sig">with everything I have,<br>Mark ♥</p>
         <button class="proposal-inner-btn" id="proposal-a-next">one more thing &rarr;</button>
       </div>
 
@@ -674,38 +625,6 @@
 
 
     <!-- ═══════════════════════════════════════════════════
-         SCENE 12 — ANNIE'S AUDIO + SUBMISSION
-         (no scene-next-btn — submit is the final action)
-    ════════════════════════════════════════════════════════ -->
-    <div class="scene scene--annie-audio">
-
-      <p class="annie-audio-prompt">now it&rsquo;s your turn &mdash;</p>
-      <p class="annie-audio-sub">send me a voice message</p>
-
-      <div class="recording-ui">
-        <div class="recording-viz" id="recording-viz" aria-hidden="true"></div>
-        <button id="annie-record-btn" class="annie-record-btn">
-          hold to record
-        </button>
-        <audio id="annie-audio-playback" class="annie-audio-playback"
-               controls style="display:none;" aria-label="Your recording"></audio>
-      </div>
-
-      <button id="annie-submit-btn" class="annie-submit-btn" style="display:none;">
-        send ♥
-      </button>
-
-      <!-- Confirmation overlay -->
-      <div class="submission-confirmation" id="submission-confirmation">
-        <div class="confirm-heart" aria-hidden="true">♥</div>
-        <p class="confirm-msg">sent ♥</p>
-        <p class="confirm-sub">this moment is yours to keep ♥</p>
-      </div>
-
-    </div><!-- /scene--annie-audio -->
-
-
-    <!-- ═══════════════════════════════════════════════════
          SCRIPTS
     ════════════════════════════════════════════════════════ -->
     <script src="./js/main.js" defer></script>
@@ -718,11 +637,10 @@
       var nextBtns = Array.from(document.querySelectorAll('.scene-next-btn'));
       var current  = 0;
 
-      /* 14 scenes: 0-Flowers 1-Anniversary 2-LDR 3-SongLetter
-         4-LittleThings 5-SafePlace 6-Nerd 7-Poem 8-MarkAudio
-         9-Minecraft 10-Birthday 11-Proposal 12-Webcam 13-AnnieAudio
-         11 next-buttons (indices 0-10) → goTo(1)-goTo(11)
-         proposal/webcam/annie-audio advance internally */
+      /* 11 scenes: 0-Flowers 1-LDR 2-SongLetter 3-LittleThings
+         4-SafePlace 5-Nerd 6-MarkAudio 7-Wishes 8-Birthday
+         9-Proposal 10-Webcam
+         proposal/webcam advance internally */
 
       function goTo(nextIdx) {
         if (nextIdx >= scenes.length || nextIdx < 0) return;
@@ -743,6 +661,7 @@
         btn.style.transition  = 'opacity 0.6s ease';
         btn.style.opacity     = '1';
         btn.style.pointerEvents = 'all';
+        btn.classList.add('btn-revealed');
       }
 
       /* Wire click-to-advance on all next-btns */
@@ -751,17 +670,15 @@
       });
 
       function onSceneEnter(idx) {
-        if (idx === 2)  { initLdrMap(); }
-        if (idx === 3)  { runSongLetter(); }
-        if (idx === 4)  { runLittleThings(); }
-        if (idx === 5)  { initSafeParticles(); }
-        if (idx === 6)  { initNerdGraph(); }
-        if (idx === 7)  { initPoem(); }
-        if (idx === 8)  { initMarkAudio(); }
-        if (idx === 9)  { initWishes(); }
-        if (idx === 11) { runHeartfelt(); }
-        if (idx === 12) { startWebcam(); }
-        if (idx === 13) { initAnnieAudio(); }
+        if (idx === 1)  { initLdrMap(); }
+        if (idx === 2)  { runSongLetter(); }
+        if (idx === 3)  { runLittleThings(); }
+        if (idx === 4)  { initSafeScene(); }
+        if (idx === 5)  { initNerdGraph(); }
+        if (idx === 6)  { initMarkAudio(); }
+        if (idx === 7)  { initWishes(); }
+        if (idx === 9)  { runHeartfelt(); }
+        if (idx === 10) { startWebcam(); }
       }
 
       /* ── Shared helpers ─────────────────────────────────────── */
@@ -769,28 +686,404 @@
         return new Promise(function (r) { setTimeout(r, ms); });
       }
 
-      /* ── Flower poem lines ───────────────────────────────────── */
-      var flowerLines = [
-        [2000,  'Some things only bloom in their right season.'],
-        [6800,  'March ends \u2014 and everything that was waiting'],
-        [11400, 'steps forward into the light.'],
-        [16000, 'Eighteen years ago, the world acquired something'],
-        [21000, 'it did not know it was missing. That was you.'],
+      /* ── Flower poem — centered, then alternating side panels ── */
+      var flowerLayout     = document.getElementById('flower-layout');
+      var poemScrollCenter = document.getElementById('poem-scroll-center');
+      var poemScrollSide   = document.getElementById('poem-scroll-side');
+
+      var flowerPoemSections = [
+        {
+          mode: 'right',
+          pause: 1900,
+          lines: [
+            ['For Annie, at Eighteen', 'line-title'],
+            ['', 'line-blank'],
+            ['Across nine thousand miles of star-anointed shore,', ''],
+            ['From Boston\u2019s winter glass I love your radiance more.', ''],
+            ['', 'line-blank'],
+            ['Hong Kong awakes in pearl and neon, harbor-bright,', ''],
+            ['While I keep watch for you beneath a scholar\u2019s night.', ''],
+            ['', 'line-blank'],
+            ['Though oceans legislate their vast republics of sea,', ''],
+            ['Your name still moves through me like music through a tree.', ''],
+            ['', 'line-blank'],
+            ['Today you turn eighteen; the hour, in cloth-of-gold,', ''],
+            ['Sets at your feet another realm for wonder to unfold.', '']
+          ]
+        },
+        {
+          mode: 'left',
+          pause: 1700,
+          lines: [
+            ['You are my Kuromi star, half velvet dusk, half grace,', 'line-title'],
+            ['With clever midnight ribboned softly round your face.', ''],
+            ['', 'line-blank'],
+            ['My kitty cat, all purring wit and bright capricious art,', ''],
+            ['As if the moon had loaned its claws to guard a tender heart.', ''],
+            ['', 'line-blank'],
+            ['I know the noble weariness that follows gifted light,', ''],
+            ['For both of us have borne burnout, that slow, sepulchral blight.', ''],
+            ['', 'line-blank'],
+            ['Yet still you read, still study, still lift your lucid sight,', ''],
+            ['Like script in lamp-lit libraries refusing death by night.', '']
+          ]
+        },
+        {
+          mode: 'right',
+          pause: 1700,
+          lines: [
+            ['I dream of picnics with you under green, intelligent skies,', 'line-title'],
+            ['With books unlatched between our knees and sunlight in your eyes.', ''],
+            ['', 'line-blank'],
+            ['We\u2019d annotate the afternoon with laughter, thought, and breeze,', ''],
+            ['And let the grass become a text of minor ecstasies.', ''],
+            ['', 'line-blank'],
+            ['Then let us court the heavens in one tremendous dive,', ''],
+            ['Where terror turns to rapture and the whole blue world goes alive.', ''],
+            ['', 'line-blank'],
+            ['And later, in the water\u2019s lit and glassy, silver swing,', ''],
+            ['You\u2019d move as though the swimming pool had learned your secret spring.', '']
+          ]
+        },
+        {
+          mode: 'left',
+          pause: 1700,
+          lines: [
+            ['I\u2019d bring you omurice, gold as a hearth\u2019s domestic flame,', 'line-title'],
+            ['And spaghetti bolognese, red as the blush within your name.', ''],
+            ['', 'line-blank'],
+            ['Cats would approve your kingdom; even indolence would start', ''],
+            ['To look like highest wisdom when it issued from your heart.', ''],
+            ['', 'line-blank'],
+            ['And carwashed, in Minecraft, gleams with such peculiar hue,', ''],
+            ['A small enchanted password no duller soul could ever construe.', ''],
+            ['', 'line-blank'],
+            ['For even in made worlds of block and torch and emerald view,', ''],
+            ['You leave the map more memorable for having passed it through.', '']
+          ]
+        },
+        {
+          mode: 'center',
+          pause: 2100,
+          lines: [
+            ['So happy eighteenth birthday, Annie; may this new year be', 'line-title'],
+            ['A gentler lexicon of rest, of joy, of clarity.', ''],
+            ['', 'line-blank'],
+            ['And may these nine thousand miles, stern cartographers though they seem,', ''],
+            ['Fold shut like paper at the hour I finally reach your dream.', ''],
+            ['', 'line-blank'],
+            ['Till then, from Boston\u2019s book-lined dusk to Hong Kong\u2019s harbor-blue,', ''],
+            ['I send my brightest, rhyming heart across the dark to you.', ''],
+            ['', 'line-blank'],
+            ['\u2014 Mark', 'line-sig']
+          ]
+        }
       ];
 
-      var flowerPoem = document.getElementById('flower-poem');
-
-      function addFlowerLine(text) {
-        if (!flowerPoem) return;
-        var p = document.createElement('p');
-        p.className = 'flower-poem-line';
-        p.textContent = text;
-        flowerPoem.appendChild(p);
+      function setFlowerLayoutMode(mode) {
+        if (!flowerLayout) return;
+        flowerLayout.classList.remove('flower-layout--center', 'flower-layout--left', 'flower-layout--right', 'flower-layout--lift', 'flower-layout--finale');
+        if (mode === 'finale') {
+          flowerLayout.classList.add('flower-layout--center', 'flower-layout--lift', 'flower-layout--finale');
+          return;
+        }
+        flowerLayout.classList.add('flower-layout--' + mode);
+        if (mode !== 'center') {
+          flowerLayout.classList.add('flower-layout--lift');
+        }
       }
 
-      flowerLines.forEach(function (entry) {
-        setTimeout(function () { addFlowerLine(entry[1]); }, entry[0]);
-      });
+      function appendFlowerPoemLine(container, text, cls) {
+        if (!container) return;
+        if (cls === 'line-blank') {
+          var spacer = document.createElement('div');
+          spacer.className = 'poem-stanza-gap';
+          container.appendChild(spacer);
+          return;
+        }
+
+        var p = document.createElement('p');
+        p.className = 'flower-poem-line' + (cls ? ' ' + cls : '');
+        p.textContent = text;
+        container.appendChild(p);
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            p.classList.add('line-visible');
+          });
+        });
+      }
+
+      async function runFlowerPoem() {
+        if (!flowerLayout || !poemScrollCenter || !poemScrollSide) return;
+
+        await wait(3600);
+
+        for (var s = 0; s < flowerPoemSections.length; s++) {
+          var section = flowerPoemSections[s];
+          var target  = (section.mode === 'center' || section.mode === 'finale') ? poemScrollCenter : poemScrollSide;
+
+          if (section.mode !== 'center' && section.mode !== 'finale') {
+            poemScrollSide.innerHTML = '';
+          } else {
+            poemScrollCenter.innerHTML = '';
+          }
+
+          setFlowerLayoutMode(section.mode);
+          await wait(section.pause);
+
+          for (var i = 0; i < section.lines.length; i++) {
+            var line = section.lines[i];
+            appendFlowerPoemLine(target, line[0], line[1]);
+            await wait(line[1] === 'line-blank' ? 1050 : 1320);
+          }
+
+          await wait(1600);
+        }
+
+        revealBtn('flowers-next-btn');
+      }
+
+      flowerPoemSections = [
+        {
+          mode: 'right',
+          pause: 2400,
+          lines: [
+            ['For Annie, at Eighteen', 'line-title'],
+            ['', 'line-blank'],
+            ['Across nine thousand miles of star-anointed shore,', ''],
+            ['From Boston’s winter glass I love your radiance more.', '']
+          ]
+        },
+        {
+          mode: 'left',
+          pause: 1800,
+          lines: [
+            ['Hong Kong awakes in pearl and neon, harbor-bright,', ''],
+            ['While I keep watch for you beneath a scholar’s night.', ''],
+            ['', 'line-blank'],
+            ['Though oceans legislate their vast republics of sea,', ''],
+            ['Your name still moves through me like music through a tree.', '']
+          ]
+        },
+        {
+          mode: 'right',
+          pause: 1800,
+          lines: [
+            ['Today you turn eighteen; the hour, in cloth-of-gold,', ''],
+            ['Sets at your feet another realm for wonder to unfold.', ''],
+            ['', 'line-blank'],
+            ['You are my Kuromi star, half velvet dusk, half grace,', ''],
+            ['With clever midnight ribboned softly round your face.', '']
+          ]
+        },
+        {
+          mode: 'left',
+          pause: 1800,
+          lines: [
+            ['My kitty cat, all purring wit and bright capricious art,', ''],
+            ['As if the moon had loaned its claws to guard a tender heart.', ''],
+            ['', 'line-blank'],
+            ['I know the noble weariness that follows gifted light,', ''],
+            ['For both of us have borne burnout, that slow, sepulchral blight.', '']
+          ]
+        },
+        {
+          mode: 'right',
+          pause: 1800,
+          lines: [
+            ['Yet still you read, still study, still lift your lucid sight,', ''],
+            ['Like script in lamp-lit libraries refusing death by night.', ''],
+            ['', 'line-blank'],
+            ['I dream of picnics with you under green, intelligent skies,', ''],
+            ['With books unlatched between our knees and sunlight in your eyes.', '']
+          ]
+        },
+        {
+          mode: 'left',
+          pause: 1800,
+          lines: [
+            ['We’d annotate the afternoon with laughter, thought, and breeze,', ''],
+            ['And let the grass become a text of minor ecstasies.', ''],
+            ['', 'line-blank'],
+            ['Then let us court the heavens in one tremendous dive,', ''],
+            ['Where terror turns to rapture and the whole blue world goes alive.', '']
+          ]
+        },
+        {
+          mode: 'right',
+          pause: 1800,
+          lines: [
+            ['And later, in the water’s lit and glassy, silver swing,', ''],
+            ['You’d move as though the swimming pool had learned your secret spring.', ''],
+            ['', 'line-blank'],
+            ['I’d bring you omurice, gold as a hearth’s domestic flame,', ''],
+            ['And spaghetti bolognese, red as the blush within your name.', '']
+          ]
+        },
+        {
+          mode: 'left',
+          pause: 1800,
+          lines: [
+            ['Cats would approve your kingdom; even indolence would start', ''],
+            ['To look like highest wisdom when it issued from your heart.', ''],
+            ['', 'line-blank'],
+            ['And carwashed, in Minecraft, gleams with such peculiar hue,', ''],
+            ['A small enchanted password no duller soul could ever construe.', '']
+          ]
+        },
+        {
+          mode: 'right',
+          pause: 1800,
+          lines: [
+            ['For even in made worlds of block and torch and emerald view,', ''],
+            ['You leave the map more memorable for having passed it through.', ''],
+            ['', 'line-blank']
+          ]
+        },
+        {
+          mode: 'center',
+          pause: 2400,
+          lines: [
+            ['So happy eighteenth birthday, Annie; may this new year be', 'line-title'],
+            ['A gentler lexicon of rest, of joy, of clarity.', ''],
+            ['', 'line-blank'],
+            ['And may these nine thousand miles, stern cartographers though they seem,', ''],
+            ['Fold shut like paper at the hour I finally reach your dream.', ''],
+            ['', 'line-blank'],
+            ['Till then, from Boston’s book-lined dusk to Hong Kong’s harbor-blue,', ''],
+            ['I send my brightest, rhyming heart across the dark to you.', ''],
+            ['', 'line-blank'],
+            ['— Mark', 'line-sig']
+          ]
+        }
+      ];
+
+      var activeFlowerPoemContainer = null;
+      var activeFlowerMode = null;
+
+      function appendFlowerPoemLine(container, text, cls) {
+        if (!container) return;
+        if (cls === 'line-blank') {
+          var spacer = document.createElement('div');
+          spacer.className = 'poem-stanza-gap';
+          container.appendChild(spacer);
+          return;
+        }
+
+        var p = document.createElement('p');
+        p.className = 'flower-poem-line' + (cls ? ' ' + cls : '');
+        p.setAttribute('aria-label', text);
+
+        var words = text.split(' ');
+        var charIndex = 0;
+
+        for (var w = 0; w < words.length; w++) {
+          var wordSpan = document.createElement('span');
+          wordSpan.className = 'flower-poem-word';
+
+          for (var c = 0; c < words[w].length; c++) {
+            var span = document.createElement('span');
+            span.className = 'flower-poem-char';
+            span.style.setProperty('--char-delay', (charIndex * 24) + 'ms');
+            span.textContent = words[w][c];
+            wordSpan.appendChild(span);
+            charIndex++;
+          }
+
+          p.appendChild(wordSpan);
+
+          if (w < words.length - 1) {
+            var space = document.createElement('span');
+            space.className = 'flower-poem-space';
+            space.textContent = '\u00A0';
+            p.appendChild(space);
+            charIndex++;
+          }
+        }
+
+        container.appendChild(p);
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            p.classList.add('line-visible');
+          });
+        });
+      }
+
+      function getFlowerExitDirection(fromMode, toMode) {
+        if (toMode === 'left') return 'left';
+        if (toMode === 'right') return 'right';
+        if (fromMode === 'left') return 'right';
+        if (fromMode === 'right') return 'left';
+        return 'right';
+      }
+
+      function spawnFlowerPoemSpecks(container, direction) {
+        if (!container) return;
+        for (var i = 0; i < 16; i++) {
+          var speck = document.createElement('span');
+          speck.className = 'poem-speck poem-speck--' + direction;
+          speck.style.left = (18 + Math.random() * 64) + '%';
+          speck.style.top = (12 + Math.random() * 68) + '%';
+          speck.style.width = (3 + Math.random() * 5) + 'px';
+          speck.style.height = speck.style.width;
+          speck.style.animationDelay = (Math.random() * 120) + 'ms';
+          container.appendChild(speck);
+          speck.addEventListener('animationend', function () {
+            if (this.parentNode) this.parentNode.removeChild(this);
+          });
+        }
+      }
+
+      async function clearFlowerPoemContainer(container, direction) {
+        if (!container || !container.childElementCount) return;
+        container.classList.remove('poem-scroll--drift-left', 'poem-scroll--drift-right');
+        spawnFlowerPoemSpecks(container, direction);
+        void container.offsetWidth;
+        container.classList.add('poem-scroll--drift-' + direction);
+        await wait(900);
+        container.classList.remove('poem-scroll--drift-left', 'poem-scroll--drift-right');
+        container.innerHTML = '';
+      }
+
+      function getFlowerLineDelay(text, cls) {
+        if (cls === 'line-blank') return 1300;
+        var charCount = (text || '').replace(/\s+/g, '').length;
+        return Math.min(4200, 1250 + charCount * 42);
+      }
+
+      async function runFlowerPoem() {
+        if (!flowerLayout || !poemScrollCenter || !poemScrollSide) return;
+
+        await wait(5600);
+
+        for (var s = 0; s < flowerPoemSections.length; s++) {
+          var section = flowerPoemSections[s];
+          var target  = (section.mode === 'center' || section.mode === 'finale') ? poemScrollCenter : poemScrollSide;
+
+          if (activeFlowerPoemContainer && activeFlowerPoemContainer !== target) {
+            await clearFlowerPoemContainer(activeFlowerPoemContainer, getFlowerExitDirection(activeFlowerMode, section.mode));
+          } else if (target.childElementCount) {
+            await clearFlowerPoemContainer(target, getFlowerExitDirection(activeFlowerMode, section.mode));
+          }
+
+          setFlowerLayoutMode(section.mode);
+          await wait(section.pause);
+          activeFlowerPoemContainer = target;
+          activeFlowerMode = section.mode;
+
+          for (var i = 0; i < section.lines.length; i++) {
+            var line = section.lines[i];
+            appendFlowerPoemLine(target, line[0], line[1]);
+            await wait(getFlowerLineDelay(line[0], line[1]));
+          }
+
+          await wait(2100);
+        }
+
+        revealBtn('flowers-next-btn');
+      }
+
+      runFlowerPoem();
 
       /* ── D3 World Map (LDR scene) ───────────────────────────── */
       var ldrMapInited = false;
@@ -950,10 +1243,10 @@
           return document.getElementById(id);
         });
         for (var i = 0; i < paras.length; i++) {
-          await wait(1100);
+          await wait(1900);
           if (paras[i]) paras[i].classList.add('para-visible');
         }
-        await wait(1500);
+        await wait(2200);
         revealBtn('songlet-next-btn');
       }
 
@@ -967,10 +1260,10 @@
         if (k) k.classList.add('kuromi-visible');
         var items = Array.from(document.querySelectorAll('.little-item'));
         for (var i = 0; i < items.length; i++) {
-          await wait(750);
+          await wait(1350);
           items[i].classList.add('item-visible');
         }
-        await wait(1500);
+        await wait(2200);
         revealBtn('little-next-btn');
       }
 
@@ -1001,47 +1294,201 @@
         var container = document.getElementById('nerd-graph');
         if (!container || typeof d3 === 'undefined') return;
 
-        var W = 860;
-        var H = 520;
+        var W = container.clientWidth  || 1000;
+        var H = container.clientHeight || 640;
 
-        /* Every word / synonym that describes how Mark feels about Annie */
         var nodes = [
-          { id: 'annie',         r: 20, label: '♥ annie',        col: '#f472b6' },
-          { id: 'beloved',       r: 7,  label: 'beloved',        col: '#c084fc' },
-          { id: 'cherished',     r: 6,  label: 'cherished',      col: '#a855f7' },
-          { id: 'mine',          r: 9,  label: 'mine',           col: '#e879f9' },
-          { id: 'home',          r: 10, label: 'home',           col: '#818cf8' },
-          { id: 'person',        r: 9,  label: 'my person',      col: '#c084fc' },
-          { id: 'darling',       r: 7,  label: 'darling',        col: '#a855f7' },
-          { id: 'treasure',      r: 6,  label: 'treasure',       col: '#e879f9' },
-          { id: 'chosen',        r: 8,  label: 'chosen',         col: '#818cf8' },
-          { id: 'lucky',         r: 7,  label: 'lucky',          col: '#c084fc' },
-          { id: 'irreplaceable', r: 7,  label: 'irreplaceable',  col: '#a855f7' },
-          { id: 'constant',      r: 6,  label: 'constant',       col: '#818cf8' },
-          { id: 'sun',           r: 8,  label: 'sunshine',       col: '#f9d879' },
-          { id: 'cat',           r: 8,  label: 'my cat',         col: '#e879f9' },
-          { id: 'zhi',           r: 9,  label: '知音',           col: '#a78bfa' },
-          { id: 'safe',          r: 7,  label: 'safe harbor',    col: '#818cf8' },
-          { id: 'tender',        r: 6,  label: 'tender',         col: '#c084fc' },
-          { id: 'extraordinary', r: 7,  label: 'extraordinary',  col: '#a855f7' },
-          { id: 'breathtaking',  r: 6,  label: 'breathtaking',   col: '#e879f9' },
-          { id: 'jan5',          r: 8,  label: 'jan 5 ♥',        col: '#f472b6' },
-          { id: 'marvel',        r: 6,  label: 'marvel',         col: '#818cf8' },
-          { id: 'infinite',      r: 7,  label: 'infinite',       col: '#c084fc' },
-          { id: 'forever',       r: 9,  label: 'forever',        col: '#a855f7' },
-          { id: 'adore',         r: 7,  label: 'adore',          col: '#e879f9' },
-          { id: 'devoted',       r: 6,  label: 'devoted',        col: '#818cf8' },
-          { id: 'ethereal',      r: 6,  label: 'ethereal',       col: '#c084fc' },
-          { id: 'unreal',        r: 6,  label: 'unreal',         col: '#a855f7' },
-          { id: 'enchanting',    r: 6,  label: 'enchanting',     col: '#e879f9' },
-          { id: 'kind',          r: 6,  label: 'kind',           col: '#818cf8' },
-          { id: 'brave',         r: 6,  label: 'brave',          col: '#c084fc' },
-          { id: 'kuromi',        r: 7,  label: 'kuromi girl',    col: '#a855f7' },
-          { id: 'miles',         r: 7,  label: '9k miles',       col: '#818cf8' },
-          { id: 'morning',       r: 6,  label: 'every morning',  col: '#c084fc' },
+          { id: 'annie',         r: 28, label: '\u2665 annie',   col: '#f472b6' },
+          { id: 'beloved',       r: 13, label: 'beloved',        col: '#c084fc' },
+          { id: 'cherished',     r: 12, label: 'cherished',      col: '#a855f7' },
+          { id: 'mine',          r: 15, label: 'mine',           col: '#e879f9' },
+          { id: 'home',          r: 16, label: 'home',           col: '#818cf8' },
+          { id: 'person',        r: 15, label: 'my person',      col: '#c084fc' },
+          { id: 'darling',       r: 13, label: 'darling',        col: '#a855f7' },
+          { id: 'treasure',      r: 12, label: 'treasure',       col: '#e879f9' },
+          { id: 'chosen',        r: 14, label: 'chosen',         col: '#818cf8' },
+          { id: 'lucky',         r: 13, label: 'lucky',          col: '#c084fc' },
+          { id: 'irreplaceable', r: 13, label: 'irreplaceable',  col: '#a855f7' },
+          { id: 'constant',      r: 12, label: 'constant',       col: '#818cf8' },
+          { id: 'sun',           r: 14, label: 'sunshine',       col: '#f9d879' },
+          { id: 'cat',           r: 14, label: 'my cat',         col: '#e879f9' },
+          { id: 'zhi',           r: 15, label: '\u77E5\u97F3',   col: '#a78bfa' },
+          { id: 'safe',          r: 13, label: 'safe harbor',    col: '#818cf8' },
+          { id: 'tender',        r: 12, label: 'tender',         col: '#c084fc' },
+          { id: 'extraordinary', r: 13, label: 'extraordinary',  col: '#a855f7' },
+          { id: 'breathtaking',  r: 12, label: 'breathtaking',   col: '#e879f9' },
+          { id: 'jan5',          r: 14, label: 'jan 5 \u2665',   col: '#f472b6' },
+          { id: 'marvel',        r: 12, label: 'marvel',         col: '#818cf8' },
+          { id: 'infinite',      r: 13, label: 'infinite',       col: '#c084fc' },
+          { id: 'forever',       r: 15, label: 'forever',        col: '#a855f7' },
+          { id: 'adore',         r: 13, label: 'adore',          col: '#e879f9' },
+          { id: 'devoted',       r: 12, label: 'devoted',        col: '#818cf8' },
+          { id: 'ethereal',      r: 12, label: 'ethereal',       col: '#c084fc' },
+          { id: 'unreal',        r: 12, label: 'unreal',         col: '#a855f7' },
+          { id: 'enchanting',    r: 12, label: 'enchanting',     col: '#e879f9' },
+          { id: 'kind',          r: 12, label: 'kind',           col: '#818cf8' },
+          { id: 'brave',         r: 12, label: 'brave',          col: '#c084fc' },
+          { id: 'kuromi',        r: 13, label: 'kuromi girl',    col: '#a855f7' },
+          { id: 'miles',         r: 13, label: '9k miles',       col: '#818cf8' },
+          { id: 'morning',       r: 12, label: 'every morning',  col: '#c084fc' },
         ];
 
-        /* All leaf nodes connect to annie */
+        var branchLayers = [
+          {
+            distance: 0.28,
+            stroke: 'rgba(165, 180, 252, 0.22)',
+            fontSize: '11.5px',
+            branches: [
+              {
+                angle: -1.95,
+                rootLabel: 'my home',
+                rootCol: '#93c5fd',
+                phrases: [
+                  { label: 'you are my home', col: '#93c5fd' },
+                  { label: 'my sweetest girl', col: '#c4b5fd' },
+                  { label: 'always, always you', col: '#f0abfc' }
+                ]
+              },
+              {
+                angle: -1.1,
+                rootLabel: '掛住你',
+                rootCol: '#f9a8d4',
+                phrases: [
+                  { label: '我好掛住你', col: '#f9a8d4' },
+                  { label: '我好鍾意你', col: '#f9a8d4' },
+                  { label: 'my heart knows you', col: '#c4b5fd' }
+                ]
+              },
+              {
+                angle: -0.2,
+                rootLabel: '寶貝',
+                rootCol: '#a5b4fc',
+                phrases: [
+                  { label: '你係我嘅寶貝', col: '#a5b4fc' },
+                  { label: '你真係好可愛', col: '#c4b5fd' },
+                  { label: 'you make the miles feel small', col: '#93c5fd' }
+                ]
+              },
+              {
+                angle: 0.72,
+                rootLabel: 'chosen',
+                rootCol: '#f0abfc',
+                phrases: [
+                  { label: 'I choose you always', col: '#f0abfc' },
+                  { label: '你令我安心', col: '#93c5fd' },
+                  { label: 'forever starts with us', col: '#c4b5fd' }
+                ]
+              }
+            ]
+          },
+          {
+            distance: 0.4,
+            stroke: 'rgba(192, 132, 252, 0.18)',
+            fontSize: '10.5px',
+            branches: [
+              {
+                angle: -2.3,
+                rootLabel: 'darling',
+                rootCol: '#f9a8d4',
+                phrases: [
+                  { label: 'my favorite person', col: '#f9a8d4' },
+                  { label: 'my darling Annie', col: '#f9a8d4' },
+                  { label: 'still choosing you', col: '#c4b5fd' },
+                  { label: 'everything leads to you', col: '#a5b4fc' }
+                ]
+              },
+              {
+                angle: -1.45,
+                rootLabel: '月亮',
+                rootCol: '#93c5fd',
+                phrases: [
+                  { label: '你係我嘅月亮', col: '#93c5fd' },
+                  { label: '你令世界溫柔啲', col: '#f0abfc' },
+                  { label: '你笑起上嚟好靚', col: '#c4b5fd' },
+                  { label: '掛住你係日常', col: '#f9a8d4' }
+                ]
+              },
+              {
+                angle: -0.55,
+                rootLabel: 'fate',
+                rootCol: '#f0abfc',
+                phrases: [
+                  { label: 'I adore you', col: '#c4b5fd' },
+                  { label: 'you feel like fate', col: '#f0abfc' },
+                  { label: 'my soft place to land', col: '#a5b4fc' },
+                  { label: '我想一直陪住你', col: '#f9a8d4' }
+                ]
+              },
+              {
+                angle: 0.35,
+                rootLabel: '心動',
+                rootCol: '#a5b4fc',
+                phrases: [
+                  { label: '你係我最想見嘅人', col: '#a5b4fc' },
+                  { label: '我會對你好好', col: '#93c5fd' },
+                  { label: '你係我嘅心動', col: '#f0abfc' },
+                  { label: 'the distance loses to us', col: '#93c5fd' }
+                ]
+              }
+            ]
+          },
+          {
+            distance: 0.5,
+            stroke: 'rgba(244, 114, 182, 0.14)',
+            fontSize: '9.5px',
+            branches: [
+              {
+                angle: -2.55,
+                rootLabel: 'birthday',
+                rootCol: '#f9a8d4',
+                phrases: [
+                  { label: 'happy birthday my love', col: '#f9a8d4' },
+                  { label: 'the prettiest soul I know', col: '#c4b5fd' },
+                  { label: 'my favorite hello', col: '#f9a8d4' },
+                  { label: 'my always girl', col: '#f0abfc' },
+                  { label: '我真係好愛你', col: '#f9a8d4' }
+                ]
+              },
+              {
+                angle: -1.7,
+                rootLabel: '珍貴',
+                rootCol: '#93c5fd',
+                phrases: [
+                  { label: '你值得世上一切好嘢', col: '#93c5fd' },
+                  { label: '你永遠都咁珍貴', col: '#f0abfc' },
+                  { label: '我每日都更鍾意你', col: '#93c5fd' },
+                  { label: '你係我最甜嘅掛念', col: '#a5b4fc' },
+                  { label: '你令我個心好滿', col: '#c4b5fd' }
+                ]
+              },
+              {
+                angle: -0.82,
+                rootLabel: 'forever',
+                rootCol: '#c4b5fd',
+                phrases: [
+                  { label: 'my heart is yours', col: '#a5b4fc' },
+                  { label: 'you make forever easy', col: '#93c5fd' },
+                  { label: 'all roads point to Annie', col: '#a5b4fc' },
+                  { label: 'you feel like homecoming', col: '#93c5fd' },
+                  { label: 'you are worth the wait', col: '#c4b5fd' }
+                ]
+              },
+              {
+                angle: 0.08,
+                rootLabel: '將來',
+                rootCol: '#f0abfc',
+                phrases: [
+                  { label: '我會一直企喺你身邊', col: '#f9a8d4' },
+                  { label: '你就係我想要嘅將來', col: '#c4b5fd' },
+                  { label: 'still obsessed with you', col: '#f0abfc' },
+                  { label: '你係最好最好嘅女仔', col: '#a5b4fc' },
+                  { label: '你係我嘅幸福', col: '#f0abfc' }
+                ]
+              }
+            ]
+          }
+        ];
+
         var links = nodes.slice(1).map(function (n) {
           return { source: 'annie', target: n.id };
         });
@@ -1052,17 +1499,17 @@
           .style('overflow', 'visible');
 
         var sim = d3.forceSimulation(nodes)
-          .force('link', d3.forceLink(links).id(function (d) { return d.id; }).distance(110))
-          .force('charge', d3.forceManyBody().strength(-280))
+          .force('link', d3.forceLink(links).id(function (d) { return d.id; }).distance(160))
+          .force('charge', d3.forceManyBody().strength(-400))
           .force('center', d3.forceCenter(W / 2, H / 2))
-          .force('collision', d3.forceCollide().radius(function (d) { return d.r + 10; }));
+          .force('collision', d3.forceCollide().radius(function (d) { return d.r + 16; }));
 
         var link = svg.append('g')
           .selectAll('line')
           .data(links)
           .join('line')
-          .attr('stroke', 'rgba(168,85,247,0.2)')
-          .attr('stroke-width', 0.8)
+          .attr('stroke', 'rgba(168,85,247,0.35)')
+          .attr('stroke-width', 1.5)
           .attr('opacity', 0);
 
         var node = svg.append('g')
@@ -1075,16 +1522,16 @@
           .attr('r', function (d) { return d.r; })
           .attr('fill', function (d) { return d.col + '33'; })
           .attr('stroke', function (d) { return d.col; })
-          .attr('stroke-width', 1.5)
-          .style('filter', 'drop-shadow(0 0 5px var(--c))');
+          .attr('stroke-width', 1.8)
+          .style('filter', 'drop-shadow(0 0 8px ' + 'rgba(168,85,247,0.5))');
 
         node.append('text')
           .text(function (d) { return d.label; })
-          .attr('font-size', function (d) { return d.id === 'annie' ? '12px' : '7.5px'; })
+          .attr('font-size', function (d) { return d.id === 'annie' ? '18px' : '11px'; })
           .attr('fill', function (d) { return d.col; })
           .attr('font-family', 'Poppins, sans-serif')
           .attr('text-anchor', 'middle')
-          .attr('dy', function (d) { return d.r + 10; });
+          .attr('dy', function (d) { return d.r + 14; });
 
         sim.on('tick', function () {
           link
@@ -1097,108 +1544,189 @@
           });
         });
 
-        /* Staggered fade-in */
+        var graphCenterX = W / 2;
+        var graphCenterY = H / 2;
+
+        function clamp(value, min, max) {
+          return Math.max(min, Math.min(max, value));
+        }
+
+        function labelToLines(label) {
+          var words = label.split(' ');
+          if (words.length <= 2) return [label];
+          var lines = [];
+          for (var i = 0; i < words.length; i += 2) {
+            lines.push(words.slice(i, i + 2).join(' '));
+          }
+          return lines;
+        }
+
+        function createBranchLayer(layer) {
+          var branchDistance = Math.min(W, H) * layer.distance * 1.08;
+          var group = svg.append('g').attr('opacity', 0);
+
+          var branchData = [];
+
+          layer.branches.forEach(function (branch, branchIndex) {
+            var rootX = graphCenterX + Math.cos(branch.angle) * branchDistance;
+            var rootY = graphCenterY + Math.sin(branch.angle) * (branchDistance * 0.78);
+            branchData.push({
+              type: 'root-link',
+              x1: graphCenterX,
+              y1: graphCenterY,
+              x2: rootX,
+              y2: rootY,
+              col: layer.stroke,
+              delay: branchIndex * 120
+            });
+
+            branchData.push({
+              type: 'root-node',
+              x: rootX,
+              y: rootY,
+              label: branch.rootLabel,
+              col: branch.rootCol,
+              fontSize: layer.fontSize,
+              delay: branchIndex * 120 + 120
+            });
+
+            var branchSpread = 84 + branch.phrases.length * 10;
+            branch.phrases.forEach(function (phrase, phraseIndex) {
+              var t = branch.phrases.length === 1 ? 0.5 : phraseIndex / (branch.phrases.length - 1);
+              var fan = (t - 0.5) * branchSpread;
+              var leafDistance = 118 + phraseIndex * 18 + layer.distance * 28;
+              var leafX = rootX + Math.cos(branch.angle) * leafDistance + Math.cos(branch.angle + Math.PI / 2) * fan;
+              var leafY = rootY + Math.sin(branch.angle) * (leafDistance * 0.74) + Math.sin(branch.angle + Math.PI / 2) * fan * 0.9;
+              leafX = clamp(leafX, 48, W - 48);
+              leafY = clamp(leafY, 44, H - 44);
+
+              branchData.push({
+                type: 'leaf-link',
+                x1: rootX,
+                y1: rootY,
+                x2: leafX,
+                y2: leafY,
+                col: phrase.col,
+                delay: branchIndex * 120 + 220 + phraseIndex * 70
+              });
+
+              branchData.push({
+                type: 'leaf-node',
+                x: leafX,
+                y: leafY,
+                label: phrase.label,
+                lines: labelToLines(phrase.label),
+                col: phrase.col,
+                fontSize: layer.fontSize,
+                anchor: Math.cos(branch.angle) > 0.18 ? 'start' : (Math.cos(branch.angle) < -0.18 ? 'end' : 'middle'),
+                delay: branchIndex * 120 + 340 + phraseIndex * 70
+              });
+            });
+          });
+
+          var links = group.append('g')
+            .selectAll('line')
+            .data(branchData.filter(function (d) { return d.type === 'root-link' || d.type === 'leaf-link'; }))
+            .join('line')
+            .attr('x1', graphCenterX)
+            .attr('y1', graphCenterY)
+            .attr('x2', graphCenterX)
+            .attr('y2', graphCenterY)
+            .attr('stroke', function (d) { return d.col; })
+            .attr('stroke-opacity', function (d) { return d.type === 'root-link' ? 0.26 : 0.34; })
+            .attr('stroke-width', function (d) { return d.type === 'root-link' ? 1.2 : 1; });
+
+          var branchNodes = group.append('g')
+            .selectAll('g')
+            .data(branchData.filter(function (d) { return d.type === 'root-node' || d.type === 'leaf-node'; }))
+            .join('g')
+            .attr('opacity', 0)
+            .attr('transform', 'translate(' + graphCenterX + ',' + graphCenterY + ')');
+
+          branchNodes.append('circle')
+            .attr('r', function (d) { return d.type === 'root-node' ? 5 : 3.2; })
+            .attr('fill', function (d) { return d.col; })
+            .attr('fill-opacity', function (d) { return d.type === 'root-node' ? 0.96 : 0.92; })
+            .style('filter', 'drop-shadow(0 0 8px rgba(192,132,252,0.3))');
+
+          branchNodes.append('text')
+            .attr('x', function (d) {
+              if (d.type === 'root-node') return 0;
+              if (d.anchor === 'start') return 12;
+              if (d.anchor === 'end') return -12;
+              return 0;
+            })
+            .attr('y', function (d) {
+              if (d.type === 'root-node') return -12;
+              var lines = d.lines || [d.label];
+              return -((lines.length - 1) * 6.2);
+            })
+            .attr('fill', function (d) { return d.col; })
+            .attr('font-size', function (d) { return d.type === 'root-node' ? '10px' : d.fontSize; })
+            .attr('font-family', 'Poppins, sans-serif')
+            .attr('text-anchor', function (d) { return d.type === 'root-node' ? 'middle' : d.anchor; })
+            .attr('dominant-baseline', 'middle')
+            .style('filter', 'drop-shadow(0 0 10px rgba(168,85,247,0.18))')
+            .style('paint-order', 'stroke')
+            .style('stroke', 'rgba(10, 7, 29, 0.92)')
+            .style('stroke-width', '3px')
+            .style('stroke-linejoin', 'round')
+            .each(function (d) {
+              var text = d3.select(this);
+              var x = +text.attr('x');
+              var lines = d.type === 'root-node' ? [d.label] : (d.lines || [d.label]);
+              lines.forEach(function (line, idx) {
+                text.append('tspan')
+                  .attr('x', x)
+                  .attr('dy', idx === 0 ? 0 : '1.08em')
+                  .text(line);
+              });
+            });
+
+          return { group: group, links: links, branchNodes: branchNodes };
+        }
+
+        var renderedBranchLayers = branchLayers.map(createBranchLayer);
+
         setTimeout(function () {
           link.transition().duration(800).attr('opacity', 1);
           node.each(function (d, i) {
             d3.select(this).transition().delay(i * 60).duration(500).attr('opacity', 1);
           });
         }, 400);
-      }
 
-      /* ── Interactive Poem ───────────────────────────────────── */
-      var poemRan  = false;
-      var poemStep = 0;
-
-      var poemStanzas = [
-        [
-          'There is a particular light that comes in the last days of March \u2014',
-          'low and lateral, pale as almond blossom,',
-          'the kind that makes ordinary windows look like altars,',
-          'that lands on everything and makes it briefly worth looking at.',
-          'That is the light you were born into.',
-          'I have come to believe it followed you here.'
-        ],
-        [
-          'You are nine thousand miles away.',
-          'I know this the way I know the shape of my own hands \u2014',
-          'by feel, by the dull ache that replaces things.',
-          'And yet there is not a single hour of that distance',
-          'I would trade away for the convenience of closer.',
-          'You are worth every mile. All nine thousand of them. Twice.'
-        ],
-        [
-          'I want to be the room where nothing can reach you,',
-          'the door that holds between you and whatever has been unkind.',
-          'I know I cannot always. The world is large and careless',
-          'and does not ask permission before it takes things.',
-          'But I will stand in its way as long as I am able,',
-          'and trying, for you, does not feel like effort.',
-          'It feels like the only obvious thing to do.'
-        ],
-        [
-          'Eighteen years. I try to hold the mathematics of it,',
-          'the full weight of what the calendar has carried to today,',
-          'and I find I cannot \u2014 the number keeps dissolving',
-          'into something less like time and more like wonder.',
-          'You have revised what I understand as possible.',
-          'You have made me braver by existing.',
-          'That is not a small thing. That is everything.'
-        ],
-        [
-          'You move through the world like someone who has decided,',
-          'quietly and finally, to take up the space she deserves \u2014',
-          'laughing at things that should not be funny,',
-          'caring about things with a fierceness',
-          'that embarrasses the rest of us into caring too.',
-          'I have watched you and thought: yes.',
-          'That is exactly how it should be done.'
-        ],
-        [
-          'So here is what I mean, plainly,',
-          'because you deserve plainness as well as the ornate:',
-          'I love you \u2014 the way you think, the way you worry,',
-          'the way you laugh past the point where most people would stop.',
-          'March thirty-first is a good day.',
-          'It was the day all of this became possible.',
-          'Happy birthday, Annie. You are so, so loved.'
-        ]
-      ];
-
-      function initPoem() {
-        if (poemRan) return;
-        poemRan = true;
-        var overlay     = document.getElementById('poem-tap-overlay');
-        var instruction = document.getElementById('poem-instruction');
-        var container   = document.getElementById('poem-stanzas');
-        if (!overlay || !container) return;
-
-        overlay.addEventListener('click', function () {
-          if (poemStep === 0 && instruction) {
-            instruction.classList.add('hint-hidden');
-          }
-          if (poemStep < poemStanzas.length) {
-            var lines = poemStanzas[poemStep];
-            var div   = document.createElement('div');
-            div.className = 'poem-stanza';
-            div.innerHTML = lines.map(function (l) {
-              return '<p>' + l + '</p>';
-            }).join('');
-            container.appendChild(div);
-            requestAnimationFrame(function () {
-              requestAnimationFrame(function () {
-                div.classList.add('stanza-visible');
-              });
+        renderedBranchLayers.forEach(function (layerData, layerIndex) {
+          setTimeout(function () {
+            layerData.group.transition().duration(600).attr('opacity', 1);
+            layerData.links.each(function (d) {
+              d3.select(this)
+                .transition()
+                .delay(d.delay)
+                .duration(720)
+                .ease(d3.easeCubicOut)
+                .attr('x1', d.x1)
+                .attr('y1', d.y1)
+                .attr('x2', d.x2)
+                .attr('y2', d.y2);
             });
-            poemStep++;
-            if (poemStep === poemStanzas.length) {
-              setTimeout(function () {
-                overlay.style.pointerEvents = 'none';
-                if (instruction) instruction.style.display = 'none';
-                revealBtn('poem-next-btn');
-              }, 800);
-            }
-          }
+
+            layerData.branchNodes.each(function (d) {
+              d3.select(this)
+                .transition()
+                .delay(d.delay)
+                .duration(620)
+                .ease(d3.easeCubicOut)
+                .attr('opacity', 1)
+                .attr('transform', function () {
+                  return 'translate(' + (graphCenterX + (d.x - graphCenterX) * 0.18) + ',' + (graphCenterY + (d.y - graphCenterY) * 0.18) + ')';
+                })
+                .transition()
+                .duration(520)
+                .attr('transform', function () {
+                  return 'translate(' + d.x + ',' + d.y + ')';
+                });
+            });
+          }, 2150 + layerIndex * 950);
         });
       }
 
@@ -1243,12 +1771,12 @@
         'that you let yourself be taken care of, unapologetically',
         'a playlist that never skips at the wrong moment',
         'that you feel as loved as you actually are',
-        'the courage to ask for everything you deserve',
-        'that the world is kinder to you this year than it has ever been',
-        'more mornings where you wake up and feel okay',
+        'that every game you play ends with a victory screen',
+        'that the right book finds you at exactly the right time',
+        'that Venice finds its way onto your calendar this year',
         'that you never forget March 31st is worth celebrating, loudly',
         'the kind of quiet that actually feels peaceful',
-        'a year so good it makes up for the hard ones',
+        'a home-cooked omurice and spaghetti bolognese — I meant it, I\'m cooking',
         'that you never stop being, fundamentally, a cat about things',
         'someone who will always show up — that\'s me, by the way',
         'this, and everything after it, with you'
@@ -1262,7 +1790,7 @@
         if (!list) return;
 
         for (var i = 0; i < wishList.length; i++) {
-          await wait(i === 0 ? 600 : 480);
+          await wait(i === 0 ? 1600 : 1250);
           var item = document.createElement('div');
           item.className = 'wish-item';
           item.innerHTML =
@@ -1278,7 +1806,7 @@
           });
         }
 
-        await wait(1200);
+        await wait(2400);
         revealBtn('wishes-next-btn');
       }
 
@@ -1291,6 +1819,20 @@
 
         await wait(300);
         var partA = document.getElementById('proposal-a');
+        var partB = document.getElementById('proposal-b');
+        var finale = document.getElementById('proposal-finale');
+        if (partA) {
+          partA.style.display = 'flex';
+          partA.classList.remove('a-visible');
+        }
+        if (partB) {
+          partB.style.display = 'none';
+          partB.classList.remove('b-visible');
+        }
+        if (finale) {
+          finale.style.display = 'none';
+          finale.classList.remove('finale-visible');
+        }
         if (partA) partA.classList.add('a-visible');
 
         var aNext = document.getElementById('proposal-a-next');
@@ -1353,7 +1895,7 @@
           if (scene) launchConfetti(scene);
 
           /* auto-advance to webcam scene after 5 seconds */
-          setTimeout(function () { goTo(12); }, 5000);
+          setTimeout(function () { goTo(10); }, 5000);
         });
       }
 
@@ -1419,8 +1961,6 @@
           })
           .catch(function () {
             if (noCam) noCam.style.display = 'flex';
-            /* graceful skip after a moment */
-            setTimeout(function () { goTo(13); }, 3000);
           });
 
         if (captureBtn) {
@@ -1440,125 +1980,54 @@
 
             captureBtn.textContent = 'captured \u2665';
             captureBtn.disabled    = true;
-
-            /* auto-advance after capture */
-            setTimeout(function () { goTo(13); }, 2500);
           });
         }
       }
 
-      /* ── Annie's Audio Recording + Submission ───────────────── */
-      var annieMediaRecorder = null;
-      var annieAudioChunks   = [];
-      var annieAudioBase64   = null;
+      /* ── Safe scene — staggered affirmation lines ────────────── */
+      var safeRan = false;
 
-      function initAnnieAudio() {
-        /* Build recording viz bars */
-        var viz = document.getElementById('recording-viz');
-        if (viz && viz.childElementCount === 0) {
-          for (var b = 0; b < 9; b++) {
-            var bar = document.createElement('div');
-            bar.className = 'recording-viz-bar';
-            bar.style.animationDelay    = (b * 0.09) + 's';
-            bar.style.animationDuration = (0.45 + Math.random() * 0.3) + 's';
-            viz.appendChild(bar);
-          }
-        }
+      function initSafeScene() {
+        if (safeRan) return;
+        safeRan = true;
+        initSafeParticles();
 
-        var recordBtn = document.getElementById('annie-record-btn');
-        var playback  = document.getElementById('annie-audio-playback');
-        var submitBtn = document.getElementById('annie-submit-btn');
+        var container = document.getElementById('safe-lines');
+        if (!container) return;
 
-        if (!recordBtn) return;
+        var lines = [
+          'safe, here and always.',
+          'seen \u2014 every part of you.',
+          'the kind of brave that doesn\u2019t announce itself.',
+          'soft in the best way, and strong in every other.',
+          'someone worth 9,000 miles, twice over.',
+          'my favorite person in any room, rendered or real.',
+          'loved. full stop.'
+        ];
 
-        function startRecording(e) {
-          e.preventDefault();
-          if (annieMediaRecorder && annieMediaRecorder.state === 'recording') return;
-          annieAudioChunks = [];
-
-          navigator.mediaDevices.getUserMedia({ audio: true })
-            .then(function (stream) {
-              annieMediaRecorder = new MediaRecorder(stream);
-
-              annieMediaRecorder.ondataavailable = function (ev) {
-                if (ev.data && ev.data.size > 0) annieAudioChunks.push(ev.data);
-              };
-
-              annieMediaRecorder.onstop = function () {
-                var blob = new Blob(annieAudioChunks, { type: 'audio/webm' });
-                var url  = URL.createObjectURL(blob);
-                if (playback) {
-                  playback.src = url;
-                  playback.style.display = 'block';
-                }
-                if (submitBtn) submitBtn.style.display = 'block';
-
-                /* Convert to base64 for API */
-                var reader = new FileReader();
-                reader.onload = function () { annieAudioBase64 = reader.result; };
-                reader.readAsDataURL(blob);
-
-                stream.getTracks().forEach(function (t) { t.stop(); });
-              };
-
-              annieMediaRecorder.start();
-              recordBtn.classList.add('recording');
-              recordBtn.textContent = 'recording \u2014 release to stop';
-              if (viz) viz.classList.add('viz-active');
-            })
-            .catch(function () {
-              /* Microphone not available — skip recording, allow submit */
-              if (submitBtn) submitBtn.style.display = 'block';
+        lines.forEach(function (text, i) {
+          setTimeout(function () {
+            var p = document.createElement('p');
+            p.className = 'safe-line';
+            p.textContent = text;
+            container.appendChild(p);
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () {
+                p.classList.add('safe-line-visible');
+              });
             });
-        }
-
-        function stopRecording(e) {
-          e.preventDefault();
-          if (annieMediaRecorder && annieMediaRecorder.state === 'recording') {
-            annieMediaRecorder.stop();
-          }
-          recordBtn.classList.remove('recording');
-          recordBtn.textContent = 'record again';
-          if (viz) viz.classList.remove('viz-active');
-        }
-
-        recordBtn.addEventListener('mousedown',  startRecording);
-        recordBtn.addEventListener('touchstart', startRecording, { passive: false });
-        recordBtn.addEventListener('mouseup',    stopRecording);
-        recordBtn.addEventListener('touchend',   stopRecording,  { passive: false });
-
-        if (submitBtn) {
-          submitBtn.addEventListener('click', submitBirthdayResponse);
-        }
-      }
-
-      async function submitBirthdayResponse() {
-        var submitBtn = document.getElementById('annie-submit-btn');
-        if (submitBtn) {
-          submitBtn.textContent = 'sending\u2026';
-          submitBtn.disabled    = true;
-        }
-
-        var payload = {
-          type:         'birthday-annie-2026',
-          name:         'Annie',
-          webcam_photo: window._bdayWcDataUrl || null,
-          audio_response: annieAudioBase64  || null,
-          timestamp:    new Date().toISOString()
-        };
-
-        try {
-          await fetch('https://api.pqcnerd.com/api/visitor', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify(payload)
-          });
-        } catch (_) {
-          /* Silent fail — confirmation still shows */
-        }
-
-        var confirm = document.getElementById('submission-confirmation');
-        if (confirm) confirm.style.display = 'flex';
+            if (i === lines.length - 1) {
+              setTimeout(function () {
+                var btn = container.closest('.scene').querySelector('.scene-next-btn');
+                if (btn) {
+                  btn.style.transition = 'opacity 0.6s ease';
+                  btn.style.opacity = '1';
+                  btn.style.pointerEvents = 'all';
+                }
+              }, 2200);
+            }
+          }, 2500 * (i + 1));
+        });
       }
 
     })();
