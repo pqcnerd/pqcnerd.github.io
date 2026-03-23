@@ -2931,7 +2931,7 @@ body {
   border-radius: 22px;
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.28), 0 0 24px rgba(168, 85, 247, 0.12);
   backdrop-filter: blur(10px);
-  padding: 1.2rem 1.1rem;
+  padding: 1.15rem 0.95rem;
 }
 
 .flower-layout--center .flower-side-panel {
@@ -2941,27 +2941,27 @@ body {
 
 .flower-layout--right .flower-side-panel {
   order: 2;
-  flex-basis: 37%;
+  flex-basis: 40%;
   opacity: 1;
   transform: translateX(0);
 }
 
 .flower-layout--right .flower-stage {
   order: 1;
-  flex-basis: 51%;
+  flex-basis: 48%;
   transform: translateX(-3.5vw);
 }
 
 .flower-layout--left .flower-side-panel {
   order: 1;
-  flex-basis: 37%;
+  flex-basis: 40%;
   opacity: 1;
   transform: translateX(0);
 }
 
 .flower-layout--left .flower-stage {
   order: 2;
-  flex-basis: 51%;
+  flex-basis: 48%;
   transform: translateX(3.5vw);
 }
 
@@ -2998,7 +2998,7 @@ body {
 }
 
 .poem-scroll {
-  width: min(100%, 440px);
+  width: min(100%, 480px);
   margin: 0 auto;
   position: relative;
   display: flex;
@@ -3025,7 +3025,7 @@ body {
 }
 
 .flower-side-panel .poem-scroll {
-  width: min(100%, 455px);
+  width: min(100%, 500px);
   max-height: 72vh;
   overflow: hidden;
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%);
@@ -4545,13 +4545,6 @@ body.cats-celebrate .cat-ambient {
   transition-delay: 0.36s;
 }
 
-.memory-portrait--4 {
-  --portrait-x: calc(-50% + clamp(240px, 26vw, 320px));
-  --portrait-y: clamp(6px, 4vw, 36px);
-  --portrait-r: 10deg;
-  transition-delay: 0.48s;
-}
-
 .memory-portrait:hover,
 .memory-portrait:focus-visible {
   transform: translate3d(var(--portrait-x), calc(var(--portrait-y) - 8px), 24px) rotate(var(--portrait-r)) scale(1.03);
@@ -4717,6 +4710,7 @@ body.cats-celebrate .cat-ambient {
   width: 78px;
   height: 56px;
   border-radius: 14px;
+  overflow: hidden;
   background: linear-gradient(180deg, #fdf2f8, #f5d0fe);
   box-shadow: inset 0 -10px 16px rgba(232, 121, 249, 0.2);
 }
@@ -4733,12 +4727,13 @@ body.cats-celebrate .cat-ambient {
   position: absolute;
   left: 0;
   right: 0;
-  top: -1px;
-  height: 28px;
+  top: 0;
+  height: 30px;
   transform-origin: top center;
   clip-path: polygon(0 0, 50% 100%, 100% 0);
   background: linear-gradient(180deg, #fbcfe8, #f0abfc);
   transition: transform 0.45s ease;
+  z-index: 2;
 }
 
 .memory-letter-paper {
@@ -4978,11 +4973,6 @@ body.cats-celebrate .cat-ambient {
     --portrait-y: -86px;
   }
 
-  .memory-portrait--4 {
-    --portrait-x: calc(-50% + clamp(110px, 16vw, 150px));
-    --portrait-y: 124px;
-  }
-
   .memory-letter-trigger {
     left: 50%;
     right: auto;
@@ -5049,11 +5039,6 @@ body.cats-celebrate .cat-ambient {
   .memory-portrait--3 {
     --portrait-x: calc(-50% + 52px);
     --portrait-y: -76px;
-  }
-
-  .memory-portrait--4 {
-    --portrait-x: calc(-50% + 68px);
-    --portrait-y: 140px;
   }
 
   .memory-portrait.is-active {

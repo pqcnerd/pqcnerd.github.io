@@ -714,22 +714,6 @@
               </span>
             </button>
 
-            <button class="memory-portrait memory-portrait--4"
-                    type="button"
-                    data-memory-key="portrait-4"
-                    data-memory-title="all the little things that become ours"
-                    data-memory-copy="This is the part I never want to lose: the stupid, tiny, ridiculous things that somehow become sacred because they belong to us and nobody else.">
-              <span class="memory-portrait-frame">
-                <span class="memory-portrait-photo">
-                  <img class="memory-portrait-image" src="../portraits/animal.png" alt="" />
-                  <span class="memory-portrait-badge">04</span>
-                </span>
-              </span>
-              <span class="memory-portrait-meta">
-                <span class="memory-portrait-name">our dumb little language</span>
-                <span class="memory-portrait-hint">the jokes I want to keep forever</span>
-              </span>
-            </button>
           </div>
 
           <button class="memory-letter-trigger"
@@ -756,7 +740,7 @@
               <p>I want to keep becoming the kind of person who makes your life softer. I want to be someone you can lean on without asking, someone who still chooses you in the boring seasons, the hard seasons, the ordinary Tuesdays, and every future birthday after this one. I want a life where we keep collecting private languages, dumb jokes, small rituals, and reasons to stay close. If the future version of me is reading this beside you, then I hope he never forgot that this was the dream: not perfection, not spectacle, just the miracle of getting to love you for a very long time.</p>
             </div>
             <div class="memory-letter-sheet-signoff">
-              <p class="memory-letter-sheet-signoff-copy">Always reaching for you,<br />Mark</p>
+              <p class="memory-letter-sheet-signoff-copy">Always reaching for you,<br />Mark Mu</p>
               <img class="memory-letter-sheet-signature" src="../sig.png" alt="Mark signature" />
             </div>
           </div>
@@ -766,7 +750,7 @@
           <p class="memory-panel-eyebrow">memory room</p>
           <h3 class="memory-panel-title" id="memory-panel-title">Tap a portrait or open the letter.</h3>
           <p class="memory-panel-copy" id="memory-panel-copy">This room keeps the versions of her you already know you never want to lose: the softness, the jokes, the closeness, and the future you keep reaching toward.</p>
-          <p class="memory-panel-progress" id="memory-panel-progress">0 / 5 keepsakes opened</p>
+          <p class="memory-panel-progress" id="memory-panel-progress">0 / 4 keepsakes opened</p>
         </div>
       </div>
 
@@ -1589,7 +1573,9 @@
                 var elapsed = Date.now() - start;
                 var t = Math.min(elapsed / dur, 1);
                 var pt = arcEl.getPointAtLength(t * len);
-                planeG.attr('x', pt.x).attr('y', pt.y);
+                var nextPt = arcEl.getPointAtLength(Math.min(t * len + 8, len));
+                var angle = Math.atan2(nextPt.y - pt.y, nextPt.x - pt.x) * 180 / Math.PI;
+                planeG.attr('transform', 'translate(' + pt.x + ',' + pt.y + ') rotate(' + (angle - 45) + ')');
                 if (t < 1) requestAnimationFrame(tick);
                 else planeG.attr('opacity', 0);
               })();
