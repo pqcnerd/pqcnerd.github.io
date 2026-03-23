@@ -6066,5 +6066,5 @@ body.cats-celebrate .cat-ambient {
 }
 
 /* ── Webcam: ensure layout is correct after panel swap ───── */
-.webcam-panel--annie { order: 1; }
-.webcam-panel--mark  { order: 2; }
+.webcam-panel--mark  { order: 1; }
+.webcam-panel--annie { order: 2; }
