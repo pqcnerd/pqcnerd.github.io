@@ -63,6 +63,12 @@
         color: var(--accent-strong);
       }
 
+      .topbar-controls {
+        display: flex;
+        gap: 0.45rem;
+        align-items: center;
+      }
+
       .layout {
         display: grid;
         grid-template-columns: 1fr minmax(260px, 320px);
@@ -193,6 +199,8 @@
         cursor: grab;
         font-family: "Fira Code", monospace;
         font-size: 0.78rem;
+        line-height: 1.35;
+        white-space: normal;
       }
 
       .drag-item[draggable="false"] {
@@ -214,6 +222,40 @@
         font-size: 0.74rem;
         display: block;
         margin-bottom: 0.28rem;
+      }
+
+      .control-row {
+        margin-top: 0.55rem;
+        display: flex;
+        gap: 0.45rem;
+        flex-wrap: wrap;
+      }
+
+      .sequence-list {
+        margin: 0.55rem 0 0;
+        padding-left: 1.2rem;
+        display: grid;
+        gap: 0.42rem;
+      }
+
+      .cheat-card {
+        margin-top: 0.7rem;
+        border: 1px solid rgba(223, 194, 139, 0.5);
+        border-radius: 8px;
+        background: rgba(44, 31, 15, 0.42);
+        padding: 0.6rem;
+      }
+
+      .cheat-card h4 {
+        font-family: "Fira Code", monospace;
+        font-size: 0.78rem;
+        color: var(--accent-strong);
+        margin-bottom: 0.4rem;
+      }
+
+      .cheat-card p {
+        margin: 0.32rem 0;
+        font-size: 1rem;
       }
 
       .input-row {
@@ -303,6 +345,10 @@
       <div class="topbar">
         <div><strong>Blue Hall Archive</strong> / text-only literary puzzle house</div>
         <div class="tiny">click to explore · type to solve · drag to arrange</div>
+        <div class="topbar-controls">
+          <button id="cheatToggleBtn" class="btn" type="button">enable cheat mode</button>
+          <button id="cheatSolveAllBtn" class="btn" type="button" style="display:none;">auto-solve all</button>
+        </div>
       </div>
       <div class="layout">
         <section class="panel main-panel">
@@ -377,6 +423,7 @@ TUNA`,
           cabinet: false,
           finalArchive: false,
         },
+        cheatMode: false,
         notebook: [],
         detailText: "",
         puzzle: {
@@ -400,6 +447,7 @@ TUNA`,
           return {
             ...defaultState(),
             ...parsed,
+            cheatMode: Boolean(parsed.cheatMode),
             solved: { ...defaultState().solved, ...(parsed.solved || {}) },
             unlocked: { ...defaultState().unlocked, ...(parsed.unlocked || {}) },
             puzzle: {
@@ -443,11 +491,20 @@ TUNA`,
       }
 
       function checkUnlocks() {
-        if (STATE.solved.bookshelf) STATE.unlocked.seminar = true;
-        if (STATE.solved.ladder) STATE.unlocked.parlor = true;
-        if (STATE.solved.desk) STATE.unlocked.cabinet = true;
-        if (STATE.solved.seminar && STATE.solved.listening) STATE.unlocked.stair = true;
-        if (STATE.solved.desk && STATE.solved.seminar && STATE.solved.stair && STATE.solved.cabinet) STATE.unlocked.finalArchive = true;
+        STATE.unlocked = {
+          seminar: STATE.solved.bookshelf,
+          parlor: STATE.solved.ladder,
+          cabinet: STATE.solved.desk,
+          stair: STATE.solved.seminar && STATE.solved.listening,
+          finalArchive: STATE.solved.desk && STATE.solved.seminar && STATE.solved.stair && STATE.solved.cabinet,
+        };
+        if (STATE.cheatMode) {
+          STATE.unlocked.seminar = true;
+          STATE.unlocked.parlor = true;
+          STATE.unlocked.cabinet = true;
+          STATE.unlocked.stair = true;
+          STATE.unlocked.finalArchive = true;
+        }
       }
 
       const roomTitleEl = document.getElementById("roomTitle");
@@ -457,6 +514,29 @@ TUNA`,
       const puzzleEl = document.getElementById("puzzle");
       const feedbackEl = document.getElementById("feedback");
       const notebookBodyEl = document.getElementById("notebookBody");
+      const cheatToggleBtn = document.getElementById("cheatToggleBtn");
+      const cheatSolveAllBtn = document.getElementById("cheatSolveAllBtn");
+
+      const CHEAT_TEXT = {
+        blueHall:
+          "Unlock chain summary: Bookshelf -> Seminar, Ladder -> Listening, Desk -> Cabinet, Seminar+Listening -> Stair, Desk+Seminar+Stair+Cabinet -> Final Archive.",
+        bookshelf:
+          "Match tabs by meaning: FEELING->A, BURDEN->B, GUILT->C, ECHO->D, PROOF->E. Reason: each card defines that exact concept internally.",
+        ladder:
+          "Wall order is 1,3,2,4. Read top words in that order: ORDER BY AFTER IMAGE.",
+        desk:
+          "Correct sequence is the printed order 1 through 9, tracing rationalization -> lie -> revision -> consequence. Initial letters spell TWENTYONE.",
+        seminar:
+          "Match contexts: 1 anticipation, 2 dread, 3 awe, 4 exhaustion, 5 regret, 6 panic-shame, 7 rivalry, 8 vertigo. Hidden letters in metronome order yield FOURTEEN.",
+        listening:
+          "Program directions point to room order: STAIR -> DESK -> SEMINAR -> CABINET. This also sets final archive ordering.",
+        stair:
+          "Invariant phrase after four climbs: THE BOULDER WAITS BELOW. Count letters (ignore spaces) = 20 -> TWENTY.",
+        cabinet:
+          "Cipher is Caesar -2: THE FIRST TRUE NUMBER HERE IS ONE. Challenge answers: even, 7, singular, odd. Output: ONE.",
+        finalArchive:
+          "Place outputs by listening order: TWENTY, TWENTYONE, FOURTEEN, ONE. Convert by alphabet positions: 20=T, 21=U, 14=N, 1=A.",
+      };
 
       function setFeedback(message, kind = "") {
         feedbackEl.textContent = message;
@@ -467,6 +547,26 @@ TUNA`,
         STATE.detailText = text;
         detailsEl.innerHTML = text ? `<div class="text-card">${text}</div>` : "";
         saveState();
+      }
+
+      function appendCheatCard(zone, key) {
+        if (!STATE.cheatMode) return;
+        const card = document.createElement("div");
+        card.className = "cheat-card";
+        card.innerHTML = `<h4>Cheat mode</h4><p>${CHEAT_TEXT[key] || "No cheat text defined for this room."}</p>`;
+        const controls = document.createElement("div");
+        controls.className = "control-row";
+        const solveBtn = document.createElement("button");
+        solveBtn.className = "btn";
+        solveBtn.type = "button";
+        solveBtn.textContent = "auto-solve this room";
+        solveBtn.addEventListener("click", () => {
+          autoSolveRoom(STATE.room);
+          render();
+        });
+        controls.append(solveBtn);
+        card.append(controls);
+        zone.append(card);
       }
 
       function roomLink(label, target, locked = false) {
@@ -513,6 +613,8 @@ TUNA`,
         renderer();
         if (STATE.detailText) detailsEl.innerHTML = `<div class="text-card">${STATE.detailText}</div>`;
         bindNavLinks();
+        cheatToggleBtn.textContent = STATE.cheatMode ? "disable cheat mode" : "enable cheat mode";
+        cheatSolveAllBtn.style.display = STATE.cheatMode ? "inline-block" : "none";
         saveState();
       }
 
@@ -521,6 +623,75 @@ TUNA`,
         addNotebookEntry(noteKey);
         checkUnlocks();
         saveState();
+      }
+
+      function autoSolveRoom(room) {
+        if (room === "bookshelf" && !STATE.solved.bookshelf) {
+          STATE.puzzle.bookshelf.placed = { A: "FEELING", B: "BURDEN", C: "GUILT", D: "ECHO", E: "PROOF" };
+          STATE.puzzle.bookshelf.locked = true;
+          finishRoom("bookshelf", "bookshelf");
+          return;
+        }
+        if (room === "ladder" && !STATE.solved.ladder) {
+          finishRoom("ladder", "ladder");
+          return;
+        }
+        if (room === "desk" && !STATE.solved.desk) {
+          STATE.puzzle.desk.placed = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+          STATE.puzzle.desk.ordered = true;
+          finishRoom("desk", "desk");
+          return;
+        }
+        if (room === "seminar" && !STATE.solved.seminar) {
+          STATE.puzzle.seminar.placed = {
+            1: "anticipation",
+            2: "dread",
+            3: "awe",
+            4: "exhaustion",
+            5: "regret",
+            6: "panic-shame",
+            7: "rivalry",
+            8: "vertigo",
+          };
+          STATE.puzzle.seminar.matched = true;
+          finishRoom("seminar", "seminar");
+          return;
+        }
+        if (room === "listening" && !STATE.solved.listening) {
+          STATE.puzzle.listening.placed = ["stair", "desk", "seminar", "cabinet"];
+          STATE.puzzle.listening.ordered = true;
+          finishRoom("listening", "listening");
+          return;
+        }
+        if (room === "stair" && !STATE.solved.stair) {
+          STATE.puzzle.stair.climb = 4;
+          STATE.puzzle.stair.invariant = true;
+          finishRoom("stair", "stair");
+          return;
+        }
+        if (room === "cabinet" && !STATE.solved.cabinet) {
+          STATE.puzzle.cabinet.decoded = true;
+          STATE.puzzle.cabinet.qIndex = 4;
+          STATE.puzzle.cabinet.outputReady = true;
+          finishRoom("cabinet", "cabinet");
+          return;
+        }
+        if (room === "finalArchive" && !STATE.solved.final) {
+          STATE.puzzle.finalArchive.placed = ["TWENTY", "TWENTYONE", "FOURTEEN", "ONE"];
+          STATE.puzzle.finalArchive.arranged = true;
+          finishRoom("final", "final");
+        }
+      }
+
+      function autoSolveAll() {
+        autoSolveRoom("bookshelf");
+        autoSolveRoom("ladder");
+        autoSolveRoom("desk");
+        autoSolveRoom("seminar");
+        autoSolveRoom("listening");
+        autoSolveRoom("stair");
+        autoSolveRoom("cabinet");
+        autoSolveRoom("finalArchive");
       }
 
       function makeDragItem(id, label, clickableDetail = "") {
@@ -545,24 +716,42 @@ TUNA`,
         if (STATE.solved.ladder) extra.push("A seam near the parlor door catches light that was not there before.");
         if (STATE.solved.desk) extra.push("The cabinet seems less locked than unwilling.");
         if (STATE.solved.final) extra.push("The crossed-out directory no longer reads like revision. It reads like a trail.");
+        const discoveredWays = [
+          `To your right stands a tall ${roomLink("bookshelf", "bookshelf")} with a narrow rolling ${roomLink("ladder", "ladder")} beside it.`,
+          `Ahead is a writing ${roomLink("desk", "desk")} under a dim lamp.`,
+          `On the wall hangs a crossed-out ${roomLink("directory", "directory")}.`,
+        ];
+        if (STATE.unlocked.seminar) discoveredWays.push(`To the left, a frosted-glass ${roomLink("seminar door", "seminar")} now stands open to light.`);
+        if (STATE.unlocked.parlor) discoveredWays.push(`Farther down, the almost-silent ${roomLink("parlor door", "listening")} is no longer shut against you.`);
+        if (STATE.unlocked.stair) discoveredWays.push(`At the back rises a stone ${roomLink("stair", "stair")}; the brass chain is gone.`);
+        if (STATE.unlocked.cabinet) discoveredWays.push(`Beneath the stair, the ${roomLink("cabinet", "cabinet")} has given up refusal.`);
+        if (STATE.unlocked.finalArchive) discoveredWays.push(`Behind the directory, a seam has opened into the ${roomLink("final archive", "finalArchive")}.`);
         roomTextEl.innerHTML = `
-          <p>You step into a blue-painted hall that feels less inhabited than revised. To your right stands a tall ${roomLink("bookshelf", "bookshelf")} with a narrow rolling ${roomLink("ladder", "ladder")} beside it. Ahead is a writing ${roomLink("desk", "desk")} under a dim lamp. A frosted-glass ${roomLink("seminar door", "seminar", !STATE.unlocked.seminar)} sits to the left, dark for now. Farther down the hall, an almost-silent ${roomLink("parlor door", "listening", !STATE.unlocked.parlor)} stands shut. At the back rises a stone ${roomLink("stair", "stair", !STATE.unlocked.stair)}, ${STATE.unlocked.stair ? "the brass chain gone." : "though a brass chain blocks the first step."} Beneath the stair sits a locked ${roomLink("cabinet", "cabinet", !STATE.unlocked.cabinet)}. On the wall hangs a crossed-out ${roomLink("directory", "directory")}.</p>
+          <p>You step into a blue-painted hall that feels less inhabited than revised. The air smells faintly of paper, graphite, and rain.</p>
+          ${discoveredWays.map((line) => `<p>${line}</p>`).join("")}
           ${extra.map((e) => `<p>${e}</p>`).join("")}
-          ${STATE.unlocked.finalArchive ? `<p>A seam behind the directory has opened into the ${roomLink("final archive", "finalArchive")}.</p>` : ""}
         `;
 
-        objectsEl.append(
+        const buttons = [
           objectButton("bookshelf", () => navTo("bookshelf")),
           objectButton("ladder", () => navTo("ladder")),
           objectButton("desk", () => navTo("desk")),
           objectButton("directory", () => navTo("directory")),
           objectButton("notebook", () => setDetail(STATE.notebook.join("\n\n") || "No entries yet.")),
-          objectButton("seminar door", () => navTo("seminar"), !STATE.unlocked.seminar),
-          objectButton("parlor door", () => navTo("listening"), !STATE.unlocked.parlor),
-          objectButton("stair", () => navTo("stair"), !STATE.unlocked.stair),
-          objectButton("cabinet", () => navTo("cabinet"), !STATE.unlocked.cabinet),
-          objectButton("final archive", () => navTo("finalArchive"), !STATE.unlocked.finalArchive)
-        );
+        ];
+        if (STATE.unlocked.seminar) buttons.push(objectButton("seminar door", () => navTo("seminar")));
+        if (STATE.unlocked.parlor) buttons.push(objectButton("parlor door", () => navTo("listening")));
+        if (STATE.unlocked.stair) buttons.push(objectButton("stair", () => navTo("stair")));
+        if (STATE.unlocked.cabinet) buttons.push(objectButton("cabinet", () => navTo("cabinet")));
+        if (STATE.unlocked.finalArchive) buttons.push(objectButton("final archive", () => navTo("finalArchive")));
+        objectsEl.append(...buttons);
+        if (STATE.cheatMode) {
+          const zone = document.createElement("div");
+          zone.className = "puzzle-zone";
+          zone.innerHTML = "<h3>Cheat overview</h3>";
+          appendCheatCard(zone, "blueHall");
+          puzzleEl.append(zone);
+        }
       }
 
       function renderDirectory() {
@@ -586,11 +775,11 @@ Read the rooms in the order of their afterimage.`);
         roomTitleEl.textContent = "Bookshelf of Misfiled Minds";
         roomTextEl.innerHTML = `<p>The bookshelf is divided into five bays. Each bay has a brass tab, but the tabs do not match the contents beneath them. Five oversized catalog cards sit half-pulled from a tray set into the middle shelf.</p>`;
         const cards = {
-          A: "A body shakes before a stage, a message, a fall, a memory. The pulse is real, but the meaning is not built into the pulse. The mind supplies the concept that turns sensation into feeling.",
-          B: "A figure returns to the same labor again and again. The summit never stays won. What matters is not escape, but what remains when repetition itself becomes the condition.",
-          C: "A student decides theory can excuse an act. After the act, theory remains on paper while conscience continues elsewhere. Fear, illness, guilt, and the pressure toward confession outlast every argument.",
-          D: "Titles alone can carry afterimage even without sound. A phrase can imply movement, collapse, softness, blast radius, residue, prayer.",
-          E: "A secret can be possessed, tested, and partly proven without being surrendered whole.",
+          A: "A body shakes before a stage, a message, a fall, a memory. The pulse is real, but the category is learned. Sensation does not arrive wearing its final name.",
+          B: "A figure returns to the same labor again and again. The work does not end by being repeated. Meaning must be faced where escape is unavailable.",
+          C: "An act is justified in theory before it is suffered in conscience. Afterward, argument remains on the page while guilt continues in the body.",
+          D: "A title can carry residue without explanation. Even without sound, phrasing can imply collapse, motion, softness, prayer, or aftershock.",
+          E: "A secret can be demonstrated indirectly. What matters is not surrendering the thing itself, but proving possession of it.",
         };
         objectsEl.append(
           objectButton("brass tabs", () => setDetail("PROOF\nBURDEN\nFEELING\nGUILT\nECHO")),
@@ -641,6 +830,21 @@ Read the rooms in the order of their afterimage.`);
         });
 
         puzzle.append(pool, slots);
+        if (!STATE.solved.bookshelf) {
+          const controls = document.createElement("div");
+          controls.className = "control-row";
+          const resetBtn = document.createElement("button");
+          resetBtn.className = "btn";
+          resetBtn.type = "button";
+          resetBtn.textContent = "clear tabs";
+          resetBtn.addEventListener("click", () => {
+            STATE.puzzle.bookshelf.placed = {};
+            setFeedback("Placements cleared.", "ok");
+            render();
+          });
+          controls.append(resetBtn);
+          puzzle.append(controls);
+        }
         const checkBtn = document.createElement("button");
         checkBtn.className = "btn";
         checkBtn.type = "button";
@@ -660,6 +864,7 @@ Read the rooms in the order of their afterimage.`);
         });
         puzzle.append(checkBtn);
         puzzleEl.append(puzzle);
+        appendCheatCard(puzzle, "bookshelf");
 
         if (STATE.solved.bookshelf) {
           setDetail("The rail gives way with a small click.\n\nOPEN SEMINAR");
@@ -698,6 +903,7 @@ Read the rooms in the order of their afterimage.`);
         });
         inputWrap.append(input, btn);
         zone.append(inputWrap);
+        appendCheatCard(zone, "ladder");
         puzzleEl.append(zone);
       }
 
@@ -720,7 +926,13 @@ Read the rooms in the order of their afterimage.`);
           objectButton("opener", () => setDetail("A silver opener, untouched.")),
           objectButton("ghost sheets", () => setDetail("Indented pressure from earlier drafts remains visible in the paper beneath the final version. The earlier sentences seem less stable and more honest.")),
           objectButton("burned drafts", () => setDetail(fragments.map((f, i) => `Fragment ${i + 1}:\n${f}`).join("\n\n"))),
-          objectButton("ledger", () => setDetail("- Begin where theory speaks.\n- After lying comes revision.\n- After pride comes shaking.\n- End where excuse fails.")),
+          objectButton(
+            "ledger",
+            () =>
+              setDetail(
+                "The ledger contains eight margin notes.\n\n- Begin where theory speaks.\n- The word “necessary” comes immediately after theory.\n- After lying comes revision.\n- Revision does not erase consequence; the sound returns next.\n- Only after consequence is motive stripped down to pride.\n- After pride comes shaking.\n- Confession is the first motion after the shaking.\n- What could not be crossed out returns before excuse finally fails."
+              )
+          ),
           objectButton("return", () => navTo("blueHall"))
         );
         const zone = document.createElement("div");
@@ -728,17 +940,18 @@ Read the rooms in the order of their afterimage.`);
         zone.innerHTML = `<h3>Order the confession fragments in truest sequence</h3>`;
         const pool = document.createElement("div");
         pool.className = "drag-pool";
-        const slots = document.createElement("div");
-        slots.className = "slots";
+        const sequence = document.createElement("ol");
+        sequence.className = "sequence-list";
         const placed = STATE.puzzle.desk.placed || [];
         const inPlaced = new Set(placed);
         fragments.forEach((frag, idx) => {
-          if (!inPlaced.has(idx)) pool.append(makeDragItem(`desk:${idx}`, `F${idx + 1}`, frag));
+          if (!inPlaced.has(idx)) pool.append(makeDragItem(`desk:${idx}`, `Fragment ${idx + 1}`, `Fragment ${idx + 1}:\n${frag}`));
         });
         for (let i = 0; i < 9; i += 1) {
+          const li = document.createElement("li");
           const slot = document.createElement("div");
           slot.className = "slot";
-          slot.innerHTML = `<strong>position ${i + 1}</strong>`;
+          slot.innerHTML = `<strong>position ${i + 1}</strong>${placed[i] === undefined ? "<span class='tiny'>drop a fragment tab here</span>" : ""}`;
           slot.addEventListener("dragover", (ev) => ev.preventDefault());
           slot.addEventListener("drop", (ev) => {
             ev.preventDefault();
@@ -752,13 +965,33 @@ Read the rooms in the order of their afterimage.`);
             render();
           });
           if (placed[i] !== undefined) {
-            const token = makeDragItem(`desk:${placed[i]}`, `F${placed[i] + 1}`, fragments[placed[i]]);
+            const token = makeDragItem(`desk:${placed[i]}`, `Fragment ${placed[i] + 1}`, `Fragment ${placed[i] + 1}:\n${fragments[placed[i]]}`);
             token.draggable = false;
             slot.append(token);
+            const body = document.createElement("div");
+            body.className = "tiny";
+            body.textContent = fragments[placed[i]];
+            slot.append(body);
           }
-          slots.append(slot);
+          li.append(slot);
+          sequence.append(li);
         }
-        zone.append(pool, slots);
+        zone.append(pool, sequence);
+        if (!STATE.solved.desk && !STATE.puzzle.desk.ordered) {
+          const controls = document.createElement("div");
+          controls.className = "control-row";
+          const resetBtn = document.createElement("button");
+          resetBtn.className = "btn";
+          resetBtn.type = "button";
+          resetBtn.textContent = "clear sequence";
+          resetBtn.addEventListener("click", () => {
+            STATE.puzzle.desk.placed = [];
+            setFeedback("Sequence cleared.", "ok");
+            render();
+          });
+          controls.append(resetBtn);
+          zone.append(controls);
+        }
         const checkBtn = document.createElement("button");
         checkBtn.className = "btn";
         checkBtn.type = "button";
@@ -767,6 +1000,10 @@ Read the rooms in the order of their afterimage.`);
         checkBtn.addEventListener("click", () => {
           const good = [0, 1, 2, 3, 4, 5, 6, 7, 8];
           const got = STATE.puzzle.desk.placed || [];
+          if (got.filter((v) => v !== undefined).length < 9) {
+            setFeedback("All nine positions must be filled before checking.", "err");
+            return;
+          }
           const ok = good.every((v, idx) => got[idx] === v);
           if (!ok) {
             setFeedback("The order still protects itself. Try psychological progression.", "err");
@@ -778,6 +1015,10 @@ Read the rooms in the order of their afterimage.`);
         });
         zone.append(checkBtn);
         if (STATE.puzzle.desk.ordered && !STATE.solved.desk) {
+          const prompt = document.createElement("div");
+          prompt.className = "tiny";
+          prompt.textContent = "Take the first letter of each fragment in order and enter the extracted output.";
+          zone.append(prompt);
           const row = document.createElement("div");
           row.className = "input-row";
           const input = document.createElement("input");
@@ -798,6 +1039,7 @@ Read the rooms in the order of their afterimage.`);
           row.append(input, btn);
           zone.append(row);
         }
+        appendCheatCard(zone, "desk");
         puzzleEl.append(zone);
       }
 
@@ -805,14 +1047,14 @@ Read the rooms in the order of their afterimage.`);
         roomTitleEl.textContent = "Seminar of Constructed Feeling";
         roomTextEl.innerHTML = `<p>The seminar room is empty except for a long table, a brass metronome, eight colored case files, and a stack of context cards.</p><p>What you feel is what your mind makes of sensation in context.</p>${STATE.solved.seminar ? "<p>The metronome now sounds steadier, as if the room has accepted interpretation without asking for certainty.</p>" : ""}`;
         const cases = {
-          1: "Racing pulse, dry mouth, bright lights, everyone watching.",
-          2: "Racing pulse, phone face-down, one unread message.",
-          3: "Tears, applause, relief, and sudden loss all at once.",
-          4: "Shaking hands, pale skin, fluorescent room, no sleep.",
-          5: "Silence after an argument, chest tight, rehearsed sentences.",
-          6: "A laugh at the wrong time, then shame about the laugh.",
-          7: "Clenched jaw, narrowed attention, score still tied.",
-          8: "Lightheadedness at a height, beauty mixed with fear.",
+          1: "Racing pulse, dry mouth, bright lights, waiting backstage for your name to be called.",
+          2: "Racing pulse, phone face-down, one unread message after the words: “we need to talk.”",
+          3: "Standing beneath an enormous painted ceiling, tears rising not from loss but from scale.",
+          4: "Shaking hands, pale skin, fluorescent room, two nights without sleep.",
+          5: "Silence after an argument, chest tight, rehearsed sentences that now have nowhere to go.",
+          6: "A laugh at the wrong moment in a quiet room, then heat flooding the face before anyone speaks.",
+          7: "Clenched jaw, narrowed attention, score tied, one opponent directly across from you.",
+          8: "Lightheadedness at a cliff edge, beauty and dropping distance arriving at once.",
         };
         const cards = ["anticipation", "dread", "awe", "exhaustion", "regret", "panic-shame", "rivalry", "vertigo"];
         const expected = {
@@ -827,10 +1069,22 @@ Read the rooms in the order of their afterimage.`);
         };
         objectsEl.append(
           objectButton("case files", () => setDetail(Object.entries(cases).map(([k, v]) => `Case ${k}:\n${v}`).join("\n\n"))),
-          objectButton("context cards", () => setDetail(cards.join("\n"))),
+          objectButton(
+            "context cards",
+            () =>
+              setDetail(
+                "anticipation\nArousal directed toward something about to happen, not yet harmful.\n\ndread\nArousal directed toward an expected unwanted outcome.\n\nawe\nA feeling of smallness before something vast, not necessarily threatening.\n\nexhaustion\nA depleted body whose signals can be mistaken for sharper emotions.\n\nregret\nThe mind rehearsing what cannot now be unsaid or undone.\n\npanic-shame\nA social misfire followed immediately by exposure and self-consciousness.\n\nrivalry\nAttention narrowed by contest, comparison, and opposition.\n\nvertigo\nDestabilization tied to height, depth, and perception."
+              )
+          ),
           objectButton("metronome", () => setDetail("4 - 1 - 7 - 8 - 2 - 3 - 5 - 6")),
           objectButton("blackboard", () => setDetail("Do not ask what the body is.\nAsk what the body means here.")),
-          objectButton("wastebasket", () => setDetail("A body does not arrive labeled.\nPrediction is half the room.\nMeaning changes the feeling.")),
+          objectButton(
+            "wastebasket",
+            () =>
+              setDetail(
+                "Three crumpled slips sit at the bottom.\n\nSlip 1:\nThe same body can mean different things in different scenes.\n\nSlip 2:\nPrediction changes the feeling before the feeling is named.\n\nSlip 3:\nDo not match the pulse to the label. Match the whole situation."
+              )
+          ),
           objectButton("return", () => navTo("blueHall"))
         );
         const zone = document.createElement("div");
@@ -885,12 +1139,31 @@ Read the rooms in the order of their afterimage.`);
           render();
         });
         zone.append(check);
+        if (!STATE.solved.seminar && !STATE.puzzle.seminar.matched) {
+          const controls = document.createElement("div");
+          controls.className = "control-row";
+          const resetBtn = document.createElement("button");
+          resetBtn.className = "btn";
+          resetBtn.type = "button";
+          resetBtn.textContent = "clear matches";
+          resetBtn.addEventListener("click", () => {
+            STATE.puzzle.seminar.placed = {};
+            setFeedback("Matches cleared.", "ok");
+            render();
+          });
+          controls.append(resetBtn);
+          zone.append(controls);
+        }
         if (STATE.puzzle.seminar.matched && !STATE.solved.seminar) {
           const letters = "1=O 2=T 3=E 4=F 5=E 6=N 7=U 8=R";
           const hint = document.createElement("div");
           hint.className = "text-card";
           hint.textContent = `Hidden letters:\n${letters}\n\nUse metronome order: 4,1,7,8,2,3,5,6`;
           zone.append(hint);
+          const prompt = document.createElement("div");
+          prompt.className = "tiny";
+          prompt.textContent = "Use the metronome order to read the hidden letters. Enter the resulting number-word.";
+          zone.append(prompt);
           const row = document.createElement("div");
           row.className = "input-row";
           const input = document.createElement("input");
@@ -911,6 +1184,7 @@ Read the rooms in the order of their afterimage.`);
           row.append(input, btn);
           zone.append(row);
         }
+        appendCheatCard(zone, "seminar");
         puzzleEl.append(zone);
       }
 
@@ -919,9 +1193,27 @@ Read the rooms in the order of their afterimage.`);
         roomTextEl.innerHTML = `<p>The parlor is almost dark. A blue lacquer player sits silent on a low table. Narrow sleeves line the wall, stamped only with titles.</p>${STATE.solved.listening ? "<p>The sleeves no longer look like titles; they look like instructions in disguise.</p>" : ""}`;
         objectsEl.append(
           objectButton("player", () => setDetail("The player has no visible speaker. Whatever matters here is not sound itself.")),
-          objectButton("sleeves", () => setDetail("Cluster A:\nRequiem\nSupernova\n\nCluster B:\nSoft Spot\nGABRIEL\n\nCluster C:\nDancing with your eyes closed\nJRJRJR")),
-          objectButton("program", () => setDetail("- Begin where collapse repeats.\n- Then go where wound turns inward and speaks.\n- Then go where sensation gets named.\n- End where knowledge is held without surrender.")),
-          objectButton("sequence marks", () => setDetail("Icons shown:\n- stair\n- desk\n- seminar table\n- locked cabinet")),
+          objectButton(
+            "sleeves",
+            () =>
+              setDetail(
+                "The sleeves are grouped into four bands, not three.\n\nBand I:\nRequiem\nSupernova\n\nBand II:\nSoft Spot\n\nBand III:\nDancing with your eyes closed\n\nBand IV:\nGABRIEL\nJRJRJR\n\nA note in the margin reads:\nThese are not the order. They are the afterimage."
+              )
+          ),
+          objectButton(
+            "program",
+            () =>
+              setDetail(
+                "The vellum program contains four stage directions, each followed by a penciled gloss:\n\n- Begin where burden repeats.\n  [the room of recurrence, ascent, and return]\n\n- Then go where guilt turns inward and speaks.\n  [the room of drafts, excuses, and confession]\n\n- Then go where feeling is made from sensation in context.\n  [the room of cases, bodies, and naming]\n\n- End where proof tests knowledge without surrender.\n  [the room of shift, question, and restraint]"
+              )
+          ),
+          objectButton(
+            "sequence marks",
+            () =>
+              setDetail(
+                "The page shows four room icons:\n\n- a stair\n- a desk\n- a seminar table\n- a locked cabinet\n\nSomeone has drawn faint lines from the program glosses toward the icons, but stopped halfway, as though expecting the rest to be obvious."
+              )
+          ),
           objectButton("return", () => navTo("blueHall"))
         );
         const zone = document.createElement("div");
@@ -973,37 +1265,27 @@ Read the rooms in the order of their afterimage.`);
             return;
           }
           STATE.puzzle.listening.ordered = true;
-          setFeedback("Order accepted. Enter room order as words.", "ok");
+          finishRoom("listening", "listening");
+          setFeedback("Order accepted. Afterimage order recorded.", "ok");
           render();
         });
         zone.append(check);
-        if (STATE.puzzle.listening.ordered && !STATE.solved.listening) {
-          const row = document.createElement("div");
-          row.className = "input-row";
-          const input = document.createElement("input");
-          input.type = "text";
-          input.placeholder = "STAIR -> DESK -> SEMINAR -> CABINET";
-          const btn = document.createElement("button");
-          btn.className = "btn";
-          btn.textContent = "confirm";
-          btn.addEventListener("click", () => {
-            if (
-              matchesAnswer(input.value, [
-                "STAIR DESK SEMINAR CABINET",
-                "STAIR -> DESK -> SEMINAR -> CABINET",
-                "STAIR, DESK, SEMINAR, CABINET",
-              ])
-            ) {
-              finishRoom("listening", "listening");
-              setFeedback("Afterimage order recorded.", "ok");
-              render();
-            } else {
-              setFeedback("Use the exact room sequence in words.", "err");
-            }
+        if (!STATE.solved.listening && !STATE.puzzle.listening.ordered) {
+          const controls = document.createElement("div");
+          controls.className = "control-row";
+          const resetBtn = document.createElement("button");
+          resetBtn.className = "btn";
+          resetBtn.type = "button";
+          resetBtn.textContent = "clear order";
+          resetBtn.addEventListener("click", () => {
+            STATE.puzzle.listening.placed = [];
+            setFeedback("Order cleared.", "ok");
+            render();
           });
-          row.append(input, btn);
-          zone.append(row);
+          controls.append(resetBtn);
+          zone.append(controls);
         }
+        appendCheatCard(zone, "listening");
         puzzleEl.append(zone);
       }
 
@@ -1029,7 +1311,15 @@ Read the rooms in the order of their afterimage.`);
             render();
           }),
           objectButton("stone", () => setDetail("The stone looks as if it has been placed here, lost here, and always been here.")),
-          objectButton("plaque", () => setDetail(STATE.puzzle.stair.invariant || STATE.solved.stair ? "Ignore height.\nCount what survives every telling." : "Ignore height.\nCount what survives every telling.")),
+          objectButton(
+            "plaque",
+            () =>
+              setDetail(
+                STATE.puzzle.stair.climb >= 4 && !STATE.solved.stair
+                  ? "Ignore what changed.\nCount only what survived every telling."
+                  : "Ignore height.\nCount what survives every telling."
+              )
+          ),
           objectButton("window", () => setDetail("Outside is only pale weather. Nothing outside helps.")),
           objectButton("return", () => navTo("blueHall"))
         );
@@ -1068,6 +1358,7 @@ Read the rooms in the order of their afterimage.`);
           t.textContent = "Climb until the invariant becomes explicit.";
           zone.append(t);
         }
+        appendCheatCard(zone, "stair");
         puzzleEl.append(zone);
       }
 
@@ -1075,7 +1366,13 @@ Read the rooms in the order of their afterimage.`);
         roomTitleEl.textContent = "Cabinet of Proofs";
         roomTextEl.innerHTML = `<p>The cabinet beneath the stairs has no keyhole. It has three rotating alphabet rings, a black challenge slate, a strip of shifted ciphertext, and a proof card.</p>${STATE.solved.cabinet ? "<p>The slate goes blank, as if satisfied by restraint.</p>" : ""}`;
         objectsEl.append(
-          objectButton("alphabet rings", () => setDetail("The rings allow a Caesar shift. Try what is simplest before you try what is clever.")),
+          objectButton(
+            "alphabet rings",
+            () =>
+              setDetail(
+                "The rings allow a Caesar shift in either direction. The ciphertext was encoded by shifting each letter forward by the same number of positions. To read it, shift backward by that amount. Try the smallest useful shift first."
+              )
+          ),
           objectButton("ciphertext", () => setDetail("VJG HKTUV VTWG PWODGT JGTG KU QPG")),
           objectButton("challenge slate", () => setDetail("Answer without giving the final word itself.")),
           objectButton("proof card", () => setDetail("A simple shift can hide a sentence.\nA good question can test knowledge without demanding the sentence itself.")),
@@ -1161,6 +1458,7 @@ Read the rooms in the order of their afterimage.`);
           row.append(input, btn);
           zone.append(row);
         }
+        appendCheatCard(zone, "cabinet");
         puzzleEl.append(zone);
       }
 
@@ -1168,7 +1466,13 @@ Read the rooms in the order of their afterimage.`);
         roomTitleEl.textContent = "Final Archive";
         roomTextEl.innerHTML = `<p>A panel behind the crossed-out directory opens inward. Inside is a narrow archive lined with four shallow drawers, a brass wheel, and a reading table with four empty slots.</p><p>Not the words. Their places.</p>`;
         objectsEl.append(
-          objectButton("drawers", () => setDetail("The drawers are unlabeled.")),
+          objectButton(
+            "drawers",
+            () =>
+              setDetail(
+                "The drawers contain a single reference card:\n\nA=1  B=2  C=3  D=4  E=5  F=6  G=7\nH=8  I=9  J=10 K=11 L=12 M=13 N=14\nO=15 P=16 Q=17 R=18 S=19 T=20 U=21\nV=22 W=23 X=24 Y=25 Z=26\n\nThe wheel reads the same way."
+              )
+          ),
           objectButton("wheel", () => setDetail("The wheel has twenty-six positions, one for each letter.")),
           objectButton("table", () => setDetail("ORDER BY AFTER IMAGE")),
           objectButton("notebook", () => setDetail(STATE.notebook.join("\n\n"))),
@@ -1183,6 +1487,7 @@ Read the rooms in the order of their afterimage.`);
         const pool = document.createElement("div");
         pool.className = "drag-pool";
         const used = new Set(placed);
+        const glosses = ["burden repeats", "guilt turns inward", "feeling is named", "proof withholds"];
         words.forEach((w) => {
           if (!used.has(w)) pool.append(makeDragItem(`final:${w}`, w, w));
         });
@@ -1191,7 +1496,7 @@ Read the rooms in the order of their afterimage.`);
         for (let i = 0; i < 4; i += 1) {
           const slot = document.createElement("div");
           slot.className = "slot";
-          slot.innerHTML = `<strong>slot ${i + 1}</strong>`;
+          slot.innerHTML = `<strong>slot ${i + 1}</strong><span class="tiny">${glosses[i]}</span>`;
           slot.addEventListener("dragover", (ev) => ev.preventDefault());
           slot.addEventListener("drop", (ev) => {
             ev.preventDefault();
@@ -1227,6 +1532,21 @@ Read the rooms in the order of their afterimage.`);
           render();
         });
         zone.append(check);
+        if (!STATE.solved.final && !STATE.puzzle.finalArchive.arranged) {
+          const controls = document.createElement("div");
+          controls.className = "control-row";
+          const resetBtn = document.createElement("button");
+          resetBtn.className = "btn";
+          resetBtn.type = "button";
+          resetBtn.textContent = "clear slots";
+          resetBtn.addEventListener("click", () => {
+            STATE.puzzle.finalArchive.placed = [];
+            setFeedback("Slots cleared.", "ok");
+            render();
+          });
+          controls.append(resetBtn);
+          zone.append(controls);
+        }
         if (STATE.puzzle.finalArchive.arranged && !STATE.solved.final) {
           const row = document.createElement("div");
           row.className = "input-row";
@@ -1249,6 +1569,7 @@ Read the rooms in the order of their afterimage.`);
           row.append(input, btn);
           zone.append(row);
         }
+        appendCheatCard(zone, "finalArchive");
         puzzleEl.append(zone);
       }
 
@@ -1269,6 +1590,19 @@ Read the rooms in the order of their afterimage.`);
         if (!confirm("Reset all progress for this adventure?")) return;
         STATE = defaultState();
         saveState();
+        render();
+      });
+
+      cheatToggleBtn.addEventListener("click", () => {
+        STATE.cheatMode = !STATE.cheatMode;
+        checkUnlocks();
+        saveState();
+        render();
+      });
+
+      cheatSolveAllBtn.addEventListener("click", () => {
+        autoSolveAll();
+        setFeedback("All rooms auto-solved.", "ok");
         render();
       });
 
