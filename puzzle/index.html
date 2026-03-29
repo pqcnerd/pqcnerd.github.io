@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Blue Hall Archive</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: radial-gradient(circle at top, #1b274a, #10192f 54%, #080d17 100%);
+        --panel: rgba(13, 19, 34, 0.82);
+        --panel-solid: rgba(10, 16, 29, 0.95);
+        --border: rgba(202, 178, 128, 0.28);
+        --text: #e8e4d9;
+        --muted: #a9a092;
+        --accent: #c9a96e;
+        --accent-strong: #dfc28b;
+        --good: #90b07c;
+        --bad: #c78a84;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+      }
+
+      body {
+        font-family: "EB Garamond", Garamond, serif;
+        background: var(--bg) fixed;
+        color: var(--text);
+        line-height: 1.55;
+        letter-spacing: 0.012em;
+      }
+
+      .page {
+        width: min(1200px, calc(100vw - 2rem));
+        margin: 1rem auto 2rem;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        border: 1px solid var(--border);
+        background: var(--panel);
+        border-radius: 10px;
+        padding: 0.7rem 0.9rem;
+        font-family: "Fira Code", monospace;
+        font-size: 0.82rem;
+      }
+
+      .topbar strong {
+        color: var(--accent-strong);
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 1fr minmax(260px, 320px);
+        gap: 0.9rem;
+        align-items: start;
+      }
+
+      .panel {
+        border: 1px solid var(--border);
+        background: var(--panel);
+        border-radius: 10px;
+        backdrop-filter: blur(5px);
+      }
+
+      .main-panel {
+        padding: 1rem;
+      }
+
+      .room-title {
+        font-size: 1.8rem;
+        font-weight: 500;
+        margin-bottom: 0.8rem;
+      }
+
+      .room-text p {
+        margin: 0.5rem 0;
+        font-size: 1.13rem;
+      }
+
+      .inline-action {
+        border: none;
+        background: transparent;
+        color: var(--accent);
+        font-family: inherit;
+        font-size: inherit;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 2px;
+        cursor: pointer;
+        padding: 0;
+      }
+
+      .inline-action:hover {
+        color: var(--accent-strong);
+      }
+
+      .inline-action.locked {
+        color: var(--muted);
+        text-decoration-style: dotted;
+      }
+
+      .objects {
+        margin: 1rem 0 0.7rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+      }
+
+      .obj-btn {
+        border: 1px solid var(--border);
+        background: rgba(18, 26, 44, 0.83);
+        color: var(--accent-strong);
+        border-radius: 6px;
+        padding: 0.34rem 0.55rem;
+        cursor: pointer;
+        font-family: "Fira Code", monospace;
+        font-size: 0.8rem;
+      }
+
+      .obj-btn[disabled] {
+        color: var(--muted);
+        border-style: dotted;
+        cursor: not-allowed;
+      }
+
+      .text-card {
+        border: 1px solid var(--border);
+        background: var(--panel-solid);
+        border-radius: 8px;
+        padding: 0.7rem;
+        margin: 0.6rem 0 0;
+        white-space: pre-wrap;
+      }
+
+      .feedback {
+        margin-top: 0.6rem;
+        min-height: 1.3rem;
+        font-family: "Fira Code", monospace;
+        font-size: 0.8rem;
+      }
+
+      .ok {
+        color: var(--good);
+      }
+
+      .err {
+        color: var(--bad);
+      }
+
+      .puzzle-zone {
+        margin-top: 0.9rem;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: rgba(11, 18, 32, 0.92);
+        padding: 0.7rem;
+      }
+
+      .puzzle-zone h3 {
+        font-family: "Fira Code", monospace;
+        font-size: 0.83rem;
+        margin-bottom: 0.5rem;
+        color: var(--accent-strong);
+      }
+
+      .drag-pool,
+      .slots {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+      }
+
+      .drag-item {
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: rgba(35, 30, 22, 0.5);
+        color: var(--text);
+        padding: 0.35rem 0.5rem;
+        cursor: grab;
+        font-family: "Fira Code", monospace;
+        font-size: 0.78rem;
+      }
+
+      .drag-item[draggable="false"] {
+        cursor: default;
+      }
+
+      .slot {
+        border: 1px dashed rgba(202, 178, 128, 0.45);
+        border-radius: 6px;
+        padding: 0.45rem;
+        min-width: 180px;
+        min-height: 2rem;
+        background: rgba(10, 17, 30, 0.95);
+      }
+
+      .slot strong {
+        color: var(--accent);
+        font-family: "Fira Code", monospace;
+        font-size: 0.74rem;
+        display: block;
+        margin-bottom: 0.28rem;
+      }
+
+      .input-row {
+        display: flex;
+        gap: 0.4rem;
+        margin-top: 0.55rem;
+      }
+
+      input[type="text"] {
+        flex: 1;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: #0a111f;
+        color: var(--text);
+        padding: 0.45rem 0.55rem;
+        font-family: "Fira Code", monospace;
+        font-size: 0.82rem;
+      }
+
+      .btn {
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: rgba(35, 30, 22, 0.5);
+        color: var(--accent-strong);
+        font-family: "Fira Code", monospace;
+        font-size: 0.8rem;
+        padding: 0.45rem 0.62rem;
+        cursor: pointer;
+      }
+
+      .btn:disabled {
+        color: var(--muted);
+        cursor: not-allowed;
+      }
+
+      .note-panel {
+        padding: 0.8rem;
+        position: sticky;
+        top: 1rem;
+      }
+
+      .note-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.65rem;
+      }
+
+      .note-head h2 {
+        font-family: "Fira Code", monospace;
+        font-size: 0.84rem;
+        color: var(--accent-strong);
+      }
+
+      .note-body {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.6rem;
+        background: rgba(8, 12, 22, 0.82);
+        min-height: 70vh;
+        max-height: 78vh;
+        overflow: auto;
+        white-space: pre-wrap;
+        font-size: 1rem;
+      }
+
+      .tiny {
+        font-size: 0.8rem;
+        color: var(--muted);
+        font-family: "Fira Code", monospace;
+      }
+
+      @media (max-width: 960px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .note-body {
+          min-height: 220px;
+          max-height: 260px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="topbar">
+        <div><strong>Blue Hall Archive</strong> / text-only literary puzzle house</div>
+        <div class="tiny">click to explore · type to solve · drag to arrange</div>
+      </div>
+      <div class="layout">
+        <section class="panel main-panel">
+          <h1 id="roomTitle" class="room-title"></h1>
+          <div id="roomText" class="room-text"></div>
+          <div id="objects" class="objects"></div>
+          <div id="details"></div>
+          <div id="puzzle"></div>
+          <div id="feedback" class="feedback"></div>
+        </section>
+        <aside class="panel note-panel">
+          <div class="note-head">
+            <h2>Notebook</h2>
+            <button id="resetBtn" class="btn" type="button">reset</button>
+          </div>
+          <div id="notebookBody" class="note-body"></div>
+        </aside>
+      </div>
+    </div>
+    <script>
+      const STORAGE_KEY = "blue_hall_archive_state_v1";
+      const NOTEBOOK_TEXT = {
+        bookshelf: `BOOKSHELF SOLVED
+Feeling = sensation interpreted in context
+Burden = repetition without escape
+Guilt = theory collapsing into conscience
+Echo = titles carrying afterimage
+Proof = knowledge without surrender
+Message found: OPEN SEMINAR`,
+        ladder: `LADDER SOLVED
+ORDER BY AFTER IMAGE`,
+        desk: `DESK SOLVED
+Ordered confession fragments
+Output = TWENTYONE`,
+        seminar: `SEMINAR SOLVED
+Matched context to bodily state
+Hidden letter order -> FOURTEEN`,
+        listening: `LISTENING SOLVED
+Use afterimage order:
+STAIR
+DESK
+SEMINAR
+CABINET`,
+        stair: `STAIR SOLVED
+Invariant phrase = THE BOULDER WAITS BELOW
+Letter count = TWENTY`,
+        cabinet: `CABINET SOLVED
+Cipher shift = -2
+Plaintext known
+Proved without revealing
+Output = ONE`,
+        final: `FINAL ANSWER
+TUNA`,
+      };
+
+      const defaultState = () => ({
+        room: "blueHall",
+        solved: {
+          bookshelf: false,
+          ladder: false,
+          desk: false,
+          seminar: false,
+          listening: false,
+          stair: false,
+          cabinet: false,
+          final: false,
+        },
+        unlocked: {
+          seminar: false,
+          parlor: false,
+          stair: false,
+          cabinet: false,
+          finalArchive: false,
+        },
+        notebook: [],
+        detailText: "",
+        puzzle: {
+          bookshelf: { placed: {}, locked: false },
+          desk: { placed: [], ordered: false, extracted: false },
+          seminar: { placed: {}, matched: false, extracted: false },
+          listening: { placed: [], ordered: false, confirmed: false },
+          stair: { climb: 0, invariant: false },
+          cabinet: { decoded: false, qIndex: 0, outputReady: false },
+          finalArchive: { placed: [], arranged: false },
+        },
+      });
+
+      let STATE = loadState();
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return defaultState();
+          const parsed = JSON.parse(raw);
+          return {
+            ...defaultState(),
+            ...parsed,
+            solved: { ...defaultState().solved, ...(parsed.solved || {}) },
+            unlocked: { ...defaultState().unlocked, ...(parsed.unlocked || {}) },
+            puzzle: {
+              ...defaultState().puzzle,
+              ...(parsed.puzzle || {}),
+              bookshelf: { ...defaultState().puzzle.bookshelf, ...(parsed.puzzle?.bookshelf || {}) },
+              desk: { ...defaultState().puzzle.desk, ...(parsed.puzzle?.desk || {}) },
+              seminar: { ...defaultState().puzzle.seminar, ...(parsed.puzzle?.seminar || {}) },
+              listening: { ...defaultState().puzzle.listening, ...(parsed.puzzle?.listening || {}) },
+              stair: { ...defaultState().puzzle.stair, ...(parsed.puzzle?.stair || {}) },
+              cabinet: { ...defaultState().puzzle.cabinet, ...(parsed.puzzle?.cabinet || {}) },
+              finalArchive: { ...defaultState().puzzle.finalArchive, ...(parsed.puzzle?.finalArchive || {}) },
+            },
+          };
+        } catch (_err) {
+          return defaultState();
+        }
+      }
+
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE));
+      }
+
+      function normalize(value) {
+        return value
+          .toLowerCase()
+          .replace(/[^\p{L}\p{N}\s]/gu, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function matchesAnswer(value, accepted) {
+        const input = normalize(value);
+        return accepted.some((a) => normalize(a) === input);
+      }
+
+      function addNotebookEntry(key) {
+        const text = NOTEBOOK_TEXT[key];
+        if (!text) return;
+        if (!STATE.notebook.includes(text)) STATE.notebook.push(text);
+      }
+
+      function checkUnlocks() {
+        if (STATE.solved.bookshelf) STATE.unlocked.seminar = true;
+        if (STATE.solved.ladder) STATE.unlocked.parlor = true;
+        if (STATE.solved.desk) STATE.unlocked.cabinet = true;
+        if (STATE.solved.seminar && STATE.solved.listening) STATE.unlocked.stair = true;
+        if (STATE.solved.desk && STATE.solved.seminar && STATE.solved.stair && STATE.solved.cabinet) STATE.unlocked.finalArchive = true;
+      }
+
+      const roomTitleEl = document.getElementById("roomTitle");
+      const roomTextEl = document.getElementById("roomText");
+      const objectsEl = document.getElementById("objects");
+      const detailsEl = document.getElementById("details");
+      const puzzleEl = document.getElementById("puzzle");
+      const feedbackEl = document.getElementById("feedback");
+      const notebookBodyEl = document.getElementById("notebookBody");
+
+      function setFeedback(message, kind = "") {
+        feedbackEl.textContent = message;
+        feedbackEl.className = `feedback ${kind}`.trim();
+      }
+
+      function setDetail(text) {
+        STATE.detailText = text;
+        detailsEl.innerHTML = text ? `<div class="text-card">${text}</div>` : "";
+        saveState();
+      }
+
+      function roomLink(label, target, locked = false) {
+        return `<button class="inline-action ${locked ? "locked" : ""}" data-nav="${target}" ${locked ? "disabled" : ""}>[${label}]</button>`;
+      }
+
+      function objectButton(label, handler, locked = false) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "obj-btn";
+        btn.textContent = `[${label}]`;
+        if (locked) {
+          btn.disabled = true;
+        } else {
+          btn.addEventListener("click", handler);
+        }
+        return btn;
+      }
+
+      function renderNotebook() {
+        notebookBodyEl.textContent = STATE.notebook.length ? STATE.notebook.join("\n\n") : "No entries yet.";
+      }
+
+      function navTo(room) {
+        STATE.room = room;
+        STATE.detailText = "";
+        render();
+      }
+
+      function bindNavLinks() {
+        roomTextEl.querySelectorAll("[data-nav]").forEach((node) => {
+          node.addEventListener("click", () => navTo(node.getAttribute("data-nav")));
+        });
+      }
+
+      function render() {
+        checkUnlocks();
+        renderNotebook();
+        setFeedback("");
+        detailsEl.innerHTML = "";
+        puzzleEl.innerHTML = "";
+        objectsEl.innerHTML = "";
+        const renderer = ROOM_RENDERERS[STATE.room] || ROOM_RENDERERS.blueHall;
+        renderer();
+        if (STATE.detailText) detailsEl.innerHTML = `<div class="text-card">${STATE.detailText}</div>`;
+        bindNavLinks();
+        saveState();
+      }
+
+      function finishRoom(roomKey, noteKey) {
+        STATE.solved[roomKey] = true;
+        addNotebookEntry(noteKey);
+        checkUnlocks();
+        saveState();
+      }
+
+      function makeDragItem(id, label, clickableDetail = "") {
+        const item = document.createElement("div");
+        item.className = "drag-item";
+        item.draggable = true;
+        item.textContent = label;
+        item.dataset.dragId = id;
+        item.addEventListener("dragstart", (ev) => {
+          ev.dataTransfer.setData("text/plain", id);
+        });
+        if (clickableDetail) {
+          item.addEventListener("click", () => setFeedback(clickableDetail));
+        }
+        return item;
+      }
+
+      function renderBlueHall() {
+        roomTitleEl.textContent = "Blue Hall";
+        const extra = [];
+        if (STATE.solved.bookshelf) extra.push("The seminar door no longer looks dark; it looks patient.");
+        if (STATE.solved.ladder) extra.push("A seam near the parlor door catches light that was not there before.");
+        if (STATE.solved.desk) extra.push("The cabinet seems less locked than unwilling.");
+        if (STATE.solved.final) extra.push("The crossed-out directory no longer reads like revision. It reads like a trail.");
+        roomTextEl.innerHTML = `
+          <p>You step into a blue-painted hall that feels less inhabited than revised. To your right stands a tall ${roomLink("bookshelf", "bookshelf")} with a narrow rolling ${roomLink("ladder", "ladder")} beside it. Ahead is a writing ${roomLink("desk", "desk")} under a dim lamp. A frosted-glass ${roomLink("seminar door", "seminar", !STATE.unlocked.seminar)} sits to the left, dark for now. Farther down the hall, an almost-silent ${roomLink("parlor door", "listening", !STATE.unlocked.parlor)} stands shut. At the back rises a stone ${roomLink("stair", "stair", !STATE.unlocked.stair)}, ${STATE.unlocked.stair ? "the brass chain gone." : "though a brass chain blocks the first step."} Beneath the stair sits a locked ${roomLink("cabinet", "cabinet", !STATE.unlocked.cabinet)}. On the wall hangs a crossed-out ${roomLink("directory", "directory")}.</p>
+          ${extra.map((e) => `<p>${e}</p>`).join("")}
+          ${STATE.unlocked.finalArchive ? `<p>A seam behind the directory has opened into the ${roomLink("final archive", "finalArchive")}.</p>` : ""}
+        `;
+
+        objectsEl.append(
+          objectButton("bookshelf", () => navTo("bookshelf")),
+          objectButton("ladder", () => navTo("ladder")),
+          objectButton("desk", () => navTo("desk")),
+          objectButton("directory", () => navTo("directory")),
+          objectButton("notebook", () => setDetail(STATE.notebook.join("\n\n") || "No entries yet.")),
+          objectButton("seminar door", () => navTo("seminar"), !STATE.unlocked.seminar),
+          objectButton("parlor door", () => navTo("listening"), !STATE.unlocked.parlor),
+          objectButton("stair", () => navTo("stair"), !STATE.unlocked.stair),
+          objectButton("cabinet", () => navTo("cabinet"), !STATE.unlocked.cabinet),
+          objectButton("final archive", () => navTo("finalArchive"), !STATE.unlocked.finalArchive)
+        );
+      }
+
+      function renderDirectory() {
+        roomTitleEl.textContent = "Directory";
+        roomTextEl.innerHTML = `<p>The directory has been written over several times.</p>`;
+        setDetail(`BODY
+BURDEN
+GUILT
+ECHO
+PROOF
+
+Each word has been crossed out once, then rewritten darker.
+
+At the bottom, in smaller handwriting:
+
+Read the rooms in the order of their afterimage.`);
+        objectsEl.append(objectButton("return", () => navTo("blueHall")));
+      }
+
+      function renderBookshelf() {
+        roomTitleEl.textContent = "Bookshelf of Misfiled Minds";
+        roomTextEl.innerHTML = `<p>The bookshelf is divided into five bays. Each bay has a brass tab, but the tabs do not match the contents beneath them. Five oversized catalog cards sit half-pulled from a tray set into the middle shelf.</p>`;
+        const cards = {
+          A: "A body shakes before a stage, a message, a fall, a memory. The pulse is real, but the meaning is not built into the pulse. The mind supplies the concept that turns sensation into feeling.",
+          B: "A figure returns to the same labor again and again. The summit never stays won. What matters is not escape, but what remains when repetition itself becomes the condition.",
+          C: "A student decides theory can excuse an act. After the act, theory remains on paper while conscience continues elsewhere. Fear, illness, guilt, and the pressure toward confession outlast every argument.",
+          D: "Titles alone can carry afterimage even without sound. A phrase can imply movement, collapse, softness, blast radius, residue, prayer.",
+          E: "A secret can be possessed, tested, and partly proven without being surrendered whole.",
+        };
+        objectsEl.append(
+          objectButton("brass tabs", () => setDetail("PROOF\nBURDEN\nFEELING\nGUILT\nECHO")),
+          objectButton("catalog cards", () => setDetail(Object.entries(cards).map(([k, v]) => `Card ${k}:\n${v}`).join("\n\n"))),
+          objectButton("lower rail", () => setDetail(STATE.solved.bookshelf ? "OPEN SEMINAR" : "The lower rail contains five symbol clusters beneath the five bays. They are not readable yet.")),
+          objectButton("return", () => navTo("blueHall"))
+        );
+
+        const puzzle = document.createElement("div");
+        puzzle.className = "puzzle-zone";
+        puzzle.innerHTML = `<h3>Arrange brass tabs by conceptual meaning (drag tab onto card)</h3>`;
+        const pool = document.createElement("div");
+        pool.className = "drag-pool";
+        const slots = document.createElement("div");
+        slots.className = "slots";
+        const labels = ["PROOF", "BURDEN", "FEELING", "GUILT", "ECHO"];
+        const expected = { A: "FEELING", B: "BURDEN", C: "GUILT", D: "ECHO", E: "PROOF" };
+        const used = new Set(Object.values(STATE.puzzle.bookshelf.placed));
+
+        labels.forEach((label) => {
+          if (!used.has(label)) pool.append(makeDragItem(`bookshelf:${label}`, label, `${label} can be reconsidered before you place it.`));
+        });
+
+        Object.keys(cards).forEach((cardKey) => {
+          const slot = document.createElement("div");
+          slot.className = "slot";
+          slot.innerHTML = `<strong>Card ${cardKey}</strong>${cards[cardKey]}`;
+          slot.dataset.slot = cardKey;
+          slot.addEventListener("dragover", (ev) => ev.preventDefault());
+          slot.addEventListener("drop", (ev) => {
+            ev.preventDefault();
+            if (STATE.puzzle.bookshelf.locked) return;
+            const dragId = ev.dataTransfer.getData("text/plain");
+            if (!dragId.startsWith("bookshelf:")) return;
+            const label = dragId.split(":")[1];
+            Object.keys(STATE.puzzle.bookshelf.placed).forEach((k) => {
+              if (STATE.puzzle.bookshelf.placed[k] === label) delete STATE.puzzle.bookshelf.placed[k];
+            });
+            STATE.puzzle.bookshelf.placed[cardKey] = label;
+            render();
+          });
+          if (STATE.puzzle.bookshelf.placed[cardKey]) {
+            const token = makeDragItem(`bookshelf:${STATE.puzzle.bookshelf.placed[cardKey]}`, STATE.puzzle.bookshelf.placed[cardKey]);
+            token.draggable = false;
+            slot.append(token);
+          }
+          slots.append(slot);
+        });
+
+        puzzle.append(pool, slots);
+        const checkBtn = document.createElement("button");
+        checkBtn.className = "btn";
+        checkBtn.type = "button";
+        checkBtn.textContent = STATE.solved.bookshelf ? "arrangement locked" : "check arrangement";
+        checkBtn.disabled = STATE.solved.bookshelf;
+        checkBtn.addEventListener("click", () => {
+          const placed = STATE.puzzle.bookshelf.placed;
+          const ok = Object.keys(expected).every((k) => placed[k] === expected[k]);
+          if (!ok) {
+            setFeedback("Not yet. The tabs still feel misfiled.", "err");
+            return;
+          }
+          STATE.puzzle.bookshelf.locked = true;
+          finishRoom("bookshelf", "bookshelf");
+          setFeedback("The lower rail resolves into: OPEN SEMINAR", "ok");
+          render();
+        });
+        puzzle.append(checkBtn);
+        puzzleEl.append(puzzle);
+
+        if (STATE.solved.bookshelf) {
+          setDetail("The rail gives way with a small click.\n\nOPEN SEMINAR");
+        }
+      }
+
+      function renderLadder() {
+        roomTitleEl.textContent = "Ladder and Upper Margins";
+        roomTextEl.innerHTML = `<p>From the ladder, the room changes. Four volumes have graphite words written along their top edges. On the wall behind the upper shelf are four vertical scratches of uneven length.</p>`;
+        objectsEl.append(
+          objectButton("top edges", () => setDetail("1. ORDER\n2. AFTER\n3. BY\n4. IMAGE")),
+          objectButton("wall scratches", () => setDetail("short\nmedium-long\nmedium\nlong\n\nTreat the ordering as:\n1, 3, 2, 4")),
+          objectButton("dust stripes", () => setDetail("These four books have been removed more often than the others. Someone expected height to matter.")),
+          objectButton("down", () => navTo("blueHall")),
+          objectButton("notebook", () => setDetail(STATE.notebook.join("\n\n") || "No entries yet."))
+        );
+        const zone = document.createElement("div");
+        zone.className = "puzzle-zone";
+        zone.innerHTML = `<h3>Use the wall order to read the top-edge words correctly</h3>`;
+        const inputWrap = document.createElement("div");
+        inputWrap.className = "input-row";
+        const input = document.createElement("input");
+        input.type = "text";
+        input.placeholder = "Enter phrase";
+        const btn = document.createElement("button");
+        btn.className = "btn";
+        btn.textContent = "submit";
+        btn.addEventListener("click", () => {
+          if (matchesAnswer(input.value, ["ORDER BY AFTER IMAGE", "ORDER BY AFTERIMAGE"])) {
+            finishRoom("ladder", "ladder");
+            setFeedback("Correct. A seam beside the parlor door catches light.", "ok");
+            render();
+          } else {
+            setFeedback("Not yet. Read by the wall order, not shelf order.", "err");
+          }
+        });
+        inputWrap.append(input, btn);
+        zone.append(inputWrap);
+        puzzleEl.append(zone);
+      }
+
+      function renderDesk() {
+        roomTitleEl.textContent = "Desk of Rationalizations";
+        roomTextEl.innerHTML = `<p>The desk is neat in the way a person becomes neat after doing something irreversible. A sealed letter lies under the lamp. Under the blotter is a stack of ghost sheets. A shallow tray holds burned drafts. A ruled ledger sits half-open.</p>`;
+        const fragments = [
+          "Theory made the room seem smaller than the act.",
+          "When I named it necessary, I was already lying.",
+          "Every draft removed the fear and kept the argument.",
+          "No sentence about justice erased the sound afterward.",
+          "To call it reason was easier than to call it pride.",
+          "Yet pride did not quiet the shaking.",
+          "Only confession ever moved the air.",
+          "Nothing I crossed out stayed crossed out in me.",
+          "Excuse can be written; punishment cannot be edited.",
+        ];
+        objectsEl.append(
+          objectButton("letter", () => setDetail("The letter is polished and controlled. It explains too much and still never quite says what happened.")),
+          objectButton("opener", () => setDetail("A silver opener, untouched.")),
+          objectButton("ghost sheets", () => setDetail("Indented pressure from earlier drafts remains visible in the paper beneath the final version. The earlier sentences seem less stable and more honest.")),
+          objectButton("burned drafts", () => setDetail(fragments.map((f, i) => `Fragment ${i + 1}:\n${f}`).join("\n\n"))),
+          objectButton("ledger", () => setDetail("- Begin where theory speaks.\n- After lying comes revision.\n- After pride comes shaking.\n- End where excuse fails.")),
+          objectButton("return", () => navTo("blueHall"))
+        );
+        const zone = document.createElement("div");
+        zone.className = "puzzle-zone";
+        zone.innerHTML = `<h3>Order the confession fragments in truest sequence</h3>`;
+        const pool = document.createElement("div");
+        pool.className = "drag-pool";
+        const slots = document.createElement("div");
+        slots.className = "slots";
+        const placed = STATE.puzzle.desk.placed || [];
+        const inPlaced = new Set(placed);
+        fragments.forEach((frag, idx) => {
+          if (!inPlaced.has(idx)) pool.append(makeDragItem(`desk:${idx}`, `F${idx + 1}`, frag));
+        });
+        for (let i = 0; i < 9; i += 1) {
+          const slot = document.createElement("div");
+          slot.className = "slot";
+          slot.innerHTML = `<strong>position ${i + 1}</strong>`;
+          slot.addEventListener("dragover", (ev) => ev.preventDefault());
+          slot.addEventListener("drop", (ev) => {
+            ev.preventDefault();
+            if (STATE.solved.desk || STATE.puzzle.desk.ordered) return;
+            const dragId = ev.dataTransfer.getData("text/plain");
+            if (!dragId.startsWith("desk:")) return;
+            const idx = Number(dragId.split(":")[1]);
+            const next = (STATE.puzzle.desk.placed || []).filter((x) => x !== idx);
+            next[i] = idx;
+            STATE.puzzle.desk.placed = next;
+            render();
+          });
+          if (placed[i] !== undefined) {
+            const token = makeDragItem(`desk:${placed[i]}`, `F${placed[i] + 1}`, fragments[placed[i]]);
+            token.draggable = false;
+            slot.append(token);
+          }
+          slots.append(slot);
+        }
+        zone.append(pool, slots);
+        const checkBtn = document.createElement("button");
+        checkBtn.className = "btn";
+        checkBtn.type = "button";
+        checkBtn.textContent = "check sequence";
+        checkBtn.disabled = STATE.puzzle.desk.ordered;
+        checkBtn.addEventListener("click", () => {
+          const good = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+          const got = STATE.puzzle.desk.placed || [];
+          const ok = good.every((v, idx) => got[idx] === v);
+          if (!ok) {
+            setFeedback("The order still protects itself. Try psychological progression.", "err");
+            return;
+          }
+          STATE.puzzle.desk.ordered = true;
+          setFeedback("Sequence accepted. Extract initials and enter output.", "ok");
+          render();
+        });
+        zone.append(checkBtn);
+        if (STATE.puzzle.desk.ordered && !STATE.solved.desk) {
+          const row = document.createElement("div");
+          row.className = "input-row";
+          const input = document.createElement("input");
+          input.type = "text";
+          input.placeholder = "Extracted output";
+          const btn = document.createElement("button");
+          btn.className = "btn";
+          btn.textContent = "submit output";
+          btn.addEventListener("click", () => {
+            if (matchesAnswer(input.value, ["TWENTYONE", "TWENTY ONE"])) {
+              finishRoom("desk", "desk");
+              setFeedback("Output accepted: TWENTYONE", "ok");
+              render();
+            } else {
+              setFeedback("Not yet. Take first letters in final order.", "err");
+            }
+          });
+          row.append(input, btn);
+          zone.append(row);
+        }
+        puzzleEl.append(zone);
+      }
+
+      function renderSeminar() {
+        roomTitleEl.textContent = "Seminar of Constructed Feeling";
+        roomTextEl.innerHTML = `<p>The seminar room is empty except for a long table, a brass metronome, eight colored case files, and a stack of context cards.</p><p>What you feel is what your mind makes of sensation in context.</p>${STATE.solved.seminar ? "<p>The metronome now sounds steadier, as if the room has accepted interpretation without asking for certainty.</p>" : ""}`;
+        const cases = {
+          1: "Racing pulse, dry mouth, bright lights, everyone watching.",
+          2: "Racing pulse, phone face-down, one unread message.",
+          3: "Tears, applause, relief, and sudden loss all at once.",
+          4: "Shaking hands, pale skin, fluorescent room, no sleep.",
+          5: "Silence after an argument, chest tight, rehearsed sentences.",
+          6: "A laugh at the wrong time, then shame about the laugh.",
+          7: "Clenched jaw, narrowed attention, score still tied.",
+          8: "Lightheadedness at a height, beauty mixed with fear.",
+        };
+        const cards = ["anticipation", "dread", "awe", "exhaustion", "regret", "panic-shame", "rivalry", "vertigo"];
+        const expected = {
+          1: "anticipation",
+          2: "dread",
+          3: "awe",
+          4: "exhaustion",
+          5: "regret",
+          6: "panic-shame",
+          7: "rivalry",
+          8: "vertigo",
+        };
+        objectsEl.append(
+          objectButton("case files", () => setDetail(Object.entries(cases).map(([k, v]) => `Case ${k}:\n${v}`).join("\n\n"))),
+          objectButton("context cards", () => setDetail(cards.join("\n"))),
+          objectButton("metronome", () => setDetail("4 - 1 - 7 - 8 - 2 - 3 - 5 - 6")),
+          objectButton("blackboard", () => setDetail("Do not ask what the body is.\nAsk what the body means here.")),
+          objectButton("wastebasket", () => setDetail("A body does not arrive labeled.\nPrediction is half the room.\nMeaning changes the feeling.")),
+          objectButton("return", () => navTo("blueHall"))
+        );
+        const zone = document.createElement("div");
+        zone.className = "puzzle-zone";
+        zone.innerHTML = "<h3>Match each case file to its context card</h3>";
+        const pool = document.createElement("div");
+        pool.className = "drag-pool";
+        const slots = document.createElement("div");
+        slots.className = "slots";
+        const placed = STATE.puzzle.seminar.placed || {};
+        const used = new Set(Object.values(placed));
+        cards.forEach((c) => {
+          if (!used.has(c)) pool.append(makeDragItem(`seminar:${c}`, c, c));
+        });
+        Object.keys(cases).forEach((caseNo) => {
+          const slot = document.createElement("div");
+          slot.className = "slot";
+          slot.innerHTML = `<strong>Case ${caseNo}</strong>${cases[caseNo]}`;
+          slot.addEventListener("dragover", (ev) => ev.preventDefault());
+          slot.addEventListener("drop", (ev) => {
+            ev.preventDefault();
+            if (STATE.solved.seminar || STATE.puzzle.seminar.matched) return;
+            const dragId = ev.dataTransfer.getData("text/plain");
+            if (!dragId.startsWith("seminar:")) return;
+            const val = dragId.split(":")[1];
+            Object.keys(STATE.puzzle.seminar.placed).forEach((k) => {
+              if (STATE.puzzle.seminar.placed[k] === val) delete STATE.puzzle.seminar.placed[k];
+            });
+            STATE.puzzle.seminar.placed[caseNo] = val;
+            render();
+          });
+          if (placed[caseNo]) {
+            const item = makeDragItem(`seminar:${placed[caseNo]}`, placed[caseNo], placed[caseNo]);
+            item.draggable = false;
+            slot.append(item);
+          }
+          slots.append(slot);
+        });
+        zone.append(pool, slots);
+        const check = document.createElement("button");
+        check.className = "btn";
+        check.textContent = "check matches";
+        check.disabled = STATE.puzzle.seminar.matched;
+        check.addEventListener("click", () => {
+          const ok = Object.keys(expected).every((k) => STATE.puzzle.seminar.placed[k] === expected[k]);
+          if (!ok) {
+            setFeedback("The body still feels mislabeled in this room.", "err");
+            return;
+          }
+          STATE.puzzle.seminar.matched = true;
+          setFeedback("Match accepted. Hidden letters are now legible.", "ok");
+          render();
+        });
+        zone.append(check);
+        if (STATE.puzzle.seminar.matched && !STATE.solved.seminar) {
+          const letters = "1=O 2=T 3=E 4=F 5=E 6=N 7=U 8=R";
+          const hint = document.createElement("div");
+          hint.className = "text-card";
+          hint.textContent = `Hidden letters:\n${letters}\n\nUse metronome order: 4,1,7,8,2,3,5,6`;
+          zone.append(hint);
+          const row = document.createElement("div");
+          row.className = "input-row";
+          const input = document.createElement("input");
+          input.type = "text";
+          input.placeholder = "number-word";
+          const btn = document.createElement("button");
+          btn.className = "btn";
+          btn.textContent = "submit";
+          btn.addEventListener("click", () => {
+            if (matchesAnswer(input.value, ["FOURTEEN"])) {
+              finishRoom("seminar", "seminar");
+              setFeedback("FOURTEEN accepted.", "ok");
+              render();
+            } else {
+              setFeedback("Not yet. Follow the metronome order exactly.", "err");
+            }
+          });
+          row.append(input, btn);
+          zone.append(row);
+        }
+        puzzleEl.append(zone);
+      }
+
+      function renderListening() {
+        roomTitleEl.textContent = "Listening Parlor";
+        roomTextEl.innerHTML = `<p>The parlor is almost dark. A blue lacquer player sits silent on a low table. Narrow sleeves line the wall, stamped only with titles.</p>${STATE.solved.listening ? "<p>The sleeves no longer look like titles; they look like instructions in disguise.</p>" : ""}`;
+        objectsEl.append(
+          objectButton("player", () => setDetail("The player has no visible speaker. Whatever matters here is not sound itself.")),
+          objectButton("sleeves", () => setDetail("Cluster A:\nRequiem\nSupernova\n\nCluster B:\nSoft Spot\nGABRIEL\n\nCluster C:\nDancing with your eyes closed\nJRJRJR")),
+          objectButton("program", () => setDetail("- Begin where collapse repeats.\n- Then go where wound turns inward and speaks.\n- Then go where sensation gets named.\n- End where knowledge is held without surrender.")),
+          objectButton("sequence marks", () => setDetail("Icons shown:\n- stair\n- desk\n- seminar table\n- locked cabinet")),
+          objectButton("return", () => navTo("blueHall"))
+        );
+        const zone = document.createElement("div");
+        zone.className = "puzzle-zone";
+        zone.innerHTML = "<h3>Place room icons in afterimage order</h3>";
+        const items = ["stair", "desk", "seminar", "cabinet"];
+        const expected = ["stair", "desk", "seminar", "cabinet"];
+        const placed = STATE.puzzle.listening.placed || [];
+        const pool = document.createElement("div");
+        pool.className = "drag-pool";
+        const used = new Set(placed);
+        items.forEach((item) => {
+          if (!used.has(item)) pool.append(makeDragItem(`listen:${item}`, item, item));
+        });
+        const slots = document.createElement("div");
+        slots.className = "slots";
+        for (let i = 0; i < 4; i += 1) {
+          const slot = document.createElement("div");
+          slot.className = "slot";
+          slot.innerHTML = `<strong>step ${i + 1}</strong>`;
+          slot.addEventListener("dragover", (ev) => ev.preventDefault());
+          slot.addEventListener("drop", (ev) => {
+            ev.preventDefault();
+            if (STATE.solved.listening || STATE.puzzle.listening.ordered) return;
+            const dragId = ev.dataTransfer.getData("text/plain");
+            if (!dragId.startsWith("listen:")) return;
+            const item = dragId.split(":")[1];
+            const next = (STATE.puzzle.listening.placed || []).filter((x) => x !== item);
+            next[i] = item;
+            STATE.puzzle.listening.placed = next;
+            render();
+          });
+          if (placed[i]) {
+            const token = makeDragItem(`listen:${placed[i]}`, placed[i], placed[i]);
+            token.draggable = false;
+            slot.append(token);
+          }
+          slots.append(slot);
+        }
+        zone.append(pool, slots);
+        const check = document.createElement("button");
+        check.className = "btn";
+        check.textContent = "check order";
+        check.disabled = STATE.puzzle.listening.ordered;
+        check.addEventListener("click", () => {
+          const ok = expected.every((v, i) => STATE.puzzle.listening.placed[i] === v);
+          if (!ok) {
+            setFeedback("Not yet. Follow the program's directional sequence.", "err");
+            return;
+          }
+          STATE.puzzle.listening.ordered = true;
+          setFeedback("Order accepted. Enter room order as words.", "ok");
+          render();
+        });
+        zone.append(check);
+        if (STATE.puzzle.listening.ordered && !STATE.solved.listening) {
+          const row = document.createElement("div");
+          row.className = "input-row";
+          const input = document.createElement("input");
+          input.type = "text";
+          input.placeholder = "STAIR -> DESK -> SEMINAR -> CABINET";
+          const btn = document.createElement("button");
+          btn.className = "btn";
+          btn.textContent = "confirm";
+          btn.addEventListener("click", () => {
+            if (
+              matchesAnswer(input.value, [
+                "STAIR DESK SEMINAR CABINET",
+                "STAIR -> DESK -> SEMINAR -> CABINET",
+                "STAIR, DESK, SEMINAR, CABINET",
+              ])
+            ) {
+              finishRoom("listening", "listening");
+              setFeedback("Afterimage order recorded.", "ok");
+              render();
+            } else {
+              setFeedback("Use the exact room sequence in words.", "err");
+            }
+          });
+          row.append(input, btn);
+          zone.append(row);
+        }
+        puzzleEl.append(zone);
+      }
+
+      function renderStair() {
+        roomTitleEl.textContent = "Stair of Recurrence";
+        roomTextEl.innerHTML = `<p>The chain is gone. The stair rises in dim blue stone. On the first landing sits a round stone. A brass plaque is bolted to the wall.</p>${STATE.solved.stair ? "<p>The stone no longer seems heavy. It seems legible.</p>" : ""}`;
+        const climbs = [
+          "You climb. The light shifts. The plaque looks duller. The landing feels no closer. The boulder waits below.",
+          "You climb again. The air grows colder. The landing feels staged. The wall seems cleaner. The boulder waits below.",
+          "You climb again. The light narrows. The landing looks newly built. The silence is heavier. The boulder waits below.",
+          "You climb again. Nothing resolves. The landing is still a landing. The room has only changed around the same fact. The boulder waits below.",
+        ];
+        objectsEl.append(
+          objectButton("climb", () => {
+            if (STATE.solved.stair) {
+              setDetail("The recurrence has already been read.");
+              return;
+            }
+            STATE.puzzle.stair.climb = Math.min(4, STATE.puzzle.stair.climb + 1);
+            if (STATE.puzzle.stair.climb >= 4) STATE.puzzle.stair.invariant = true;
+            setDetail(climbs[STATE.puzzle.stair.climb - 1] || climbs[3]);
+            saveState();
+            render();
+          }),
+          objectButton("stone", () => setDetail("The stone looks as if it has been placed here, lost here, and always been here.")),
+          objectButton("plaque", () => setDetail(STATE.puzzle.stair.invariant || STATE.solved.stair ? "Ignore height.\nCount what survives every telling." : "Ignore height.\nCount what survives every telling.")),
+          objectButton("window", () => setDetail("Outside is only pale weather. Nothing outside helps.")),
+          objectButton("return", () => navTo("blueHall"))
+        );
+        const zone = document.createElement("div");
+        zone.className = "puzzle-zone";
+        zone.innerHTML = "<h3>Recurrence</h3>";
+        if (STATE.puzzle.stair.invariant || STATE.solved.stair) {
+          const inv = document.createElement("div");
+          inv.className = "text-card";
+          inv.textContent = "Invariant phrase:\nTHE BOULDER WAITS BELOW";
+          zone.append(inv);
+          if (!STATE.solved.stair) {
+            const row = document.createElement("div");
+            row.className = "input-row";
+            const input = document.createElement("input");
+            input.type = "text";
+            input.placeholder = "number-word";
+            const btn = document.createElement("button");
+            btn.className = "btn";
+            btn.textContent = "submit";
+            btn.addEventListener("click", () => {
+              if (matchesAnswer(input.value, ["TWENTY"])) {
+                finishRoom("stair", "stair");
+                setFeedback("TWENTY accepted.", "ok");
+                render();
+              } else {
+                setFeedback("Count letters only, ignore spaces.", "err");
+              }
+            });
+            row.append(input, btn);
+            zone.append(row);
+          }
+        } else {
+          const t = document.createElement("div");
+          t.className = "tiny";
+          t.textContent = "Climb until the invariant becomes explicit.";
+          zone.append(t);
+        }
+        puzzleEl.append(zone);
+      }
+
+      function renderCabinet() {
+        roomTitleEl.textContent = "Cabinet of Proofs";
+        roomTextEl.innerHTML = `<p>The cabinet beneath the stairs has no keyhole. It has three rotating alphabet rings, a black challenge slate, a strip of shifted ciphertext, and a proof card.</p>${STATE.solved.cabinet ? "<p>The slate goes blank, as if satisfied by restraint.</p>" : ""}`;
+        objectsEl.append(
+          objectButton("alphabet rings", () => setDetail("The rings allow a Caesar shift. Try what is simplest before you try what is clever.")),
+          objectButton("ciphertext", () => setDetail("VJG HKTUV VTWG PWODGT JGTG KU QPG")),
+          objectButton("challenge slate", () => setDetail("Answer without giving the final word itself.")),
+          objectButton("proof card", () => setDetail("A simple shift can hide a sentence.\nA good question can test knowledge without demanding the sentence itself.")),
+          objectButton("return", () => navTo("blueHall"))
+        );
+        const zone = document.createElement("div");
+        zone.className = "puzzle-zone";
+        zone.innerHTML = "<h3>Cipher and proof</h3>";
+        if (!STATE.puzzle.cabinet.decoded) {
+          const row = document.createElement("div");
+          row.className = "input-row";
+          const input = document.createElement("input");
+          input.type = "text";
+          input.placeholder = "Decoded plaintext";
+          const btn = document.createElement("button");
+          btn.className = "btn";
+          btn.textContent = "decode";
+          btn.addEventListener("click", () => {
+            if (matchesAnswer(input.value, ["THE FIRST TRUE NUMBER HERE IS ONE"])) {
+              STATE.puzzle.cabinet.decoded = true;
+              setFeedback("Plaintext accepted. Challenge mode opened.", "ok");
+              render();
+            } else {
+              setFeedback("Not yet. Start with the simplest Caesar shift.", "err");
+            }
+          });
+          row.append(input, btn);
+          zone.append(row);
+        } else if (!STATE.puzzle.cabinet.outputReady) {
+          const qs = [
+            { q: "Is the shift odd or even?", accepted: ["even"] },
+            { q: "How many words are in the plaintext?", accepted: ["7", "seven"] },
+            { q: "Is the final word singular or plural?", accepted: ["singular"] },
+            { q: "Does the final word have odd or even length?", accepted: ["odd"] },
+          ];
+          const current = qs[STATE.puzzle.cabinet.qIndex];
+          const card = document.createElement("div");
+          card.className = "text-card";
+          card.textContent = `Question ${STATE.puzzle.cabinet.qIndex + 1}:\n${current.q}`;
+          zone.append(card);
+          const row = document.createElement("div");
+          row.className = "input-row";
+          const input = document.createElement("input");
+          input.type = "text";
+          input.placeholder = "answer";
+          const btn = document.createElement("button");
+          btn.className = "btn";
+          btn.textContent = "submit";
+          btn.addEventListener("click", () => {
+            if (matchesAnswer(input.value, current.accepted)) {
+              STATE.puzzle.cabinet.qIndex += 1;
+              if (STATE.puzzle.cabinet.qIndex >= qs.length) STATE.puzzle.cabinet.outputReady = true;
+              setFeedback("Accepted.", "ok");
+              render();
+            } else {
+              setFeedback("That does not satisfy the slate.", "err");
+            }
+          });
+          row.append(input, btn);
+          zone.append(row);
+        } else if (!STATE.solved.cabinet) {
+          const card = document.createElement("div");
+          card.className = "text-card";
+          card.textContent = "Output = ONE";
+          zone.append(card);
+          const row = document.createElement("div");
+          row.className = "input-row";
+          const input = document.createElement("input");
+          input.type = "text";
+          input.placeholder = "cabinet output";
+          const btn = document.createElement("button");
+          btn.className = "btn";
+          btn.textContent = "submit output";
+          btn.addEventListener("click", () => {
+            if (matchesAnswer(input.value, ["ONE"])) {
+              finishRoom("cabinet", "cabinet");
+              setFeedback("Output accepted: ONE", "ok");
+              render();
+            } else {
+              setFeedback("Enter the revealed output exactly.", "err");
+            }
+          });
+          row.append(input, btn);
+          zone.append(row);
+        }
+        puzzleEl.append(zone);
+      }
+
+      function renderFinalArchive() {
+        roomTitleEl.textContent = "Final Archive";
+        roomTextEl.innerHTML = `<p>A panel behind the crossed-out directory opens inward. Inside is a narrow archive lined with four shallow drawers, a brass wheel, and a reading table with four empty slots.</p><p>Not the words. Their places.</p>`;
+        objectsEl.append(
+          objectButton("drawers", () => setDetail("The drawers are unlabeled.")),
+          objectButton("wheel", () => setDetail("The wheel has twenty-six positions, one for each letter.")),
+          objectButton("table", () => setDetail("ORDER BY AFTER IMAGE")),
+          objectButton("notebook", () => setDetail(STATE.notebook.join("\n\n"))),
+          objectButton("return", () => navTo("blueHall"))
+        );
+        const zone = document.createElement("div");
+        zone.className = "puzzle-zone";
+        zone.innerHTML = "<h3>Arrange outputs using afterimage room order</h3>";
+        const words = ["TWENTY", "TWENTYONE", "FOURTEEN", "ONE"];
+        const expected = ["TWENTY", "TWENTYONE", "FOURTEEN", "ONE"];
+        const placed = STATE.puzzle.finalArchive.placed || [];
+        const pool = document.createElement("div");
+        pool.className = "drag-pool";
+        const used = new Set(placed);
+        words.forEach((w) => {
+          if (!used.has(w)) pool.append(makeDragItem(`final:${w}`, w, w));
+        });
+        const slots = document.createElement("div");
+        slots.className = "slots";
+        for (let i = 0; i < 4; i += 1) {
+          const slot = document.createElement("div");
+          slot.className = "slot";
+          slot.innerHTML = `<strong>slot ${i + 1}</strong>`;
+          slot.addEventListener("dragover", (ev) => ev.preventDefault());
+          slot.addEventListener("drop", (ev) => {
+            ev.preventDefault();
+            if (STATE.solved.final || STATE.puzzle.finalArchive.arranged) return;
+            const dragId = ev.dataTransfer.getData("text/plain");
+            if (!dragId.startsWith("final:")) return;
+            const item = dragId.split(":")[1];
+            const next = (STATE.puzzle.finalArchive.placed || []).filter((x) => x !== item);
+            next[i] = item;
+            STATE.puzzle.finalArchive.placed = next;
+            render();
+          });
+          if (placed[i]) {
+            const token = makeDragItem(`final:${placed[i]}`, placed[i], placed[i]);
+            token.draggable = false;
+            slot.append(token);
+          }
+          slots.append(slot);
+        }
+        zone.append(pool, slots);
+        const check = document.createElement("button");
+        check.className = "btn";
+        check.textContent = "lock order";
+        check.disabled = STATE.puzzle.finalArchive.arranged;
+        check.addEventListener("click", () => {
+          const ok = expected.every((v, i) => STATE.puzzle.finalArchive.placed[i] === v);
+          if (!ok) {
+            setFeedback("Not yet. Use the Listening order as sequence authority.", "err");
+            return;
+          }
+          STATE.puzzle.finalArchive.arranged = true;
+          setFeedback("Order locked. Convert by place, not spelling.", "ok");
+          render();
+        });
+        zone.append(check);
+        if (STATE.puzzle.finalArchive.arranged && !STATE.solved.final) {
+          const row = document.createElement("div");
+          row.className = "input-row";
+          const input = document.createElement("input");
+          input.type = "text";
+          input.placeholder = "final answer";
+          const btn = document.createElement("button");
+          btn.className = "btn";
+          btn.textContent = "submit";
+          btn.addEventListener("click", () => {
+            if (matchesAnswer(input.value, ["TUNA"])) {
+              finishRoom("final", "final");
+              setFeedback("The wheel settles. The house stops revising itself.", "ok");
+              setDetail("The wheel settles with a quiet finality. The archive yields a single word back to you, as if it had been hidden in every room from the beginning:\n\nTUNA\n\nFor the first time, the house stops revising itself.");
+              render();
+            } else {
+              setFeedback("Convert each number-word by position in the alphabet.", "err");
+            }
+          });
+          row.append(input, btn);
+          zone.append(row);
+        }
+        puzzleEl.append(zone);
+      }
+
+      const ROOM_RENDERERS = {
+        blueHall: renderBlueHall,
+        directory: renderDirectory,
+        bookshelf: renderBookshelf,
+        ladder: renderLadder,
+        desk: renderDesk,
+        seminar: () => (STATE.unlocked.seminar ? renderSeminar() : navTo("blueHall")),
+        listening: () => (STATE.unlocked.parlor ? renderListening() : navTo("blueHall")),
+        stair: () => (STATE.unlocked.stair ? renderStair() : navTo("blueHall")),
+        cabinet: () => (STATE.unlocked.cabinet ? renderCabinet() : navTo("blueHall")),
+        finalArchive: () => (STATE.unlocked.finalArchive ? renderFinalArchive() : navTo("blueHall")),
+      };
+
+      document.getElementById("resetBtn").addEventListener("click", () => {
+        if (!confirm("Reset all progress for this adventure?")) return;
+        STATE = defaultState();
+        saveState();
+        render();
+      });
+
+      checkUnlocks();
+      render();
+    </script>
+  </body>
+</html>
