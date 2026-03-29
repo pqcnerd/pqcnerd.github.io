@@ -69,6 +69,10 @@
         align-items: center;
       }
 
+      .code-input {
+        width: 180px;
+      }
+
       .layout {
         display: grid;
         grid-template-columns: 1fr minmax(260px, 320px);
@@ -346,7 +350,9 @@
         <div><strong>Blue Hall Archive</strong> / text-only literary puzzle house</div>
         <div class="tiny">click to explore · type to solve · drag to arrange</div>
         <div class="topbar-controls">
-          <button id="cheatToggleBtn" class="btn" type="button">enable cheat mode</button>
+          <input id="cheatCodeInput" class="code-input" type="text" placeholder="cheat code?" />
+          <button id="cheatCodeSubmitBtn" class="btn" type="button">unlock cheats</button>
+          <button id="cheatToggleBtn" class="btn" type="button" style="display:none;">enable cheat mode</button>
           <button id="cheatSolveAllBtn" class="btn" type="button" style="display:none;">auto-solve all</button>
         </div>
       </div>
@@ -423,6 +429,7 @@ TUNA`,
           cabinet: false,
           finalArchive: false,
         },
+        cheatUnlocked: false,
         cheatMode: false,
         notebook: [],
         detailText: "",
@@ -447,6 +454,7 @@ TUNA`,
           return {
             ...defaultState(),
             ...parsed,
+            cheatUnlocked: Boolean(parsed.cheatUnlocked || parsed.cheatMode),
             cheatMode: Boolean(parsed.cheatMode),
             solved: { ...defaultState().solved, ...(parsed.solved || {}) },
             unlocked: { ...defaultState().unlocked, ...(parsed.unlocked || {}) },
@@ -514,6 +522,8 @@ TUNA`,
       const puzzleEl = document.getElementById("puzzle");
       const feedbackEl = document.getElementById("feedback");
       const notebookBodyEl = document.getElementById("notebookBody");
+      const cheatCodeInput = document.getElementById("cheatCodeInput");
+      const cheatCodeSubmitBtn = document.getElementById("cheatCodeSubmitBtn");
       const cheatToggleBtn = document.getElementById("cheatToggleBtn");
       const cheatSolveAllBtn = document.getElementById("cheatSolveAllBtn");
 
@@ -613,8 +623,18 @@ TUNA`,
         renderer();
         if (STATE.detailText) detailsEl.innerHTML = `<div class="text-card">${STATE.detailText}</div>`;
         bindNavLinks();
-        cheatToggleBtn.textContent = STATE.cheatMode ? "disable cheat mode" : "enable cheat mode";
-        cheatSolveAllBtn.style.display = STATE.cheatMode ? "inline-block" : "none";
+        if (STATE.cheatUnlocked) {
+          cheatCodeInput.style.display = "none";
+          cheatCodeSubmitBtn.style.display = "none";
+          cheatToggleBtn.style.display = "inline-block";
+          cheatToggleBtn.textContent = STATE.cheatMode ? "disable cheat mode" : "enable cheat mode";
+          cheatSolveAllBtn.style.display = STATE.cheatMode ? "inline-block" : "none";
+        } else {
+          cheatCodeInput.style.display = "inline-block";
+          cheatCodeSubmitBtn.style.display = "inline-block";
+          cheatToggleBtn.style.display = "none";
+          cheatSolveAllBtn.style.display = "none";
+        }
         saveState();
       }
 
@@ -1591,6 +1611,21 @@ Read the rooms in the order of their afterimage.`);
         STATE = defaultState();
         saveState();
         render();
+      });
+
+      cheatCodeSubmitBtn.addEventListener("click", () => {
+        if (normalize(cheatCodeInput.value) === "annie") {
+          STATE.cheatUnlocked = true;
+          saveState();
+          setFeedback("Cheat controls unlocked.", "ok");
+          render();
+        } else {
+          setFeedback("Incorrect cheat code.", "err");
+        }
+      });
+
+      cheatCodeInput.addEventListener("keydown", (ev) => {
+        if (ev.key === "Enter") cheatCodeSubmitBtn.click();
       });
 
       cheatToggleBtn.addEventListener("click", () => {
