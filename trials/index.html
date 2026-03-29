@@ -783,7 +783,7 @@ function wing6Done() { return isSolved("sceneR5"); }
 function wing7Done() {
   return ["scene1b","scene2b","scene4b","scene5b","scene8b","scene9b",
           "scene9c","scene10b","scene11b","scene13b","scene16b",
-          "scene7m1","scene7m2","scene7m3","scene7m4"].every(k => isSolved(k));
+          "scene7m1","scene7m2","scene7m3","scene7m4"].some(k => isSolved(k));
 }
 function wing5Ready() { return wing1Done() && wing2Done() && wing3Done() && wing4Done() && wing6Done() && wing7Done(); }
 function allFragments() { return FRAGMENTS.every(f => hasFragment(f.id)); }
@@ -937,8 +937,12 @@ function renderNotebook() {
     { label: "Wing 4 — Two Cities",        done: wing4Done() },
     { label: "Wing 5 — Inner Sanctum",     done: isSolved("scene21") },
     { label: "Wing 6 — Enigma Archive",    done: wing6Done() },
-    { label: "Wing 7 — Mathematics Wing",  done: wing7Done() },
   ];
+  const mathIds = ["scene1b","scene2b","scene4b","scene5b","scene8b","scene9b",
+                   "scene9c","scene10b","scene11b","scene13b","scene16b",
+                   "scene7m1","scene7m2","scene7m3","scene7m4"];
+  const mathSolved = mathIds.filter(k => isSolved(k)).length;
+  wings.push({ label: `Wing 7 — Mathematics Wing (${mathSolved}/15 solved, 1 required)`, done: wing7Done() });
   wings.forEach(w => {
     const d = document.createElement("div");
     d.className = "wing-status" + (w.done ? " done" : "");
@@ -2145,10 +2149,15 @@ function renderWing7Hub() {
   const doorItems = math.map(m =>
     `<span class="door-link${m.done ? " solved-door" : ""}" data-target="${m.id}">[${m.done ? "✓ " : ""}${m.label}]</span>`
   ).join("\n      ");
+  const solvedCount = math.filter(m => m.done).length;
+  const passNote = wing7Done()
+    ? `<p style="color:#6fbf73;font-style:italic;">✓ This wing is cleared — you may proceed to the inner sanctum. The remaining ${15 - solvedCount} room${15 - solvedCount === 1 ? "" : "s"} are here if you wish to continue.</p>`
+    : `<p style="color:#c9a96e;font-style:italic;">Solve any one room here to satisfy the wing and move on. All fifteen remain open whenever you like.</p>`;
   sceneBodyEl.innerHTML = `
     <p>A vast stone hall, cold and precise. Every wall is covered floor-to-ceiling in chalkboard slate. On each panel: a different kind of problem — sequences, graphs, ordinals, tape diagrams, coloured maps. Some panels are lit from behind; others are dark.</p>
     <p>Fifteen doors lead off this hall, each labeled in brass. The hall does not have a fixed order. You may enter any door at any time.</p>
-    <p style="color:#8a9ab0;font-style:italic;">This wing requires computation, research, and patience. No guess will open these locks.</p>
+    ${passNote}
+    <p style="color:#8a9ab0;font-style:italic;">These rooms require computation, research, and patience. No guess will open these locks.</p>
     <div class="door-list">
       ${doorItems}
     </div>`;
