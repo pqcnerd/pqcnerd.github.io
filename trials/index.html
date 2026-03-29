@@ -244,6 +244,7 @@ body {
 }
 .door-link:hover { border-color: var(--amber); }
 .door-link.locked-door { color: var(--muted); cursor: default; font-style: italic; }
+.door-link.solved-door { color: #6fbf73; }
 .solved-notice {
   font-family: 'Fira Code', monospace;
   font-size: 12px;
@@ -470,7 +471,7 @@ const FRAGMENTS = [
   { id: "N1", label: "Three names, counted to their last letter", number: 14, source: "scene5"  },
   { id: "N2", label: "A suit's worth forward from the first",     number: 14, source: "scene9"  },
   { id: "I",  label: "Rooms designed with porosity, windows open",number: 9,  source: "scene8"  },
-  { id: "E",  label: "Letters in the word Sisyphus was given",    number: 5,  source: "scene19" },
+  { id: "E",  label: "The word Camus uses to describe Sisyphus at the moment of descent. Five letters.",    number: 5,  source: "scene19" },
 ];
 
 const SYNTHESIS_LABELS = [
@@ -540,7 +541,7 @@ const TUNA_HINTS = {
   scene10: [
     `Tuna is inside the chest. She is sitting on the note. She has not read the note. She is simply occupying it, as is her custom.`,
     `She climbs out of the chest. She walks to the stone door and sits facing it. She knows what is on the other side. She will not say. This is, in a sense, the point of the room.`,
-    `Tuna turns to look at you. She looks at shiny's last line — 'exactly.' She looks back at you. She has understood the philosophical point and is communicating it by proximity to the relevant text. She cannot type the three words. But she has gestured at the concept: proving by not telling.`,
+    `Tuna turns to look at you. She looks at Computer_Science's last line — 'exactly.' She looks back at you. She has understood the philosophical point and is communicating it by proximity to the relevant text. She cannot type the three words. But she has gestured at the concept: proving by not telling.`,
   ],
   scene11: [
     `Tuna has positioned herself exactly at the fork between the two passages. She is looking at both. She seems to be waiting to see which one you will choose. She is the verifier.`,
@@ -583,9 +584,9 @@ const TUNA_HINTS = {
     `Tuna looks at the blank in door 5. She looks at you. She very slowly blinks. A slow blink means trust in cats. She is telling you to fill in her name. She is asking to be imagined happy.`,
   ],
   scene19: [
-    `Tuna walks onto the pedestal and looks at the glass letters. She selects Y. She bats it off the tray. This is a wrong move. She seems satisfied.`,
-    `She puts the Y back, somehow. She looks at the five letters. She arranges them with her nose: Y, H, P, P, A. This is still not the word. She is almost there.`,
-    `Tuna slides the letters methodically: H first. Then A. Then P. Then P. Then Y. She looks at what she's done. She looks at you. She looks at the dome inscription: ONE MUST IMAGINE SISYPHUS HAPPY. She has spelled the last word. Count them.`,
+    `Tuna walks onto the pedestal and examines the five glass letters. She selects one — the U — and bats it to the far end of the tray. She does not know what the word is. Neither does the U.`,
+    `She returns the U and sniffs each letter in turn. She stops longest at the C and the D. This may mean something. It may mean she smells cheese.`,
+    `Tuna sits at the base of the pedestal and looks up at the dome — not at the moment of ascent, but at the moment of descent, when Sisyphus is walking back to the bottom. Camus gives Sisyphus something in that moment. Not a gift. A quality. A particular kind of seeing. The word starts with L. Five letters. She cannot spell it. She is trying.`,
   ],
   scene20: [
     `Tuna walks from somewhere behind you and sits at the top of the table where the five boxes wait. She looks at each box. She looks at you. She has been patient. She is still patient.`,
@@ -677,6 +678,31 @@ const TUNA_HINTS = {
     `She gets up and traces the nine brass studs on the floor with her nose, visiting each one in turn. She counts — she has four paws and counts in a way that is not numerically reliable — but she reaches nine somehow and seems satisfied. She sits back on the point where the circles touch.`,
     `Tuna looks at you from the tangent point. She has been sitting on a name this whole time. The name belongs to a German mathematician who was twenty-two years old in 1822 and wrote one paper in his entire life. That paper proved what this room demonstrates. The point where the two circles touch carries his name. Find the name. It is the only word that opens this door.`,
   ],
+  wing7hub: [
+    `Tuna has entered the mathematics wing. She is sitting on a diagram of a graph. She is covering at least three vertices. This is probably relevant.`,
+    `She walks between the doors, sniffing each one in turn. She stops longest at the one with the ordinal tower drawn on it. She does not know what ordinals are. She knows they smell interesting.`,
+    `Tuna sits in the exact center of the room and stares at you. Every door in this wing leads somewhere precise. The questions are not about guessing. They are about computing, tracing, and researching. She cannot do any of that. She is a cat.`,
+  ],
+  scene7m1: [
+    `Tuna has found a crayon and is attempting to colour the map on the floor. She has selected one colour. This is mathematically insufficient, and also she is a cat.`,
+    `She is now using two crayons simultaneously, one per paw. She has coloured three regions the same colour and they are touching. She seems unbothered. A professional would be bothered.`,
+    `Tuna drops the crayons and sits on the theorem statement. She knows the number. She has always known the number. It is the minimum number of colours such that no two adjacent regions share a colour — proved in 1976 with a computer. A single digit. She will not say it.`,
+  ],
+  scene7m2: [
+    `Tuna is sniffing the bronze ball. She nudges it. It does not split into five pieces. She seems disappointed.`,
+    `She has noticed the five pedestal labels and is walking from one to the other, examining each. Her count is perfect — she visits each exactly once. She is better at this than the paradox implies.`,
+    `Tuna sits beside the central ball and looks at you. Banach and Tarski proved their theorem in 1924. The question is not whether it's physically possible — it is not. The question is how many pieces the mathematical proof requires. It is a small number. She blinks. She is blinking in the direction of five.`,
+  ],
+  scene7m3: [
+    `Tuna is sitting on top of the stack of papers that says "NP-complete." She seems certain of this classification. She has not read the papers.`,
+    `She is pawing at the three-variable clause on the chalkboard. She has erased one literal by accident. The formula is now simpler. This is not a valid proof technique.`,
+    `Tuna turns to face the door with the three letters on it. She has been staring at those letters for some time. Cook proved in 1971 that this problem was the first of its kind — the hardest decision problem in NP. The three-letter answer is printed right there, on the door she is staring at. She would tell you if she could spell.`,
+  ],
+  scene7m4: [
+    `Tuna is attempting to arrange pebbles into a rectangular grid. She keeps making the same shape: six pebbles. She is satisfied. Mathematically, she is not wrong.`,
+    `She has arranged the pebbles into a different shape now — twenty-eight. She counts them with her nose. She reaches twenty-eight. She is extremely satisfied. She does not know what comes next.`,
+    `Tuna looks at the wall of divisor sums. She has computed nothing. She cannot compute. But she has sat beside the largest number on the wall for ten minutes, and that number ends in six. The third perfect number is larger than both 6 and 28 — you will need to find it. It is between 100 and 1000. She places her paw near the column of numbers that sum to themselves.`,
+  ],
 };
 
 // ──────────────────────────────────────────────
@@ -754,7 +780,12 @@ function wing4BostonDone() { return isSolved("scene15"); }
 function wing4HKDone() { return isSolved("scene17"); }
 function wing4Done() { return wing4BostonDone() && wing4HKDone(); }
 function wing6Done() { return isSolved("sceneR5"); }
-function wing5Ready() { return wing1Done() && wing2Done() && wing3Done() && wing4Done() && wing6Done(); }
+function wing7Done() {
+  return ["scene1b","scene2b","scene4b","scene5b","scene8b","scene9b",
+          "scene9c","scene10b","scene11b","scene13b","scene16b",
+          "scene7m1","scene7m2","scene7m3","scene7m4"].every(k => isSolved(k));
+}
+function wing5Ready() { return wing1Done() && wing2Done() && wing3Done() && wing4Done() && wing6Done() && wing7Done(); }
 function allFragments() { return FRAGMENTS.every(f => hasFragment(f.id)); }
 
 // ──────────────────────────────────────────────
@@ -900,12 +931,13 @@ function renderNotebook() {
 
   wingStatusEl.innerHTML = "";
   const wings = [
-    { label: "Wing 1 — Library",         done: wing1Done() },
-    { label: "Wing 2 — Music Archive",   done: wing2Done() },
-    { label: "Wing 3 — Logic Annex",     done: wing3Done() },
-    { label: "Wing 4 — Two Cities",      done: wing4Done() },
-    { label: "Wing 6 — Enigma Archive",  done: wing6Done() },
-    { label: "Wing 5 — Inner Sanctum",   done: isSolved("scene21") },
+    { label: "Wing 1 — Library",           done: wing1Done() },
+    { label: "Wing 2 — Music Archive",     done: wing2Done() },
+    { label: "Wing 3 — Logic Annex",       done: wing3Done() },
+    { label: "Wing 4 — Two Cities",        done: wing4Done() },
+    { label: "Wing 5 — Inner Sanctum",     done: isSolved("scene21") },
+    { label: "Wing 6 — Enigma Archive",    done: wing6Done() },
+    { label: "Wing 7 — Mathematics Wing",  done: wing7Done() },
   ];
   wings.forEach(w => {
     const d = document.createElement("div");
@@ -941,8 +973,8 @@ function renderEntrance() {
   setBreadcrumb("Entrance Hall");
   sceneTitleEl.textContent = "Scene 0 — The Entrance Hall";
   sceneBodyEl.innerHTML = `
-    <p>A hall that smells faintly of chalk and something like rain. The walls are bare stone. Three doors ahead of you, each slightly ajar. A fourth door, directly behind you, is sealed. On the wall beside the sealed door, a small brass mirror.</p>
-    <p>The mirror reflects the room. In the mirror, you can read a word above the three doors that is not visible when you look at them directly:</p>
+    <p>A hall that smells faintly of chalk and something like rain. The walls are bare stone. Five doors ahead of you, each slightly ajar. A sixth door, directly behind you, is sealed. On the wall beside the sealed door, a small brass mirror.</p>
+    <p>The mirror reflects the room. In the mirror, you can read a word above the five doors that is not visible when you look at them directly:</p>
     <blockquote><em>ΤΗΡΕΣΗΟΛΔ</em></blockquote>
     <p>Below the mirror, a small notebook sits open.</p>
     <div class="door-list">
@@ -950,6 +982,7 @@ function renderEntrance() {
       <span class="door-link" id="dl-music">[door — music archive]</span>
       <span class="door-link" id="dl-logic">[door — logic annex]</span>
       <span class="door-link" id="dl-enigma">[door — the enigma archive]</span>
+      <span class="door-link" id="dl-math">[door — the mathematics wing]</span>
       ${(wing1Done() && wing2Done() && wing3Done()) ? `<span class="door-link" id="dl-wing4">[archway — the two cities archive]</span>` : ""}
       ${wing5Ready() ? `<span class="door-link" id="dl-wing5">[passage — the inner sanctum]</span>` : ""}
     </div>`;
@@ -960,13 +993,13 @@ function renderEntrance() {
   objectsEl.innerHTML = "";
 
   objectsEl.appendChild(objBtn("mirror", () => setDetail(`<p>The mirror reflects everything behind you — the sealed door, the stone, and above the three open doors, a word in letters that are not quite the letters you know: <em>ΤΗΡΕΣΗΟΛΔ</em>. You do not need to translate it. The house has already told you its name.</p>`)));
-  objectsEl.appendChild(objBtn("notebook", () => setDetail(`<p><em>"There is a cat somewhere in this house. Her name is Tuna. She will not help you, but she will try. You may ask her at any time by selecting [ask tuna]. The four doors ahead lead to the Library, the Music Archive, the Logic Annex, and a stranger archive of riddles. You may enter them in any order.</em></p><p><em>The sanctum will not admit you until the rest of the house has been answered."</em></p>`)));
+  objectsEl.appendChild(objBtn("notebook", () => setDetail(`<p><em>"There is a cat somewhere in this house. Her name is Tuna. She will not help you, but she will try. You may ask her at any time by selecting [ask tuna]. Five doors ahead: the Library, the Music Archive, the Logic Annex, the Enigma Archive, and the Mathematics Wing. You may enter them in any order.</em></p><p><em>The sanctum will not admit you until the rest of the house has been answered."</em></p>`)));
   objectsEl.appendChild(tunaBtn("entrance"));
 
   document.querySelectorAll(".door-link").forEach(el => {
     el.style.cursor = "pointer";
     el.addEventListener("click", () => {
-      const targets = { "dl-library":"scene1","dl-music":"scene4","dl-logic":"scene8","dl-enigma":"sceneR1","dl-wing4":"wing4hub","dl-wing5":"scene18" };
+      const targets = { "dl-library":"scene1","dl-music":"scene4","dl-logic":"scene8","dl-enigma":"sceneR1","dl-math":"wing7hub","dl-wing4":"wing4hub","dl-wing5":"scene18" };
       const t = targets[el.id];
       if (t) navTo(t);
     });
@@ -1016,14 +1049,14 @@ function renderScene1() {
   objectsEl.appendChild(objBtn("desk lamp", () => setDetail(`<p>The gas lamp throws amber light that moves very slightly, as if breathing. Under the lamp, a pencil note on a scrap of paper: <em>"Part Two. Chapter 6. He decides. He does not decide. He has already decided."</em></p>`)));
   objectsEl.appendChild(tunaBtn("scene1"));
   if (isSolved("scene1")) {
-    objectsEl.appendChild(navBtn("corridor east →", "scene1b"));
+    objectsEl.appendChild(navBtn("corridor east →", "scene2"));
   }
   objectsEl.appendChild(navBtn("← entrance", "entrance"));
 }
 
 // ── SCENE 1B — The Collatz Cabinet ──
 function renderScene1b() {
-  setBreadcrumb("Wing 1 / Interstitial");
+  setBreadcrumb("Wing 7 / The Collatz Cabinet");
   sceneTitleEl.textContent = "The Collatz Cabinet";
   sceneBodyEl.innerHTML = `
     <p>A narrow corridor between the alcove and the study. You almost walk past it — but a heavy iron cabinet on the left wall stops you. It is padlocked. A card is pinned to the front.</p>
@@ -1045,7 +1078,7 @@ function renderScene1b() {
   puzzleZoneEl.innerHTML = "";
   if (isSolved("scene1b")) {
     puzzleZoneEl.appendChild(solvedNotice("The lock opens. 111 steps from 27 to 1."));
-    objectsEl.appendChild(navBtn("continue east →", "scene2"));
+    objectsEl.appendChild(navBtn("→ return to hub", "wing7hub"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt("Enter the number of steps from 27 to 1 in the Collatz sequence."));
     const row = document.createElement("div"); row.className = "input-row";
@@ -1064,7 +1097,7 @@ function renderScene1b() {
     row.append(inp, btn);
     puzzleZoneEl.appendChild(row);
   }
-  objectsEl.appendChild(navBtn("← scene 1", "scene1"));
+  objectsEl.appendChild(navBtn("← mathematics wing", "wing7hub"));
 }
 
 // ── SCENE 2 — Constructionist Study ──
@@ -1097,7 +1130,7 @@ Fixed biological circuits| Prediction as primary</pre>
   puzzleZoneEl.innerHTML = "";
   if (isSolved("scene2")) {
     puzzleZoneEl.appendChild(solvedNotice(`The brain constructs. The corridor south is open.`));
-    objectsEl.appendChild(navBtn("corridor south →", "scene2b"));
+    objectsEl.appendChild(navBtn("corridor south →", "scene3"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt(`Supply the missing word. What does Barrett's theory say the brain does to emotion?`));
     const row = document.createElement("div"); row.className = "input-row";
@@ -1120,7 +1153,7 @@ Fixed biological circuits| Prediction as primary</pre>
 
 // ── SCENE 2B — The Busy Beaver Vault ──
 function renderScene2b() {
-  setBreadcrumb("Wing 1 / Interstitial");
+  setBreadcrumb("Wing 7 / The Busy Beaver Vault");
   sceneTitleEl.textContent = "The Busy Beaver Vault";
   sceneBodyEl.innerHTML = `
     <p>An alcove off the corridor, sealed by a heavy drawer mounted in the wall. Under glass on the facing wall: a hand-drawn Turing machine transition diagram. Beside it, an engraved plaque:</p>
@@ -1146,7 +1179,7 @@ function renderScene2b() {
   puzzleZoneEl.innerHTML = "";
   if (isSolved("scene2b")) {
     puzzleZoneEl.appendChild(solvedNotice("The drawer opens. Σ(5) = 4098 ones on the tape."));
-    objectsEl.appendChild(navBtn("continue south →", "scene3"));
+    objectsEl.appendChild(navBtn("→ return to hub", "wing7hub"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt("What is Σ(5)?"));
     const row = document.createElement("div"); row.className = "input-row";
@@ -1165,7 +1198,7 @@ function renderScene2b() {
     row.append(inp, btn);
     puzzleZoneEl.appendChild(row);
   }
-  objectsEl.appendChild(navBtn("← scene 2", "scene2"));
+  objectsEl.appendChild(navBtn("← mathematics wing", "wing7hub"));
 }
 
 // ── SCENE 3 — Absurdist Shelf ★ ──
@@ -1192,11 +1225,12 @@ function renderScene3() {
   showPuzzle();
   puzzleZoneEl.innerHTML = "";
   if (isSolved("scene3")) {
-    puzzleZoneEl.appendChild(solvedNotice(`The brass box is open. Fragment A collected.`));
+    puzzleZoneEl.appendChild(solvedNotice(`The brass box is open. Fragment A collected. Wing 1 complete.`));
     const fc = document.createElement("div");
     fc.className = "fragment-card";
     fc.innerHTML = `<div class="fc-label">The first fragment. The philosopher said: ONE serious problem. ONE authentic response.</div><div class="fc-number">№ 1</div>`;
     puzzleZoneEl.appendChild(fc);
+    objectsEl.appendChild(navBtn("← return to entrance", "entrance"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt(`Fill in the blank. Turn the dial to the correct number to open the box.`));
     const row = document.createElement("div"); row.className = "input-row";
@@ -1247,7 +1281,7 @@ function renderScene4() {
   puzzleZoneEl.innerHTML = "";
   if (isSolved("scene4")) {
     puzzleZoneEl.appendChild(solvedNotice(`The door north is open.`));
-    objectsEl.appendChild(navBtn("door north →", "scene4b"));
+    objectsEl.appendChild(navBtn("door north →", "scene5"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt(`Name the door. Enter the title of keshi's debut album.`));
     const row = document.createElement("div"); row.className = "input-row";
@@ -1270,7 +1304,7 @@ function renderScene4() {
 
 // ── SCENE 4B — The Ramsey Antechamber ──
 function renderScene4b() {
-  setBreadcrumb("Wing 2 / Interstitial");
+  setBreadcrumb("Wing 7 / The Ramsey Antechamber");
   sceneTitleEl.textContent = "The Ramsey Antechamber";
   sceneBodyEl.innerHTML = `
     <p>A small, low-ceilinged room. Every surface is covered in red and blue lines — edges of graphs, drawn in chalk, over and over. Each diagram is a complete graph with some edges red, some blue. In every one of them, a triangle of the same color has been circled.</p>
@@ -1293,7 +1327,7 @@ function renderScene4b() {
   puzzleZoneEl.innerHTML = "";
   if (isSolved("scene4b")) {
     puzzleZoneEl.appendChild(solvedNotice("The gate swings open. R(4,4) = 18."));
-    objectsEl.appendChild(navBtn("through the gate →", "scene5"));
+    objectsEl.appendChild(navBtn("→ return to hub", "wing7hub"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt("Enter R(4,4). In any 2-colouring of Kₙ, at what minimum n must a monochromatic K₄ appear?"));
     const row = document.createElement("div"); row.className = "input-row";
@@ -1312,7 +1346,7 @@ function renderScene4b() {
     row.append(inp, btn);
     puzzleZoneEl.appendChild(row);
   }
-  objectsEl.appendChild(navBtn("← scene 4", "scene4"));
+  objectsEl.appendChild(navBtn("← mathematics wing", "wing7hub"));
 }
 
 // ── SCENE 5 — keshi Memorial ★ ──
@@ -1343,7 +1377,7 @@ function renderScene5() {
     fc.className = "fragment-card";
     fc.innerHTML = `<div class="fc-label">Three names, all his. Fourteen letters total.</div><div class="fc-number">№ 14</div>`;
     puzzleZoneEl.appendChild(fc);
-    objectsEl.appendChild(navBtn("exit →", "scene5b"));
+    objectsEl.appendChild(navBtn("exit →", "scene6"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt(`Enter the total letter count across all three of keshi's birth names.`));
     const row = document.createElement("div"); row.className = "input-row";
@@ -1367,7 +1401,7 @@ function renderScene5() {
 
 // ── SCENE 5B — The Isomorphism Gallery ──
 function renderScene5b() {
-  setBreadcrumb("Wing 2 / Interstitial");
+  setBreadcrumb("Wing 7 / The Isomorphism Gallery");
   sceneTitleEl.textContent = "The Isomorphism Gallery";
   sceneBodyEl.innerHTML = `
     <p>A long gallery. Every centimetre of wall space is covered in chalk drawings of graphs — four dots arranged in patterns, connected by lines in every conceivable configuration. No two drawings look alike. Yet a notice near the entrance reads:</p>
@@ -1388,7 +1422,7 @@ function renderScene5b() {
   puzzleZoneEl.innerHTML = "";
   if (isSolved("scene5b")) {
     puzzleZoneEl.appendChild(solvedNotice("The door opens. 11 non-isomorphic graphs on 4 vertices."));
-    objectsEl.appendChild(navBtn("through the door →", "scene6"));
+    objectsEl.appendChild(navBtn("→ return to hub", "wing7hub"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt("How many structurally distinct simple graphs exist on 4 vertices?"));
     const row = document.createElement("div"); row.className = "input-row";
@@ -1407,7 +1441,7 @@ function renderScene5b() {
     row.append(inp, btn);
     puzzleZoneEl.appendChild(row);
   }
-  objectsEl.appendChild(navBtn("← scene 5", "scene5"));
+  objectsEl.appendChild(navBtn("← mathematics wing", "wing7hub"));
 }
 
 // ── SCENE 6 — Shoegaze Passage ──
@@ -1539,7 +1573,7 @@ function renderScene8() {
     fc.className = "fragment-card";
     fc.innerHTML = `<div class="fc-label">The third fragment. Nine windows per room. The sponge architect believed in openness.</div><div class="fc-number">№ 9</div>`;
     puzzleZoneEl.appendChild(fc);
-    objectsEl.appendChild(navBtn("door — cipher cabinet →", "scene8b"));
+    objectsEl.appendChild(navBtn("door — cipher cabinet →", "scene9"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt(`How many windows does each student room in Simmons Hall have?`));
     const row = document.createElement("div"); row.className = "input-row";
@@ -1563,7 +1597,7 @@ function renderScene8() {
 
 // ── SCENE 8B — The Turing Tape Room ──
 function renderScene8b() {
-  setBreadcrumb("Wing 3 / Interstitial");
+  setBreadcrumb("Wing 7 / The Turing Tape Room");
   sceneTitleEl.textContent = "The Turing Tape Room";
   sceneBodyEl.innerHTML = `
     <p>A long, thin room. A paper tape runs its full length, mounted on rollers. On the tape, written at the starting position: <strong>1 0 1 1</strong>. The tape extends left and right as blank space.</p>
@@ -1589,7 +1623,7 @@ function renderScene8b() {
   puzzleZoneEl.innerHTML = "";
   if (isSolved("scene8b")) {
     puzzleZoneEl.appendChild(solvedNotice("The hatch opens. Tape: 1 1 0 0."));
-    objectsEl.appendChild(navBtn("door — cipher cabinet →", "scene9"));
+    objectsEl.appendChild(navBtn("→ return to hub", "wing7hub"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt("Enter the final tape contents, left to right, after the machine halts. No spaces."));
     const row = document.createElement("div"); row.className = "input-row";
@@ -1608,7 +1642,7 @@ function renderScene8b() {
     row.append(inp, btn);
     puzzleZoneEl.appendChild(row);
   }
-  objectsEl.appendChild(navBtn("← scene 8", "scene8"));
+  objectsEl.appendChild(navBtn("← mathematics wing", "wing7hub"));
 }
 
 // ── SCENE 9 — Cipher Cabinet ★ ──
@@ -1639,7 +1673,7 @@ function renderScene9() {
     fc.className = "fragment-card";
     fc.innerHTML = `<div class="fc-label">A suit's worth forward from A. The letter is N. Fourteen.</div><div class="fc-number">№ 14</div>`;
     puzzleZoneEl.appendChild(fc);
-    objectsEl.appendChild(navBtn("→ void terminal", "scene9b"));
+    objectsEl.appendChild(navBtn("→ void terminal", "scene10"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt(`Enter the alphabet position of the letter you land on.`));
     const row = document.createElement("div"); row.className = "input-row";
@@ -1663,7 +1697,7 @@ function renderScene9() {
 
 // ── SCENE 9B — The Vertex Cover Office ──
 function renderScene9b() {
-  setBreadcrumb("Wing 3 / Interstitial");
+  setBreadcrumb("Wing 7 / The Vertex Cover Office");
   sceneTitleEl.textContent = "The Vertex Cover Office";
   sceneBodyEl.innerHTML = `
     <p>A small office. A corkboard covers the entire rear wall, covered in graph diagrams pinned with pushpins and connected by red string. One diagram is larger than the rest, mounted behind glass:</p>
@@ -1687,7 +1721,7 @@ function renderScene9b() {
   puzzleZoneEl.innerHTML = "";
   if (isSolved("scene9b")) {
     puzzleZoneEl.appendChild(solvedNotice("The door opens. Minimum vertex cover size: 3."));
-    objectsEl.appendChild(navBtn("→ void terminal", "scene9c"));
+    objectsEl.appendChild(navBtn("→ return to hub", "wing7hub"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt("What is the size of a minimum vertex cover of this graph?"));
     const row = document.createElement("div"); row.className = "input-row";
@@ -1706,12 +1740,12 @@ function renderScene9b() {
     row.append(inp, btn);
     puzzleZoneEl.appendChild(row);
   }
-  objectsEl.appendChild(navBtn("← scene 9", "scene9"));
+  objectsEl.appendChild(navBtn("← mathematics wing", "wing7hub"));
 }
 
 // ── SCENE 9C — The Diagonal Unification ──
 function renderScene9c() {
-  setBreadcrumb("Wing 3 / Interstitial");
+  setBreadcrumb("Wing 7 / The Diagonal Unification");
   sceneTitleEl.textContent = "The Diagonal Unification";
   sceneBodyEl.innerHTML = `
     <p>A gallery with three portraits on the wall, each labeled with a name and a year:</p>
@@ -1748,7 +1782,7 @@ function renderScene9c() {
   puzzleZoneEl.innerHTML = "";
   if (isSolved("scene9c")) {
     puzzleZoneEl.appendChild(solvedNotice("The door opens. Lawvere's fixed-point theorem — one construction to rule them all."));
-    objectsEl.appendChild(navBtn("→ void terminal", "scene10"));
+    objectsEl.appendChild(navBtn("→ return to hub", "wing7hub"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt("Who unified Cantor, Gödel, and Turing into a single fixed-point theorem? Enter the surname."));
     const row = document.createElement("div"); row.className = "input-row";
@@ -1767,7 +1801,7 @@ function renderScene9c() {
     row.append(inp, btn);
     puzzleZoneEl.appendChild(row);
   }
-  objectsEl.appendChild(navBtn("← vertex cover office", "scene9b"));
+  objectsEl.appendChild(navBtn("← mathematics wing", "wing7hub"));
 }
 
 // ── SCENE 10 — Void Terminal ──
@@ -1776,18 +1810,14 @@ function renderScene10() {
   sceneTitleEl.textContent = "Scene 10 — The Void Terminal";
   sceneBodyEl.innerHTML = `
     <p>A room that should not exist inside a house: it is rendered in low-resolution cubes. Stone brick walls. Polished andesite floor. A torch on the wall casts blocky orange light. Two figures stand near a stone door. Their conversation updates in real time:</p>
-    <pre>toborwinner: the key is 24
-toborwinner: that's how many iron ingots you need for a full armor set
-shiny: wrong. the key is 10
-shiny: that's how many hearts you have
-toborwinner: neither of those is the password
-shiny: i know what the password is
-toborwinner: then say it
-shiny: i can't say it. i just know it
-toborwinner: how is that different from not knowing it
-shiny: is it
-toborwinner: yes
-shiny: think about that</pre>
+    <pre>Computer_Science: the key is 24
+Computer_Science: that's how many iron ingots you need for a full armor set
+Brucifer: erm no
+Computer_Science: ??
+Brucifer: i know what the amount is
+Computer_Science: then say it
+Brucifer: i won't say it loser. i just know it
+</pre>
     <p>The stone door is labeled <em>[PROOF ALCOVE]</em>.</p>`;
 
   hidePuzzle();
@@ -1795,8 +1825,8 @@ shiny: think about that</pre>
   clearFeedback();
   objectsEl.innerHTML = "";
 
-  objectsEl.appendChild(objBtn("toborwinner — talk", () => setDetail(`<p><em>"I'm telling you, 24 iron ingots for a full set. That's the key. Or wait, is it 10 hearts? Those are both real numbers. Very real numbers. The point is I know things."</em></p><p>He does not seem to know the password.</p>`)));
-  objectsEl.appendChild(objBtn("shiny — talk", () => setDetail(`<p><em>"I know what it is. I genuinely know. I'm just not going to say it. Knowing and saying are not the same. There's an entire branch of cryptography built on this. You should look into it."</em></p>`)));
+  objectsEl.appendChild(objBtn("Computer_Science — talk", () => setDetail(`<p><em>"I'm telling you, 24 iron ingots for a full set. That's the key. Or wait, is it 10 hearts? Those are both real numbers. Very real numbers. The point is I know things."</em></p><p>He does not seem to know the password.</p>`)));
+  objectsEl.appendChild(objBtn("Brucifer — talk", () => setDetail(`<p><em>"I know what it is. I genuinely know. I'm just not going to say it. Knowing and saying are not the same. There's an entire branch of cryptography built on this. You should look into it."</em></p>`)));
   objectsEl.appendChild(objBtn("open chest", () => setDetail(`<p>An open chest. Inside: a note. <em>"shiny's paradox is real. A whole branch of cryptography is built around proving you know something without saying what it is. Search: 'prove you know a secret without revealing it cryptography.' Three words. Or a three-letter acronym."</em></p>`)));
   objectsEl.appendChild(objBtn("stone door", () => setDetail(`<p>The door is labeled PROOF ALCOVE. It is sealed. To open it, name the protocol that resolves shiny's paradox — the mechanism by which you can prove you know something without revealing what it is.</p>`)));
   objectsEl.appendChild(tunaBtn("scene10"));
@@ -1807,11 +1837,11 @@ shiny: think about that</pre>
   if (isSolved("scene10")) {
     puzzleZoneEl.appendChild(solvedNotice(`The stone door grinds open. Zero-knowledge proof — proving without telling.`));
     const terminal = document.createElement("pre");
-    terminal.textContent = `toborwinner: oh\nshiny: told you\ntoborwinner: you didn't tell me anything\nshiny: exactly`;
+    terminal.textContent = `idk i was bored so i made up this random ass conversation`;
     puzzleZoneEl.appendChild(terminal);
-    objectsEl.appendChild(navBtn("→ proof alcove", "scene10b"));
+    objectsEl.appendChild(navBtn("→ proof alcove", "scene11"));
   } else {
-    puzzleZoneEl.appendChild(puzzlePrompt(`Name the protocol that resolves shiny's paradox.`));
+    puzzleZoneEl.appendChild(puzzlePrompt(`Name the protocol that resolves Computer_Science's paradox.`));
     const row = document.createElement("div"); row.className = "input-row";
     const inp = inputRow("the cryptographic concept");
     const btn = submitBtn("name it");
@@ -1821,7 +1851,7 @@ shiny: think about that</pre>
         setFeedback("The stone door grinds open. Zero-knowledge proof. Proving without telling.", "ok");
         render();
       } else {
-        setFeedback("shiny's mechanism has a specific name. Search: 'prove you know a secret without revealing it cryptography.'", "err");
+        setFeedback("Computer_Science's mechanism has a specific name. Search: 'prove you know a secret without revealing it cryptography.'", "err");
       }
     });
     inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
@@ -1832,7 +1862,7 @@ shiny: think about that</pre>
 
 // ── SCENE 10B — The Ordinal Archive ──
 function renderScene10b() {
-  setBreadcrumb("Wing 3 / Interstitial");
+  setBreadcrumb("Wing 7 / The Ordinal Archive");
   sceneTitleEl.textContent = "The Ordinal Archive";
   sceneBodyEl.innerHTML = `
     <p>A cold room. The walls are covered in a single cascading diagram — ordinals, ascending from 0 through all the finite numbers, then ω, then ω+1, ω+2, and so on. The diagram branches into towers: ω², ω³, ω^ω, ω^(ω^ω), ω^(ω^(ω^ω)), a tower that grows without end toward something that is not drawn.</p>
@@ -1855,7 +1885,7 @@ function renderScene10b() {
   puzzleZoneEl.innerHTML = "";
   if (isSolved("scene10b")) {
     puzzleZoneEl.appendChild(solvedNotice("The cabinet opens. ε₀ — the first ordinal beyond PA's reach."));
-    objectsEl.appendChild(navBtn("→ proof alcove", "scene11"));
+    objectsEl.appendChild(navBtn("→ return to hub", "wing7hub"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt("Enter the proof-theoretic ordinal of Peano Arithmetic."));
     const row = document.createElement("div"); row.className = "input-row";
@@ -1875,7 +1905,7 @@ function renderScene10b() {
     row.append(inp, btn);
     puzzleZoneEl.appendChild(row);
   }
-  objectsEl.appendChild(navBtn("← void terminal", "scene10"));
+  objectsEl.appendChild(navBtn("← mathematics wing", "wing7hub"));
 }
 
 // ── SCENE 11 — Proof Alcove ──
@@ -1902,7 +1932,7 @@ function renderScene11() {
   puzzleZoneEl.innerHTML = "";
   if (isSolved("scene11")) {
     puzzleZoneEl.appendChild(solvedNotice(`Seven rounds. (1/2)^7 = 1/128 < 1%.`));
-    objectsEl.appendChild(navBtn("→ window between wings", "scene11b"));
+    objectsEl.appendChild(navBtn("→ window between wings", "scene12"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt(`After how many rounds does the fraud probability first fall below 1%?`));
     const row = document.createElement("div"); row.className = "input-row";
@@ -1925,7 +1955,7 @@ function renderScene11() {
 
 // ── SCENE 11B — The Forcing Chamber ──
 function renderScene11b() {
-  setBreadcrumb("Wing 3 / Interstitial");
+  setBreadcrumb("Wing 7 / The Forcing Chamber");
   sceneTitleEl.textContent = "The Forcing Chamber";
   sceneBodyEl.innerHTML = `
     <p>A room that appears to be two rooms simultaneously — or rather, one room that has been extended. The walls are semi-transparent. Beyond them, a second set of walls, slightly larger, containing the first. Beyond those, a third set. The nesting continues as far as you can see.</p>
@@ -1948,7 +1978,7 @@ function renderScene11b() {
   puzzleZoneEl.innerHTML = "";
   if (isSolved("scene11b")) {
     puzzleZoneEl.appendChild(solvedNotice("The gate opens. Forcing — Cohen's method for building new models of set theory."));
-    objectsEl.appendChild(navBtn("→ window between wings", "scene12"));
+    objectsEl.appendChild(navBtn("→ return to hub", "wing7hub"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt("What is Cohen's method called? One word."));
     const row = document.createElement("div"); row.className = "input-row";
@@ -1967,7 +1997,7 @@ function renderScene11b() {
     row.append(inp, btn);
     puzzleZoneEl.appendChild(row);
   }
-  objectsEl.appendChild(navBtn("← proof alcove", "scene11"));
+  objectsEl.appendChild(navBtn("← mathematics wing", "wing7hub"));
 }
 
 // ── SCENE 12 — Window Between Wings ──
@@ -2091,6 +2121,51 @@ function renderWing4Hub() {
   document.getElementById("d-hk").addEventListener("click", () => navTo("scene16"));
 }
 
+// ── WING 7 HUB ──
+function renderWing7Hub() {
+  setBreadcrumb("Wing 7 — Mathematics Wing");
+  sceneTitleEl.textContent = "Wing 7 — The Mathematics Wing";
+  const math = [
+    { id:"scene1b",  label:"The Collatz Cabinet",        done: isSolved("scene1b")  },
+    { id:"scene2b",  label:"The Busy Beaver Vault",      done: isSolved("scene2b")  },
+    { id:"scene4b",  label:"The Ramsey Antechamber",     done: isSolved("scene4b")  },
+    { id:"scene5b",  label:"The Isomorphism Gallery",    done: isSolved("scene5b")  },
+    { id:"scene8b",  label:"The Turing Tape Room",       done: isSolved("scene8b")  },
+    { id:"scene9b",  label:"The Vertex Cover Office",    done: isSolved("scene9b")  },
+    { id:"scene9c",  label:"The Diagonal Unification",   done: isSolved("scene9c")  },
+    { id:"scene10b", label:"The Ordinal Archive",        done: isSolved("scene10b") },
+    { id:"scene11b", label:"The Forcing Chamber",        done: isSolved("scene11b") },
+    { id:"scene13b", label:"The RSA Chamber",            done: isSolved("scene13b") },
+    { id:"scene16b", label:"The Diffie-Hellman Exchange",done: isSolved("scene16b") },
+    { id:"scene7m1", label:"The Four Colour Room",       done: isSolved("scene7m1") },
+    { id:"scene7m2", label:"The Banach-Tarski Room",     done: isSolved("scene7m2") },
+    { id:"scene7m3", label:"The Cook Room",              done: isSolved("scene7m3") },
+    { id:"scene7m4", label:"The Perfect Number Chamber", done: isSolved("scene7m4") },
+  ];
+  const doorItems = math.map(m =>
+    `<span class="door-link${m.done ? " solved-door" : ""}" data-target="${m.id}">[${m.done ? "✓ " : ""}${m.label}]</span>`
+  ).join("\n      ");
+  sceneBodyEl.innerHTML = `
+    <p>A vast stone hall, cold and precise. Every wall is covered floor-to-ceiling in chalkboard slate. On each panel: a different kind of problem — sequences, graphs, ordinals, tape diagrams, coloured maps. Some panels are lit from behind; others are dark.</p>
+    <p>Fifteen doors lead off this hall, each labeled in brass. The hall does not have a fixed order. You may enter any door at any time.</p>
+    <p style="color:#8a9ab0;font-style:italic;">This wing requires computation, research, and patience. No guess will open these locks.</p>
+    <div class="door-list">
+      ${doorItems}
+    </div>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+  objectsEl.appendChild(tunaBtn("wing7hub"));
+  objectsEl.appendChild(navBtn("← entrance", "entrance"));
+
+  sceneBodyEl.querySelectorAll(".door-link[data-target]").forEach(el => {
+    el.style.cursor = "pointer";
+    el.addEventListener("click", () => navTo(el.dataset.target));
+  });
+}
+
 // ── SCENE 13 — Smoot Gallery ──
 function renderScene13() {
   setBreadcrumb("Wing 4 — Boston / Scene 13");
@@ -2117,7 +2192,7 @@ function renderScene13() {
   puzzleZoneEl.innerHTML = "";
   if (isSolved("scene13")) {
     puzzleZoneEl.appendChild(solvedNotice(`The river is CHARLES. Door to the MIThenge Observatory opens.`));
-    objectsEl.appendChild(navBtn("door — MIThenge Observatory →", "scene13b"));
+    objectsEl.appendChild(navBtn("door — MIThenge Observatory →", "scene14"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt(`Decode the ciphertext using the cat's name as the key. Enter the river.`));
     const row = document.createElement("div"); row.className = "input-row";
@@ -2140,7 +2215,7 @@ function renderScene13() {
 
 // ── SCENE 13B — The RSA Chamber ──
 function renderScene13b() {
-  setBreadcrumb("Wing 4 — Boston / Interstitial");
+  setBreadcrumb("Wing 7 / The RSA Chamber");
   sceneTitleEl.textContent = "The RSA Chamber";
   document.getElementById("mainPanel").style.background = "#0f0d0a";
   sceneBodyEl.innerHTML = `
@@ -2162,7 +2237,7 @@ function renderScene13b() {
   puzzleZoneEl.innerHTML = "";
   if (isSolved("scene13b")) {
     puzzleZoneEl.appendChild(solvedNotice("The safe opens. Plaintext: 42. n = 19 × 29."));
-    objectsEl.appendChild(navBtn("door — MIThenge Observatory →", "scene14"));
+    objectsEl.appendChild(navBtn("→ return to hub", "wing7hub"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt("Enter the RSA plaintext (a number)."));
     const row = document.createElement("div"); row.className = "input-row";
@@ -2181,7 +2256,7 @@ function renderScene13b() {
     row.append(inp, btn);
     puzzleZoneEl.appendChild(row);
   }
-  objectsEl.appendChild(navBtn("← Vigenère room", "scene13"));
+  objectsEl.appendChild(navBtn("← mathematics wing", "wing7hub"));
 }
 
 // ── SCENE 14 — MIThenge Observatory ──
@@ -2348,7 +2423,7 @@ function renderScene16() {
   if (isSolved("scene16")) {
     document.getElementById("mainPanel").style.background = "#0d1520";
     puzzleZoneEl.appendChild(solvedNotice(`268 steps. The ferry completes its crossing.`));
-    objectsEl.appendChild(navBtn("door — the two clocks →", "scene16b"));
+    objectsEl.appendChild(navBtn("door — the two clocks →", "scene17"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt(`How many steps lead to the Tian Tan Buddha?`));
     const row = document.createElement("div"); row.className = "input-row";
@@ -2371,7 +2446,7 @@ function renderScene16() {
 
 // ── SCENE 16B — The Diffie-Hellman Exchange ──
 function renderScene16b() {
-  setBreadcrumb("Wing 4 — Hong Kong / Interstitial");
+  setBreadcrumb("Wing 7 / The Diffie-Hellman Exchange");
   sceneTitleEl.textContent = "The Diffie-Hellman Exchange";
   document.getElementById("mainPanel").style.background = "#0d1520";
   sceneBodyEl.innerHTML = `
@@ -2411,7 +2486,7 @@ function renderScene16b() {
   puzzleZoneEl.innerHTML = "";
   if (isSolved("scene16b")) {
     puzzleZoneEl.appendChild(solvedNotice("The door opens. Shared secret: 13."));
-    objectsEl.appendChild(navBtn("door — the two clocks →", "scene17"));
+    objectsEl.appendChild(navBtn("→ return to hub", "wing7hub"));
   } else {
     puzzleZoneEl.appendChild(puzzlePrompt("Enter the shared secret computed by both Alice and Bob."));
     const row = document.createElement("div"); row.className = "input-row";
@@ -2430,7 +2505,7 @@ function renderScene16b() {
     row.append(inp, btn);
     puzzleZoneEl.appendChild(row);
   }
-  objectsEl.appendChild(navBtn("← harbour room", "scene16"));
+  objectsEl.appendChild(navBtn("← mathematics wing", "wing7hub"));
 }
 
 // ── SCENE 17 — The Two Clocks ──
@@ -2592,19 +2667,19 @@ function renderScene19() {
   sceneTitleEl.textContent = "Scene 19 — The Sisyphus Room ★";
   document.getElementById("mainPanel").style.background = "#0f0d0a";
   sceneBodyEl.innerHTML = `
-    <p>A circular room. A domed ceiling. Painted on the dome: a figure pushing a boulder upward along a slope. The boulder is near the top. Below the figure, in large letters:</p>
-    <blockquote><em>"One must imagine Sisyphus ....."</em></blockquote>
-    <p>At the center: a pedestal. On the velvet tray, five glass letters scrambled: <strong>Y &nbsp; H &nbsp; P &nbsp; P &nbsp; A</strong></p>
-    <p>A plaque: <em>"Rearrange these letters. When the word is correct, count its letters. That number is your last fragment."</em></p>
-    <p>A floor note: <em>"This is the strangest sentence Camus wrote. He imagined a man condemned to eternal, pointless repetition — rolling a boulder forever, watching it fall — and then gave him, at the very end of the sentence, a single word. Rearrange the letters. That word is the fragment."</em></p>`;
+    <p>A circular room. A domed ceiling. Painted on the dome: Sisyphus — but not in the moment of effort. In the moment of descent. He is walking back down toward the rock that has already rolled to the bottom. His hands hang at his sides. He is looking down at it.</p>
+    <p>At the center: a pedestal. On the velvet tray, a scatter of glass letters. Not all of them belong to the word. Some are decoys.</p>
+    <p>A plaque: <em>"Select the correct letters and arrange them. The word describes how Sisyphus sees his situation as he descends. It is this quality that Camus gives him — not comfort, not acceptance, not despair. Something sharper. Five letters. When the word is correct, count its letters."</em></p>
+    <p>A floor note: <em>"The famous essay ends with a sentence everyone remembers. But the thought that matters comes earlier — in the descent. Camus names a specific quality that Sisyphus possesses in that moment. It is not a word of consolation. It is a word of clarity. Read the essay."</em></p>`;
 
   hidePuzzle();
   clearDetail();
   clearFeedback();
   objectsEl.innerHTML = "";
 
-  objectsEl.appendChild(objBtn("dome — look up", () => setDetail(`<p>The figure pushes the boulder. The boulder is near the top. It will fall. He will return. He will push again. The dome shows one moment in an infinite sequence. It chose the moment before the fall, not the fall itself. Camus would approve.</p>`)));
-  objectsEl.appendChild(objBtn("floor note", () => setDetail(`<p><em>"This is the strangest sentence Camus wrote. He imagined a man condemned to eternal, pointless repetition — rolling a boulder forever, watching it fall — and then gave him, at the very end of the sentence, a single word. Rearrange the letters. Count that word."</em></p>`)));
+  objectsEl.appendChild(objBtn("dome — look up", () => setDetail(`<p>The dome shows the descent, not the ascent. Sisyphus is walking back. The boulder waits below. In this moment — the pivot between one push and the next — Camus argues that Sisyphus is the superior of his fate. Not because he feels nothing. Because he sees everything. The essay was published in 1942. The relevant passage is in the final section: "The Myth of Sisyphus."</p><p style="color:var(--muted);font-size:15px;">Search: "Myth of Sisyphus Camus descent" — the word appears in the closing section of the essay.</p>`)));
+  objectsEl.appendChild(objBtn("plaque", () => setDetail(`<p>The plaque reads: <em>"Not comfort. Not acceptance. Not despair. Something sharper."</em></p><p>Camus's absurd hero does not look away. He does not pretend the rock is not there or that the slope is gentle. His response to an impossible situation is to see it absolutely clearly — to remain, in Camus's exact word, a particular kind of aware. The word has five letters. It describes a quality of perception, not of emotion.</p>`)));
+  objectsEl.appendChild(objBtn("floor note", () => setDetail(`<p>The note continues: <em>"Camus distinguishes between two responses to the absurd: revolt (which he endorses) and evasion (which he condemns). But below both is a prior quality — the refusal to deceive oneself about one's situation. The essay names it. Search for the passage where Sisyphus descends. That passage contains your word."</em></p>`)));
   objectsEl.appendChild(tunaBtn("scene19"));
   objectsEl.appendChild(navBtn("← scene 18", "scene18"));
 
@@ -2612,20 +2687,20 @@ function renderScene19() {
   puzzleZoneEl.innerHTML = "";
 
   if (isSolved("scene19")) {
-    puzzleZoneEl.appendChild(solvedNotice(`Fragment E collected. HAPPY — 5 letters.`));
+    puzzleZoneEl.appendChild(solvedNotice(`Fragment E collected. LUCID — 5 letters.`));
     const fc = document.createElement("div");
     fc.className = "fragment-card";
-    fc.innerHTML = `<div class="fc-label">The fifth fragment. The word Camus gave to Sisyphus: HAPPY. Five letters.</div><div class="fc-number">№ 5</div>`;
+    fc.innerHTML = `<div class="fc-label">The fifth fragment. The word Camus uses as Sisyphus descends: LUCID. Five letters.</div><div class="fc-number">№ 5</div>`;
     puzzleZoneEl.appendChild(fc);
     objectsEl.appendChild(navBtn("→ synthesis antechamber", "scene20"));
     return;
   }
 
   // Drag puzzle
-  puzzleZoneEl.appendChild(puzzlePrompt(`Arrange the five letters to spell the word. Then confirm.`));
+  puzzleZoneEl.appendChild(puzzlePrompt(`Drag letters into the five slots to spell the word. Not all letters belong. Then confirm.`));
 
   const p19 = STATE.puzzle.scene19;
-  const LETTERS = ["Y","H","P","P","A"];
+  const LETTERS = ["I","D","C","U","L","A","M","J","O","R","E","T"];
 
   const lettersRow = document.createElement("div"); lettersRow.className = "drag-letters"; lettersRow.id = "drag-src";
   const slotsRow = document.createElement("div"); slotsRow.className = "letter-slots"; slotsRow.id = "drag-slots";
@@ -2728,13 +2803,13 @@ function renderScene19() {
     if (slotContents.some(s => s === null)) {
       setFeedback("All five slots must be filled before checking.", "err"); return;
     }
-    if (word === "HAPPY") {
+    if (word === "LUCID") {
       markSolved("scene19");
       grantFragment("E");
-      setFeedback("The velvet tray sinks. A fragment card rises. HAPPY — five letters. Fragment E collected.", "ok");
+      setFeedback("The velvet tray sinks. A fragment card rises. LUCID — five letters. The quality Camus gives Sisyphus in the descent. Fragment E collected.", "ok");
       render();
     } else {
-      setFeedback(`"${word}" — not a word he would have used. The dome inscription says it: one must imagine Sisyphus _____.`, "err");
+      setFeedback(`"${word}" — not the word. The quality is one of perception, not feeling. Camus names it in the descent passage of the essay.`, "err");
     }
   });
 
@@ -3201,6 +3276,196 @@ function renderSceneR5() {
   }
 }
 
+// ── SCENE 7M1 — The Four Colour Room ──
+function renderScene7m1() {
+  setBreadcrumb("Wing 7 / The Four Colour Room");
+  sceneTitleEl.textContent = "The Four Colour Room";
+  sceneBodyEl.innerHTML = `
+    <p>A bright, gallery-like room. Every surface — floor, walls, ceiling — is covered in a single enormous map. Continents, nations, counties, islands: an intricate patchwork of territories, each bordered by its neighbours. The map is printed in greyscale. On the wall, a sign:</p>
+    <blockquote><em>"In 1976, Kenneth Appel and Wolfgang Haken settled a conjecture that had stood since 1852. They proved that any map drawn on a plane — however complex, however many regions — can always be coloured using only a fixed number of colours, such that no two adjacent regions share the same colour."</em></blockquote>
+    <p>Below the sign, a sealed door. On the lock: <em>"How many colours are necessary and sufficient to colour any planar map? Enter the minimum number."</em></p>
+    <p>A note pinned below the lock:</p>
+    <blockquote><em>"The proof required verifying 1,936 reducible configurations, largely by computer — the first major theorem proved with computational assistance. The number itself is not the name of the theorem. The theorem is named after the number."</em></blockquote>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("the map", () => setDetail(`<p>The map is dense: countries nested inside continents, islands separated by sea, borders that meet at points and along long coastlines. No two regions share a border without being coloured differently. The problem: can you always do this with a fixed small number of colours?</p><p style="color:var(--muted);font-size:15px;">Search: "Four Colour Theorem" or "Appel Haken 1976."</p>`)));
+  objectsEl.appendChild(objBtn("the 1852 conjecture", () => setDetail(`<p>Francis Guthrie noticed in 1852, while colouring a map of England, that four colours seemed to suffice. He could not prove it. For 124 years, no one could. It remained one of the most famous unsolved problems in mathematics until Appel and Haken used over a thousand hours of computer time to verify it.</p><p>The result is a theorem. The number is exact — both necessary and sufficient. No map needs more. And no map with four or more regions can always be done with fewer.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene7m1"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene7m1")) {
+    puzzleZoneEl.appendChild(solvedNotice("The lock opens. Four colours. The Four Colour Theorem."));
+    objectsEl.appendChild(navBtn("→ return to hub", "wing7hub"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt("How many colours are necessary and sufficient to colour any planar map?"));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("a number");
+    const btn = submitBtn("enter count");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["4","four"])) {
+        markSolved("scene7m1");
+        setFeedback("Correct. Four colours. Proved by Appel and Haken in 1976, with the aid of a computer.", "ok");
+        render();
+      } else {
+        setFeedback("Incorrect. The theorem is named after the number. It was proved in 1976.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+  objectsEl.appendChild(navBtn("← mathematics wing", "wing7hub"));
+}
+
+// ── SCENE 7M2 — The Banach-Tarski Room ──
+function renderScene7m2() {
+  setBreadcrumb("Wing 7 / The Banach-Tarski Room");
+  sceneTitleEl.textContent = "The Banach-Tarski Room";
+  sceneBodyEl.innerHTML = `
+    <p>A small room with a single bronze sphere on a pedestal in the center. Around it, five empty pedestals in a circle, each with a brass label: <em>Piece 1, Piece 2, Piece 3, Piece 4, Piece 5</em>. A placard on the wall:</p>
+    <blockquote><em>"Stefan Banach and Alfred Tarski proved in 1924 that a solid ball in three-dimensional space can be decomposed into a finite number of non-overlapping pieces, which can then be reassembled — using only rotations and translations — into two solid balls, each identical to the original."</em></blockquote>
+    <blockquote><em>"This is not physically possible. It relies on the Axiom of Choice and the existence of non-measurable sets. The pieces are not ordinary geometric shapes. They are deeply pathological — unmeasurable, non-constructible.</em></blockquote>
+    <p>Below, a sealed drawer. The keypad reads: <em>"How many pieces does the original Banach-Tarski proof decompose the ball into?"</em></p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("the bronze sphere", () => setDetail(`<p>Solid. Smooth. Weighs what a sphere should weigh. The paradox says it can be cut into pieces and those pieces reassembled into two identical spheres. But the cuts are not physical cuts — they are abstract decompositions into non-measurable sets. No real-world material can be decomposed this way. The Axiom of Choice permits sets that cannot be constructed.</p><p style="color:var(--muted);font-size:15px;">Search: "Banach-Tarski paradox number of pieces" or "Banach Tarski 1924 decomposition."</p>`)));
+  objectsEl.appendChild(objBtn("five pedestals", () => setDetail(`<p>There are exactly five empty pedestals. The labels read: Piece 1 through Piece 5. In the original Banach-Tarski proof, the ball is decomposed into exactly this many pieces. Some sources cite variants with different counts — but the original 1924 proof uses five. Note the number of pedestals.</p>`)));
+  objectsEl.appendChild(objBtn("the placard", () => setDetail(`<p>The paradox depends critically on the Axiom of Choice, an axiom that guarantees the existence of certain abstract sets without constructing them. Without AC, the paradox does not hold. The pieces required by the decomposition are not Lebesgue measurable — they have no well-defined volume. This is why the paradox does not violate conservation of mass.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene7m2"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene7m2")) {
+    puzzleZoneEl.appendChild(solvedNotice("The drawer opens. Five pieces in the original Banach-Tarski decomposition."));
+    objectsEl.appendChild(navBtn("→ return to hub", "wing7hub"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt("How many pieces does the original Banach-Tarski decomposition use?"));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("a number");
+    const btn = submitBtn("enter count");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["5","five"])) {
+        markSolved("scene7m2");
+        setFeedback("Correct. Five pieces. Banach and Tarski, 1924 — a paradox built entirely from abstract set theory.", "ok");
+        render();
+      } else {
+        setFeedback("Not quite. Count the pedestals. The original proof uses a specific number. Search 'Banach-Tarski paradox.'", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+  objectsEl.appendChild(navBtn("← mathematics wing", "wing7hub"));
+}
+
+// ── SCENE 7M3 — The Cook Room ──
+function renderScene7m3() {
+  setBreadcrumb("Wing 7 / The Cook Room");
+  sceneTitleEl.textContent = "The Cook Room";
+  sceneBodyEl.innerHTML = `
+    <p>A room that feels like the inside of a logic circuit. Every wall is covered in chalkboard, dense with propositional formulas — conjunctions, disjunctions, negations. Boolean expressions in clausal normal form. Three-variable clauses separated by wedges:</p>
+    <pre style="font-family:'Fira Code',monospace;font-size:14px;line-height:1.8;margin:16px 0;color:var(--amber);">(x₁ ∨ x₂ ∨ ¬x₃) ∧ (¬x₁ ∨ x₃ ∨ x₄) ∧ (x₂ ∨ ¬x₄ ∨ x₅) ∧ ...</pre>
+    <p>The formula continues across every wall. On the opposite side: a door with three large letters etched into it. Beside the door, a framed citation:</p>
+    <blockquote><em>"Stephen Cook, 1971: 'The Complexity of Theorem Proving Procedures.' He proved that this problem — given a propositional formula in conjunctive normal form, is there an assignment of truth values to its variables that makes the whole formula true? — is NP-complete. It was the first problem proved to be NP-complete. Every other NP-complete problem was subsequently shown to be reducible to it."</em></blockquote>
+    <p>The door lock reads: <em>"Name the problem. Three letters. The first proved NP-complete."</em></p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("chalkboard formulas", () => setDetail(`<p>The formulas are in 3-CNF: conjunctive normal form with exactly three literals per clause. A clause is a disjunction of literals. A formula is satisfiable if there exists an assignment of true/false values to each variable that makes every clause true.</p><p>The question: is there a polynomial-time algorithm for this? Cook proved in 1971 that this is NP-complete, meaning: if you could solve it in polynomial time, you could solve everything in NP in polynomial time. The question of whether that's possible is still open — the P vs. NP problem.</p><p style="color:var(--muted);font-size:15px;">Search: "Cook's theorem 1971" or "first NP-complete problem" or "Boolean satisfiability problem."</p>`)));
+  objectsEl.appendChild(objBtn("the door with three letters", () => setDetail(`<p>Three large letters etched into the door. They abbreviate the decision problem that Cook showed was NP-complete. The problem is: given a Boolean formula in CNF, does a satisfying assignment exist? The standard three-letter abbreviation is well known in computer science. The word it abbreviates relates to the question of whether a formula can be satisfied.</p>`)));
+  objectsEl.appendChild(objBtn("framed citation", () => setDetail(`<p>Cook's 1971 paper established the computational complexity class NP-complete. He showed that any problem in NP can be reduced in polynomial time to the decision problem on the door. This means that NP-complete problems are the hardest problems in NP. Levin independently discovered similar results in the Soviet Union around the same time.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene7m3"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene7m3")) {
+    puzzleZoneEl.appendChild(solvedNotice("The door opens. SAT — Boolean Satisfiability, the first NP-complete problem."));
+    objectsEl.appendChild(navBtn("→ return to hub", "wing7hub"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt("Name the first NP-complete problem. Three-letter abbreviation."));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("three letters");
+    const btn = submitBtn("name it");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["sat","3-sat","3sat","boolean satisfiability","satisfiability"])) {
+        markSolved("scene7m3");
+        setFeedback("Correct. SAT — Boolean Satisfiability. Cook proved it NP-complete in 1971. Every NP-complete problem since has been shown reducible to this one.", "ok");
+        render();
+      } else {
+        setFeedback("Not quite. The three-letter answer is carved on the door. Cook's 1971 paper is the reference.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+  objectsEl.appendChild(navBtn("← mathematics wing", "wing7hub"));
+}
+
+// ── SCENE 7M4 — The Perfect Number Chamber ──
+function renderScene7m4() {
+  setBreadcrumb("Wing 7 / The Perfect Number Chamber");
+  sceneTitleEl.textContent = "The Perfect Number Chamber";
+  sceneBodyEl.innerHTML = `
+    <p>A chamber with marble walls. Into each wall panel, numbers are carved in columns — each number followed by its divisors, followed by a sum. A small plaque near the entrance explains:</p>
+    <blockquote><em>"A perfect number is equal to the sum of all its proper divisors — all divisors excluding itself. The ancient Greeks considered these numbers to possess a kind of completeness."</em></blockquote>
+    <div style="font-family:'Fira Code',monospace;font-size:14px;line-height:1.8;margin:16px 0;color:var(--amber);">
+      6:   proper divisors = {1, 2, 3}  →  1 + 2 + 3 = 6  ✓<br>
+      28:  proper divisors = {1, 2, 4, 7, 14}  →  1 + 2 + 4 + 7 + 14 = 28  ✓<br>
+      ???: proper divisors = {1, 2, 4, 8, 11, 16, 22, 31, 44, 62, 124, 155, 248, 310, 496}  →  ??? ✓
+    </div>
+    <p>The third row is incomplete. The wall panel beside it is locked. The keypad reads: <em>"Enter the third perfect number."</em></p>
+    <p>A note below: <em>"Euclid knew this formula. Euler proved it was complete for even perfect numbers. Whether any odd perfect number exists remains unknown."</em></p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("marble wall panels", () => setDetail(`<p>The columns are exact. Each row: a number, its proper divisors, their sum. The first two rows are complete and verified. The third row shows the proper divisors already — a list of fifteen numbers. Their sum is the number you're looking for. You can add them directly: 1+2+4+8+11+16+22+31+44+62+124+155+248+310+496... but wait — 496 is what you are trying to find. The divisors listed are the proper divisors of 496.</p><p style="color:var(--muted);font-size:15px;">Search: "third perfect number" or "perfect numbers list" to verify. Or sum the divisors: 1+2+4+8+11+16+22+31+44+62+124+155+248+310 = 496.</p>`)));
+  objectsEl.appendChild(objBtn("the plaque", () => setDetail(`<p>The Greek term for a perfect number is ἀριθμὸς τέλειος — a complete number. Euclid proved (Elements IX.36) that if 2ⁿ⁻¹ × (2ⁿ − 1) is prime, then the product is a perfect number. For n=2: 2 × 3 = 6. For n=3: 4 × 7 = 28. For n=5: 16 × 31 = ?</p><p>Euler later proved that every even perfect number has this form. No odd perfect number has ever been found. Whether one exists is one of the oldest open problems in mathematics.</p>`)));
+  objectsEl.appendChild(objBtn("Euclid's note", () => setDetail(`<p>Euclid's formula for even perfect numbers: if 2ⁿ − 1 is prime (a Mersenne prime), then 2ⁿ⁻¹ × (2ⁿ − 1) is perfect.</p><p style="font-family:'Fira Code',monospace;font-size:13px;color:var(--amber);">n=2: 2¹ × (2²−1) = 2 × 3 = 6<br>n=3: 2² × (2³−1) = 4 × 7 = 28<br>n=5: 2⁴ × (2⁵−1) = 16 × 31 = ?</p><p>2⁵ − 1 = 31 (prime). 2⁴ = 16. So the third perfect number is 16 × 31.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene7m4"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene7m4")) {
+    puzzleZoneEl.appendChild(solvedNotice("The panel opens. 496 — the third perfect number. 16 × 31."));
+    objectsEl.appendChild(navBtn("→ return to hub", "wing7hub"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt("Enter the third perfect number (after 6 and 28)."));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("a number");
+    const btn = submitBtn("enter number");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["496"])) {
+        markSolved("scene7m4");
+        setFeedback("Correct. 496 is the third perfect number: 16 × 31, where 31 = 2⁵ − 1 is a Mersenne prime.", "ok");
+        render();
+      } else {
+        setFeedback("Not correct. Use Euclid's formula with n=5, or sum the proper divisors listed on the wall.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+  objectsEl.appendChild(navBtn("← mathematics wing", "wing7hub"));
+}
+
 // ──────────────────────────────────────────────
 // MAIN RENDER
 // ──────────────────────────────────────────────
@@ -3228,6 +3493,7 @@ const RENDERERS = {
   scene11b:  renderScene11b,
   scene12:   renderScene12,
   wing4hub:  renderWing4Hub,
+  wing7hub:  renderWing7Hub,
   scene13:   renderScene13,
   scene13b:  renderScene13b,
   scene14:   renderScene14,
@@ -3245,6 +3511,10 @@ const RENDERERS = {
   sceneR3:   renderSceneR3,
   sceneR4:   renderSceneR4,
   sceneR5:   renderSceneR5,
+  scene7m1:  renderScene7m1,
+  scene7m2:  renderScene7m2,
+  scene7m3:  renderScene7m3,
+  scene7m4:  renderScene7m4,
 };
 
 function render() {
@@ -3286,6 +3556,7 @@ function activateCheat() {
     "scene13","scene13b","scene14","scene15",
     "scene16","scene16b","scene17","scene18","scene19","scene20","scene21",
     "sceneR1","sceneR2","sceneR3","sceneR4","sceneR5",
+    "scene7m1","scene7m2","scene7m3","scene7m4",
   ];
   allScenes.forEach(k => { STATE.solved[k] = true; });
   STATE.puzzle.scene12.leftDone = true;
