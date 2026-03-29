@@ -1,0 +1,3055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>THRESHOLD</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --border: #2a3240;
+  --text: #e8dcc8;
+  --muted: #8a9ab0;
+  --amber: #c9a96e;
+  --amber-dim: #9a7a52;
+  --green: #4caf87;
+  --red: #c05555;
+  --warm: #1a1510;
+  --hk-bg: #0d1520;
+  --hk-surface: #111c2a;
+  --hk-amber: #6eb4c9;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 18px;
+  line-height: 1.75;
+  min-height: 100vh;
+}
+.page { display: flex; flex-direction: column; min-height: 100vh; }
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.game-title { color: var(--amber); font-size: 15px; font-weight: 500; letter-spacing: 0.15em; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.breadcrumb { color: var(--muted); font-size: 12px; }
+.breadcrumb span { color: var(--amber-dim); }
+.layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+.main-panel {
+  flex: 1;
+  padding: 36px 40px;
+  overflow-y: auto;
+  max-width: 780px;
+}
+.note-panel {
+  width: 240px;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  padding: 24px 18px;
+  overflow-y: auto;
+  flex-shrink: 0;
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+}
+.note-panel h2 {
+  color: var(--amber);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  font-weight: 500;
+}
+.fragment-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.fragment-card .fc-label { color: var(--muted); margin-bottom: 4px; }
+.fragment-card .fc-number { color: var(--amber); font-size: 14px; font-weight: 500; }
+.fragment-card.empty { color: var(--border); font-style: italic; }
+.scene-title {
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  color: var(--amber-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.scene-body { margin-bottom: 24px; }
+.scene-body p { margin-bottom: 12px; }
+.scene-body blockquote {
+  border-left: 2px solid var(--border);
+  padding-left: 16px;
+  margin: 12px 0;
+  color: var(--muted);
+  font-style: italic;
+}
+.scene-body pre {
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 12px 16px;
+  margin: 12px 0;
+  border-radius: 3px;
+  white-space: pre-wrap;
+  line-height: 1.6;
+  color: var(--text);
+}
+.scene-body .acrostic-line { display: block; }
+.scene-body .acrostic-first { color: var(--amber); font-weight: 500; }
+.objects { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.obj-btn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--amber);
+  font-family: 'EB Garamond', serif;
+  font-size: 16px;
+  padding: 4px 12px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: border-color 0.15s, color 0.15s;
+}
+.obj-btn:hover { border-color: var(--amber); color: var(--amber); }
+.obj-btn.tuna { color: #a0c8a0; border-color: #2a4a2a; font-style: italic; }
+.obj-btn.tuna:hover { border-color: #4caf87; color: var(--green); }
+.obj-btn.nav { color: var(--muted); border-color: #222; font-size: 14px; }
+.obj-btn.nav:hover { border-color: var(--border); color: var(--text); }
+.obj-btn.locked { color: var(--border); border-color: #1a1a1a; cursor: not-allowed; font-style: italic; }
+.detail-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+  font-style: italic;
+  color: var(--muted);
+  line-height: 1.75;
+}
+.detail-card p { margin-bottom: 10px; }
+.detail-card p:last-child { margin-bottom: 0; }
+.detail-card blockquote {
+  border-left: 2px solid var(--amber-dim);
+  padding-left: 14px;
+  margin: 10px 0;
+  color: var(--text);
+}
+.detail-card pre {
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  padding: 10px 14px;
+  margin: 10px 0;
+  border-radius: 2px;
+  white-space: pre-wrap;
+  color: var(--text);
+  font-style: normal;
+}
+.detail-card .acrostic-first { color: var(--amber); font-weight: 500; font-style: normal; }
+.puzzle-zone {
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+  margin-top: 4px;
+}
+.puzzle-zone .puzzle-prompt {
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 14px;
+  font-size: 17px;
+}
+.input-row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; align-items: center; }
+.txt-input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Fira Code', monospace;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 2px;
+  min-width: 200px;
+  outline: none;
+}
+.txt-input:focus { border-color: var(--amber-dim); }
+.txt-input.locked { color: var(--green); border-color: #2a4a2a; }
+.btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: border-color 0.15s;
+}
+.btn:hover { border-color: var(--amber-dim); }
+.feedback {
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  margin-top: 10px;
+  min-height: 22px;
+  padding: 4px 0;
+}
+.feedback.ok { color: var(--green); }
+.feedback.err { color: var(--red); }
+.feedback.info { color: var(--amber-dim); }
+.wing-badge {
+  display: inline-block;
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  border-radius: 2px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.wing-badge.done { color: var(--green); border-color: #2a4a2a; }
+.door-list { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+.door-link {
+  display: inline-block;
+  color: var(--amber);
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px 0;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+.door-link:hover { border-color: var(--amber); }
+.door-link.locked-door { color: var(--muted); cursor: default; font-style: italic; }
+.solved-notice {
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  color: var(--green);
+  margin-top: 8px;
+}
+/* Drag puzzle (Scene 19) */
+.drag-letters { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
+.letter-token {
+  width: 48px; height: 48px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  color: var(--amber);
+  font-family: 'Fira Code', monospace;
+  font-size: 22px;
+  font-weight: 500;
+  display: flex; align-items: center; justify-content: center;
+  cursor: grab;
+  border-radius: 3px;
+  user-select: none;
+}
+.letter-token:active { cursor: grabbing; opacity: 0.7; }
+.letter-token.dragging { opacity: 0.4; }
+.letter-slots { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
+.letter-slot {
+  width: 48px; height: 48px;
+  background: var(--bg);
+  border: 2px dashed var(--border);
+  border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Fira Code', monospace;
+  font-size: 22px;
+  color: var(--amber);
+  cursor: default;
+  transition: border-color 0.15s;
+  position: relative;
+}
+.letter-slot.over { border-color: var(--amber-dim); }
+.letter-slot .slot-idx {
+  position: absolute; bottom: 2px; right: 4px;
+  font-size: 9px; color: var(--muted);
+}
+.letter-slot.filled { border-style: solid; border-color: var(--amber-dim); }
+/* Synthesis room */
+.synthesis-grid { display: flex; flex-direction: column; gap: 14px; margin: 16px 0; }
+.synthesis-slot {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.synthesis-slot .slot-label {
+  flex: 1;
+  font-style: italic;
+  color: var(--muted);
+  font-size: 16px;
+  min-width: 200px;
+}
+.synthesis-slot .slot-input {
+  width: 70px;
+  text-align: center;
+}
+.synthesis-slot.correct { border-color: #2a4a2a; }
+.synthesis-slot .slot-check { font-size: 12px; color: var(--green); font-family: 'Fira Code', monospace; }
+.synthesis-result {
+  font-family: 'Fira Code', monospace;
+  font-size: 24px;
+  letter-spacing: 0.3em;
+  color: var(--amber);
+  text-align: center;
+  margin: 20px 0;
+  min-height: 36px;
+}
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+.shake { animation: shake 0.3s ease; }
+/* Tuna overlay (Scene 23) */
+.overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.overlay-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 36px 40px;
+  max-width: 520px;
+  width: 90%;
+  position: relative;
+}
+.overlay-box h2 { color: var(--amber); font-family: 'Fira Code', monospace; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+.overlay-close {
+  position: absolute; top: 14px; right: 18px;
+  background: none; border: none;
+  color: var(--muted); font-size: 18px; cursor: pointer;
+  font-family: 'Fira Code', monospace;
+}
+.overlay-close:hover { color: var(--text); }
+/* Warm room variant */
+.warm-room { background: #110e09; }
+.warm-room .main-panel { background: #110e09; }
+/* HK room variant */
+.hk-room body, .hk-room .main-panel { background: var(--hk-bg); }
+/* Reset save */
+.reset-btn { background: none; border: none; color: var(--muted); font-family: 'Fira Code', monospace; font-size: 11px; cursor: pointer; padding: 2px 6px; }
+.reset-btn:hover { color: var(--red); }
+/* Final door */
+.final-door-prompt { text-align: center; margin: 30px 0; }
+.final-door-prompt .door-question { font-size: 22px; color: var(--muted); font-style: italic; margin-bottom: 20px; }
+.final-input { font-size: 20px; min-width: 260px; text-align: center; letter-spacing: 0.15em; }
+/* Fragment slot widget (note panel bottom) */
+.note-divider { border-top: 1px solid var(--border); margin: 14px 0; }
+.note-panel .wing-status { color: var(--muted); font-size: 11px; margin-bottom: 4px; }
+.note-panel .wing-status.done { color: var(--green); }
+/* Scratch pad panel */
+.scratch-panel {
+  width: 280px;
+  min-width: 200px;
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  padding: 20px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  font-family: 'Fira Code', monospace;
+}
+.scratch-panel h2 {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.scratch-panel textarea {
+  flex: 1;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 15px;
+  line-height: 1.65;
+  padding: 10px 12px;
+  resize: none;
+  outline: none;
+  width: 100%;
+  min-height: 0;
+  transition: border-color 0.15s;
+}
+.scratch-panel textarea:focus {
+  border-color: var(--amber-dim);
+}
+.scratch-panel textarea::placeholder {
+  color: var(--border);
+  font-style: italic;
+}
+.scratch-saved {
+  font-size: 10px;
+  color: var(--border);
+  text-align: right;
+  margin-top: 6px;
+  height: 12px;
+  transition: color 0.3s;
+  flex-shrink: 0;
+}
+.scratch-saved.visible { color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="page" id="app">
+  <div class="topbar">
+    <div>
+      <span class="game-title">THRESHOLD</span>
+      <span id="breadcrumb" class="breadcrumb"></span>
+    </div>
+    <div class="topbar-right">
+      <button class="reset-btn" id="resetBtn" title="Reset all progress">reset</button>
+    </div>
+  </div>
+  <div class="layout">
+    <main class="main-panel" id="mainPanel">
+      <div class="scene-title" id="sceneTitle"></div>
+      <div class="scene-body" id="sceneBody"></div>
+      <div class="objects" id="objects"></div>
+      <div id="detailCard"></div>
+      <div class="puzzle-zone" id="puzzleZone" style="display:none;"></div>
+      <div class="feedback" id="feedback"></div>
+    </main>
+    <aside class="note-panel" id="notePanel">
+      <h2>Fragments</h2>
+      <div id="notebookBody"></div>
+      <div class="note-divider"></div>
+      <div id="wingStatus"></div>
+    </aside>
+    <aside class="scratch-panel">
+      <h2>Notes</h2>
+      <textarea id="scratchPad" placeholder="Write anything here — observations, guesses, working..."></textarea>
+      <div class="scratch-saved" id="scratchSaved"></div>
+    </aside>
+  </div>
+</div>
+<div id="tunaOverlay" style="display:none;"></div>
+<script>
+// ──────────────────────────────────────────────
+// CONSTANTS
+// ──────────────────────────────────────────────
+const STORAGE_KEY = "threshold_v3_state";
+
+const FRAGMENTS = [
+  { id: "A",  label: "The philosopher's one serious question",    number: 1,  source: "scene3"  },
+  { id: "N1", label: "Three names, counted to their last letter", number: 14, source: "scene5"  },
+  { id: "N2", label: "A suit's worth forward from the first",     number: 14, source: "scene9"  },
+  { id: "I",  label: "Rooms designed with porosity, windows open",number: 9,  source: "scene8"  },
+  { id: "E",  label: "Letters in the word Sisyphus was given",    number: 5,  source: "scene19" },
+];
+
+const SYNTHESIS_LABELS = [
+  { id: "A",  text: "The only serious question — how many answers does the philosopher accept?",            answer: 1  },
+  { id: "N1", text: "Count every letter the artist was born with — all three names.",                       answer: 14 },
+  { id: "N2", text: "From A, count forward one full suit of cards. Where does the alphabet land?",          answer: 14 },
+  { id: "I",  text: "How many windows open in a room designed by the sponge architect?",                    answer: 9  },
+  { id: "E",  text: "The word that set Sisyphus free — how many letters does it hold?",                     answer: 5  },
+];
+
+// ──────────────────────────────────────────────
+// TUNA HINTS (per scene, 3 tiers)
+// ──────────────────────────────────────────────
+const TUNA_ASLEEP = `Tuna has settled into a tight spiral. Her breathing has slowed. She is asleep in the specific way that makes it impossible to justify waking her. She is unavailable for hints. She was barely available before.`;
+
+const TUNA_HINTS = {
+  entrance: [
+    `Tuna is sitting in front of the sealed door as if she placed herself there deliberately. She has not. She is simply a cat, and this is where she sat.`,
+    `She has not moved. She seems to believe the sealed door is hers. Perhaps it is.`,
+    `Tuna turns. She looks at the three open doors. She looks back at the sealed door. She returns to looking at the three open doors. This is, genuinely, as much guidance as she is able to offer.`,
+  ],
+  scene1: [
+    `Tuna is lying across the open book. She has covered Part Two entirely. Whatever Raskolnikov is doing on those pages, it is now Tuna's business.`,
+    `She lifts her head. She stares at the torn paper on the floor. She bats it once. It spins. She decides this is enough and looks away.`,
+    `Tuna places a paw over the burned-out word. She seems to be considering whether she has the word. Whether she has the permission. She decides she does not. She is, in this sense, one of the ordinary ones.`,
+  ],
+  scene2: [
+    `Tuna jumps onto the table and sits directly on the brain diagram. She begins to purr. Whether this is emotional or physiological is unclear. Possibly both.`,
+    `She is examining the blacked-out text with great interest. She does not read. She is, however, pressing her face against the blackout bar as if proximity is a substitute for knowledge.`,
+    `Tuna looks at the bookshelves. She looks at you. She very deliberately turns her back to the room, facing inward toward the wall — the same direction as all the books. She sits there. This is probably a comment about construction and context. Probably.`,
+  ],
+  scene3: [
+    `Tuna sits on top of the brass box. She is considering the dial. She turns it with her paw. She lands on 7. Nothing happens. She turns it again. She lands on 7 again. She seems satisfied. Nothing happens.`,
+    `She is now examining the identical books. She has selected one. She is sitting on it. She has not opened it. This is her relationship to philosophy in general.`,
+    `Tuna walks to the chalkboard. She looks at the blank. She looks at you. She holds up one paw. Slowly. Deliberately. She is counting. She is counting to the answer. She puts the paw down. She has said all she is prepared to say.`,
+  ],
+  scene4: [
+    `Tuna is sitting inside the empty record sleeve. She is perfectly sized for it. She looks extremely comfortable. The record player spins beside her. She does not acknowledge it.`,
+    `She has decided to sit directly in front of the door labeled north. She will not move. She is not blocking it. She is simply very close to it. There is something about the name on the door that interests her.`,
+    `Tuna yawns. She shows her teeth. Then she looks at the setlist on the wall. Then at the note. Then at you. The note mentions an angel. She does not know what angels are called. But she knows what you should be searching for.`,
+  ],
+  scene5: [
+    `Tuna sits beside the plaque. She seems to be counting something. She gets to four. She stops. She has counted her own paws. She is wrong. She is also counting the wrong thing.`,
+    `She looks at the photograph. She looks at you. She looks at the photograph again. She presses her nose to the glass. She seems to want you to read the photograph more carefully. She is not able to specify which part.`,
+    `Tuna puts her paw on the photograph. She moves it first to the face, then to the text beneath: Casey. She moves it to the second word: Thai. Then the third: Luong. She counts — one group, two groups, three groups — and then knocks the photograph off the wall entirely. She has said what she came to say.`,
+  ],
+  scene6: [
+    `Tuna walks the length of the blue corridor very slowly. She examines every canvas. She selects none of them as meaningful. She sits at the far end, near the door, and stares back at you.`,
+    `She is pressing herself against the door as if she can push it open with her body weight. She cannot. She weighs approximately what she weighs. The door does not care.`,
+    `Tuna sits beside the journal. She puts a paw on it. She seems to be indicating: the answer is in here. More specifically: the date, the event, the name that was given up. She does not type. You will have to type.`,
+  ],
+  scene7: [
+    `Tuna is sitting in the middle of the painted blizzard on the ceiling. She is not on the ceiling. She is on the floor beneath it, staring up at it. She seems to find the blizzard specifically interesting.`,
+    `She has jumped onto the reading table. She is sitting on the printed page. She is covering most of it. The first letters of each sentence are still visible at the left margin, if you look carefully.`,
+    `Tuna stands up. She walks from the top of the page to the bottom, pressing each first letter with her paw as she goes: first column, first column, first column. She reaches the bottom. She looks at you. She has done something deliberate. Whether you understood it is your problem.`,
+  ],
+  scene8: [
+    `Tuna is walking across the blueprints spread on the floor, leaving no marks. She examines Vassar Street with the authority of someone who has lived there. She has not lived there.`,
+    `She has found the detail circle on the drafting table. She is sitting inside it with her whole body, having determined that the circle is hers. She is not in the way of the annotation. She is in the way of everything else.`,
+    `Tuna walks to the window of this room. She sits and looks out. She turns back to look at you. She turns to the window again. She counts the panes of the window she is sitting in front of. She gets to three and loses interest. She is not helpful with the counting. But she is pointing at windows.`,
+  ],
+  scene9: [
+    `Tuna is spinning the cipher wheel with her paw. She stops on M. She looks satisfied. M is not the answer. She spins again. She stops on M. This is a pattern with her.`,
+    `She has climbed inside the cipher wheel like a wheel of fortune. She rotates herself a quarter turn. She is now looking at the ceiling. This is not a hint.`,
+    `Tuna looks at the playing card display. She puts one paw on the glass. Then she walks over to the cipher wheel, sits on A, and looks expectantly at the card display. She looks back at A. She looks at you. She is pointing at the start. She is pointing at the shift. She is, somehow, pointing at thirteen.`,
+  ],
+  scene10: [
+    `Tuna is inside the chest. She is sitting on the note. She has not read the note. She is simply occupying it, as is her custom.`,
+    `She climbs out of the chest. She walks to the stone door and sits facing it. She knows what is on the other side. She will not say. This is, in a sense, the point of the room.`,
+    `Tuna turns to look at you. She looks at shiny's last line — 'exactly.' She looks back at you. She has understood the philosophical point and is communicating it by proximity to the relevant text. She cannot type the three words. But she has gestured at the concept: proving by not telling.`,
+  ],
+  scene11: [
+    `Tuna has positioned herself exactly at the fork between the two passages. She is looking at both. She seems to be waiting to see which one you will choose. She is the verifier.`,
+    `She has gone down the left passage. She has not come back. A moment passes. She comes back from the right passage. This was not magic. This was a cat.`,
+    `Tuna does the two-passage demonstration again. This time she does it seven times. Left in, right out. Right in, right out. Left in, left out. She returns each time. She is counting. By the seventh round she seems satisfied. She sits. She blinks at you. Seven.`,
+  ],
+  scene12: [
+    `Tuna is looking through the left window at the library. She presses her nose to the glass. She does this for some time. She switches to the right window. She repeats this process. She has found both windows equally interesting and is providing no disambiguation.`,
+    `She taps the left keyhole. She looks at you. She taps the right keyhole. She looks at you. She walks away. She is doing more than you might think.`,
+    `Tuna sits in front of the left window: the library. She looks at you very seriously, then says nothing, because she is a cat. But her expression is the expression of someone who has just remembered a name. The name of the scientist in the study with the books facing inward.`,
+  ],
+  scene13: [
+    `Tuna is walking down the painted bridge markings on the floor. She reaches the mark that says 360 and stops. She looks at the '+? ear' mark. She looks at her own ear. She seems vaguely offended.`,
+    `She is sitting on the ciphertext. This is VBNREYF. She is sitting on the V. She seems to be offering herself as the first step toward the answer, which would require you to know that the key is her name, which you do, because it is.`,
+    `Tuna stands up. She spells her own name slowly: she pats herself on the head with her paw — T. She looks at you with great significance — U. She looks at herself again — N. She yawns — A. She has told you the key. This is the most helpful she has ever been. She will not repeat it.`,
+  ],
+  scene14: [
+    `Tuna is sitting in the beam of the narrow window. There is no sunlight today. She is sitting where it would be, as if imagining it. She seems warm. She is not warm.`,
+    `She has moved to the campus map. She is walking across the five circled buildings, stepping from one to the next. 7. 3. 10. 4. 8. She counts with her paws. She gets to four and then steps on Building 8. Five.`,
+    `Tuna walks to the east wall photograph and looks at it for a long time. She looks at you. She looks at the ancient monument on the photograph's caption — there is a caption if you look closely. It names what this phenomenon is called. Tuna puts her paw on the caption. She does not read. But she is pointing.`,
+  ],
+  scene15: [
+    `Tuna is lying in the amethyst light from the oculus. The light passes through her fur and does something interesting. She looks, for a moment, like a stained glass cat. She is unbothered.`,
+    `She is examining the carved text on the wall. She walks along it very slowly, touching each letter with her whiskers as she goes. She reaches the S in SILENCE and stops. She seems satisfied. This is the fifth letter. She has counted to five.`,
+    `Tuna looks at the first letter of each line: M. A. N. U. S. She taps each with a single claw, precisely. She is spelling something. You will have to determine what that something means, and what its other half is. She can only do so much.`,
+  ],
+  scene16: [
+    `Tuna is sitting on the windowsill, watching the ferry cross the harbour. She tracks it with her head, left to right, very slowly. She seems to know this view. She has the posture of a cat watching familiar birds from a familiar window.`,
+    `She has moved to the bronze model. She is smaller than the model Buddha. She sits beside it and assumes approximately the same posture — back straight, face forward, paws tucked. She is meditating. She is not helpful.`,
+    `Tuna walks to the plaque. She puts one paw on the word 'steps.' She looks at you. She then begins to walk in a very small circle — around and around the pedestal, one step at a time, as if she is climbing. She completes several laps. She does not reach 268. But she is demonstrating the concept of stairs with great commitment.`,
+  ],
+  scene17: [
+    `Tuna is sitting exactly between the two clocks, equidistant from Boston and Hong Kong. She is looking at neither. She is looking at you. She seems to be making a point about how the distance between two things is also a place you can sit.`,
+    `She has moved to the globe. She is pressing her nose against the red thread connecting the two cities. She follows it with her eyes. She seems to be measuring something. She is not capable of division. But she is interested in the thread.`,
+    `Tuna looks at the Boston clock. She counts on her paw: one, two, three... She loses interest at four. She looks at the Hong Kong clock. She appears to be thinking about the number thirteen, but she arrives at this not by arithmetic but by a kind of feline intuition that has nothing to do with UTC offsets and everything to do with the fact that she has been in this house for a very long time and she has always known what time it is.`,
+  ],
+  scene18: [
+    `Tuna is examining door 4. The one about revolt. She seems to agree with it, in the way that a cat always seems to agree with revolt as a general philosophy of existence.`,
+    `She has moved to door 5. She is sitting in front of it now. She has read the inscription. She finds it incomplete. She will wait.`,
+    `Tuna looks at the blank in door 5. She looks at you. She very slowly blinks. A slow blink means trust in cats. She is telling you to fill in her name. She is asking to be imagined happy.`,
+  ],
+  scene19: [
+    `Tuna walks onto the pedestal and looks at the glass letters. She selects Y. She bats it off the tray. This is a wrong move. She seems satisfied.`,
+    `She puts the Y back, somehow. She looks at the five letters. She arranges them with her nose: Y, H, P, P, A. This is still not the word. She is almost there.`,
+    `Tuna slides the letters methodically: H first. Then A. Then P. Then P. Then Y. She looks at what she's done. She looks at you. She looks at the dome inscription: ONE MUST IMAGINE SISYPHUS HAPPY. She has spelled the last word. Count them.`,
+  ],
+  scene20: [
+    `Tuna walks from somewhere behind you and sits at the top of the table where the five boxes wait. She looks at each box. She looks at you. She has been patient. She is still patient.`,
+    `She presses her nose to the first box. She sniffs the label above it. She seems to recognize something. She walks to the next box. She sniffs again. She walks on. She is doing a full audit.`,
+    `Tuna sits in front of the box whose label mentions a philosopher. She looks at you. She holds up one paw — just the one — and then tucks it back under herself. She has told you everything she is going to.`,
+  ],
+  wing4hub: [
+    `Tuna has found the archway that leads to the Two Cities. She is sitting in its exact center. She fits perfectly. She seems to regard the two branches ahead of her as equally interesting, which is not helpful.`,
+    `She walks a few steps toward the Boston side, then reverses, then walks a few steps toward the Hong Kong side. She sits between them. She is not deciding. She simply exists between the two without discomfort.`,
+    `Tuna looks at both archways for a long moment. Then she turns to face you. She seems to be saying: either one. It doesn't matter which you choose first. The house is patient. So is she.`,
+  ],
+  scene1b: [
+    `Tuna is sitting on the cabinet, staring at the padlock. She bats the lock once. It does not open. She was not expecting it to. She bats it again. She seems to find this activity satisfying regardless of outcome.`,
+    `She has jumped off the cabinet. She is now sitting very still on the floor, staring at nothing. She does this occasionally. Whether she is computing a sequence or simply being a cat is indistinguishable from the outside. After a while she blinks. 27, she is thinking. Or something else. It is impossible to say.`,
+    `Tuna walks to the card on the cabinet and puts her paw on the number 27. She holds it there. She looks at you. Then she moves her paw along the card — one small step, then another — repeatedly, as if counting each movement. She does this for a very long time. She does not reach the end. But she has demonstrated the process.`,
+  ],
+  scene2b: [
+    `Tuna is examining the Turing machine diagrams with the attention she usually reserves for birds. She traces a state transition with one claw. She loses the thread. She starts again from state A. This is normal.`,
+    `She has found the table of values carved into the drawer. She sits beside it and studies: 1, 4, 6, 13. She seems to find the pattern familiar in some animal sense. She looks at the fifth position — blank — and then at you.`,
+    `Tuna stares at the sequence: 1, 4, 6, 13. She counts on her paws: one, two, three, four. She stops. She looks at where a fifth paw would be if she had one. She blinks. She seems to be communicating that what you are looking for is the next number in a sequence that was only resolved in 2024, and that this took mathematicians and computers decades of effort. She does not elaborate further.`,
+  ],
+  scene4b: [
+    `Tuna is sitting in the exact center of the red-and-blue graph diagram on the floor. She is a point, not a vertex. She does not understand the distinction. She is warm and comfortable in the middle of a graph theory problem.`,
+    `She has counted the six vertices of K₆ drawn on the left wall. She got to four, then reconsidered her methodology, returned to the beginning, and arrived at a different number. This is not helpful. She is demonstrating, however, that 6 is important.`,
+    `Tuna walks to the inscription: R(3,3) = 6. She puts one paw on the equals sign. Then she looks at R(4,4) and looks at you with an expression of complete patience. She is telling you that the answer exists, that it has been proven, and that a computer was involved. She is also telling you it is larger than 6. She is also just sitting there, because she is a cat.`,
+  ],
+  scene5b: [
+    `Tuna is standing in front of the chalk graphs on the wall. She is examining them. She goes from drawing to drawing, sniffing each one. She has decided two of them smell the same. They do not smell the same. She cannot detect graph isomorphism. She is doing her best.`,
+    `She sits in front of a drawing with four vertices and zero edges — the empty graph. She seems to find it calming. She then sits in front of one with all six possible edges — K₄. She finds this one overstimulating and walks away. She has acknowledged the two extremes.`,
+    `Tuna walks the full length of the gallery, touching each chalk drawing with her nose. She ends at the eleventh drawing. She sits. She does not continue past it. She looks at you. She has visited eleven graphs. She seems satisfied. Whether this is coincidence is left as an exercise for the reader.`,
+  ],
+  scene8b: [
+    `Tuna has found the paper tape. She is sitting on it, exactly at the position marked 0. She will not move. The tape, as far as she is concerned, is hers. The head can work around her.`,
+    `She is studying the transition table on the wall. She looks at State A, Symbol 1 — and then looks at the tape. She reads: 1 0 1 1. She bats the rightmost 1. She seems to believe something should change there. She is, inadvertently, correct.`,
+    `Tuna traces the tape with her paw, right to left. At each 1, she pauses and looks at you. After the third 1, she finds a 0, and stops. She puts her paw down firmly on the 0. She looks at you. She is pointing at the bit that gets flipped and stays flipped. She has traced the carry-propagation. She is a better computer scientist than she appears.`,
+  ],
+  scene9b: [
+    `Tuna is standing on the corkboard, having knocked several pushpins onto the floor. The red string is tangled around her left paw. She is now part of the graph. She is, specifically, vertex E.`,
+    `She walks along the red string connecting C to B, then C to D, then C to E. She has walked all edges incident to C. She sits on C. She seems to feel that vertex C is the most important vertex in the room. She is not wrong.`,
+    `Tuna sits at vertex C. Then she walks to D. Then she walks to A. She sits. She looks at the full graph. She looks at you. She has placed herself at three vertices: C, D, and A. She looks back at each edge — AB, AC, BC, BD, CD, CE, DE — and seems to be verifying that at least one of her chosen vertices touches each edge. She blinks. She is done verifying. She is three.`,
+  ],
+  scene9c: [
+    `Tuna sits in the center of the room beneath the three portraits. She looks at Cantor. She looks at Gödel. She looks at Turing. She looks at the fourth portrait — blank. She looks at you with an expression of mild accusation.`,
+    `She walks to Cantor's portrait and puts a paw on the diagonal line in his 1891 proof. She walks to Gödel's portrait and puts a paw on the self-referential construction. She walks to Turing's portrait and puts a paw on the halting argument. She looks back at all three. She seems to be pointing at a sameness.`,
+    `Tuna sits directly beneath the blank fourth portrait. She stares at it. She looks at 1969 carved in the frame. She looks at you. She looks at the year. She holds perfectly still for longer than is comfortable. She is indicating that you need to find a mathematician who came after Turing, well after, and unified what all three had done. The name is not obvious. You will have to search.`,
+  ],
+  scene10b: [
+    `Tuna is sitting on the desk, staring at the ordinal diagram. She traces the ascending towers of ω with one claw — ω, ω^ω, ω^(ω^ω) — going upward. She reaches a point and stops. She sits very still. She seems to sense that what comes next is qualitatively different from everything below.`,
+    `She has found the description of Gentzen's proof. She reads it — or sits on it, which is equivalent. She finds the year 1936. She looks at you. She looks at the ordinal diagram again. She seems to be connecting two things that are separated by forty years of mathematics.`,
+    `Tuna traces the tower of omegas with precise deliberation: ω to the ω to the ω, repeating without end. She stops. She draws back. She looks at the label at the bottom of the limit of all those towers. She puts her paw over the label and looks at you very steadily. She has found the name of the smallest ordinal that Peano Arithmetic cannot reach. She will not say it aloud. But she has pointed at the exact concept with surgical feline precision.`,
+  ],
+  scene11b: [
+    `Tuna has entered the model of set theory and is examining it. She is aware that this is unusual. She walks through it carefully, pawing at individual sets. She stops at a particular set and sniffs it. It seems to have been added by some external process she did not expect.`,
+    `She has found Paul Cohen's construction. She sits beside it. She looks at the partial order on the floor. She sniffs the generic filter. She is not sure what a generic filter is. But she can tell that someone extended the universe and put something new in it. She is looking at the method, not the product.`,
+    `Tuna sits on the partial order poset at the center of the room. She looks at the dense open sets hung on the walls. She looks at the filter running through them all. She turns to you with the expression of a cat who knows that a 1963 technique for building new models of set theory has one specific English word as its name, a word borrowed from physics, and that this word is what opens the door. She has done the research. She will not do it for you.`,
+  ],
+  scene13b: [
+    `Tuna is sniffing the brass plate on the safe. She seems interested in n = 551. She does not know what 551 is. She knows it smells like two things.`,
+    `She has pressed herself against the safe and appears to be listening to it. She hears nothing. She steps back. She looks at the numbers: 551, 5, 93. She is counting factors. She cannot factor numbers. But she can sit very authoritatively in front of a problem.`,
+    `Tuna walks to you and sits down. She looks at you for a long time. Then she says: the number 551 is not prime. Something you could factor by trial division if you tried primes below its square root. She does not say this in words. She says it with the expression of a cat who knows there are exactly two prime factors and that you can find them by trying.`,
+  ],
+  scene16b: [
+    `Tuna is sitting between the two terminals, looking from one screen to the other. She has arrived at the midpoint of a key exchange. She finds the symmetry pleasing in a feline way that has nothing to do with cryptography.`,
+    `She presses her nose to the left terminal: Alice sends 10. She steps to the right terminal: Bob sends 18. She looks at you. She is presenting both public keys. She cannot exponentiate. But she has delivered the information.`,
+    `Tuna sits in front of the left terminal. She stares at Alice's public key: 10. Then she looks at you, blinks three times — once, twice, three times — very deliberately. Then she looks at the right terminal: Bob's private key. She is telling you to raise 10 to the power of Bob's private key, mod 23. She is unable to confirm this. But she has indicated the correct calculation with remarkable specificity for a cat.`,
+  ],
+};
+
+// ──────────────────────────────────────────────
+// STATE
+// ──────────────────────────────────────────────
+function defaultState() {
+  return {
+    scene: "entrance",
+    solved: {},         // sceneKey -> true
+    tunaState: 0,       // 0–3 (0=none,1=tier1,2=tier2,3=tier3), resets on nav
+    tunaScene: null,    // which scene the current tuna state belongs to
+    fragments: {},      // fragmentId -> true
+    puzzle: {
+      scene12: { leftDone: false },
+      scene14: { field1Done: false },
+      scene17: { field1Done: false },
+      scene19: { slots: [null,null,null,null,null] },
+      scene20: { shuffleOrder: null, placed: {}, done: false },
+    },
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return defaultState();
+    const p = JSON.parse(raw);
+    const d = defaultState();
+    return Object.assign(d, {
+      scene: p.scene || d.scene,
+      solved: p.solved || {},
+      fragments: p.fragments || {},
+      puzzle: Object.assign(d.puzzle, p.puzzle || {}),
+    });
+  } catch(e) { return defaultState(); }
+}
+
+function saveState() {
+  const toSave = {
+    scene: STATE.scene,
+    solved: STATE.solved,
+    fragments: STATE.fragments,
+    puzzle: STATE.puzzle,
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+}
+
+let STATE = loadState();
+
+// ──────────────────────────────────────────────
+// UTILITIES
+// ──────────────────────────────────────────────
+function normalize(v) {
+  return String(v).toLowerCase().replace(/[.,!?'"]/g, "").replace(/\s+/g, " ").trim();
+}
+function matchesAnswer(val, accepted) {
+  const n = normalize(val);
+  return accepted.some(a => normalize(a) === n);
+}
+function isSolved(key) { return !!STATE.solved[key]; }
+function markSolved(key) {
+  STATE.solved[key] = true;
+  saveState();
+}
+function hasFragment(id) { return !!STATE.fragments[id]; }
+function grantFragment(id) {
+  STATE.fragments[id] = true;
+  saveState();
+}
+
+function wing1Done() { return isSolved("scene3"); }
+function wing2Done() { return isSolved("scene7"); }
+function wing3Done() { return isSolved("scene12"); }
+function wing4BostonDone() { return isSolved("scene15"); }
+function wing4HKDone() { return isSolved("scene17"); }
+function wing4Done() { return wing4BostonDone() && wing4HKDone(); }
+function wing5Ready() { return wing1Done() && wing2Done() && wing3Done() && wing4Done(); }
+function allFragments() { return FRAGMENTS.every(f => hasFragment(f.id)); }
+
+// ──────────────────────────────────────────────
+// DOM REFS
+// ──────────────────────────────────────────────
+const sceneTitleEl = document.getElementById("sceneTitle");
+const sceneBodyEl  = document.getElementById("sceneBody");
+const objectsEl    = document.getElementById("objects");
+const detailCardEl = document.getElementById("detailCard");
+const puzzleZoneEl = document.getElementById("puzzleZone");
+const feedbackEl   = document.getElementById("feedback");
+const notebookBodyEl = document.getElementById("notebookBody");
+const wingStatusEl   = document.getElementById("wingStatus");
+const breadcrumbEl   = document.getElementById("breadcrumb");
+const tunaOverlayEl  = document.getElementById("tunaOverlay");
+
+// ──────────────────────────────────────────────
+// UI HELPERS
+// ──────────────────────────────────────────────
+function setFeedback(msg, kind) {
+  feedbackEl.textContent = msg;
+  feedbackEl.className = "feedback " + (kind || "");
+}
+function clearFeedback() { feedbackEl.textContent = ""; feedbackEl.className = "feedback"; }
+function setDetail(html) {
+  detailCardEl.innerHTML = `<div class="detail-card">${html}</div>`;
+}
+function clearDetail() { detailCardEl.innerHTML = ""; }
+function hidePuzzle() { puzzleZoneEl.style.display = "none"; puzzleZoneEl.innerHTML = ""; }
+function showPuzzle() { puzzleZoneEl.style.display = "block"; }
+
+function objBtn(label, handler, cls) {
+  const b = document.createElement("button");
+  b.className = "obj-btn " + (cls || "");
+  b.textContent = "[" + label + "]";
+  b.addEventListener("click", () => { clearDetail(); clearFeedback(); handler(); });
+  return b;
+}
+function navBtn(label, target) {
+  const b = document.createElement("button");
+  b.className = "obj-btn nav";
+  b.textContent = "[" + label + "]";
+  b.addEventListener("click", () => navTo(target));
+  return b;
+}
+function tunaBtn(sceneKey) {
+  const b = document.createElement("button");
+  b.className = "obj-btn tuna";
+  b.textContent = "[ask tuna]";
+  b.addEventListener("click", () => {
+    clearFeedback();
+    if (STATE.tunaScene !== sceneKey) {
+      STATE.tunaState = 0;
+      STATE.tunaScene = sceneKey;
+    }
+    const hints = TUNA_HINTS[sceneKey] || [];
+    if (STATE.tunaState >= 3) {
+      setDetail(`<p><em>${TUNA_ASLEEP}</em></p>`);
+    } else {
+      const hint = hints[STATE.tunaState];
+      STATE.tunaState++;
+      setDetail(`<p><em>${hint}</em></p>`);
+    }
+  });
+  return b;
+}
+function inputRow(placeholder, cls) {
+  const inp = document.createElement("input");
+  inp.type = "text";
+  inp.className = "txt-input " + (cls || "");
+  inp.placeholder = placeholder || "";
+  inp.addEventListener("input", () => checkTunaHome(inp.value));
+  return inp;
+}
+function submitBtn(label) {
+  const b = document.createElement("button");
+  b.className = "btn";
+  b.textContent = label || "submit";
+  return b;
+}
+function puzzlePrompt(text) {
+  const p = document.createElement("p");
+  p.className = "puzzle-prompt";
+  p.innerHTML = text;
+  return p;
+}
+function solvedNotice(text) {
+  const d = document.createElement("div");
+  d.className = "solved-notice";
+  d.innerHTML = "&#10003; " + (text || "solved.");
+  return d;
+}
+
+// ──────────────────────────────────────────────
+// TUNA HOME SECRET ROOM
+// ──────────────────────────────────────────────
+function checkTunaHome(val) {
+  if (normalize(val) === "tuna home") {
+    showTunaHome();
+  }
+}
+function showTunaHome() {
+  tunaOverlayEl.style.display = "flex";
+  tunaOverlayEl.className = "overlay";
+  tunaOverlayEl.innerHTML = `
+    <div class="overlay-box">
+      <button class="overlay-close" id="tunaClose">✕</button>
+      <h2>Tuna's Nook — Secret</h2>
+      <p style="margin-bottom:12px;">A small room. Entirely Tuna's. A sun spot on the floor even though there are no windows.
+Three crumpled paper balls. A shelf with one mug. On the mug: a small painting of a fish.</p>
+      <p style="margin-bottom:16px;">On the floor, a folded note in Tuna's handwriting (implausibly tidy):</p>
+      <blockquote style="border-left:2px solid #555;padding-left:14px;font-style:italic;color:#8a9ab0;line-height:1.8;">
+        I know what the password is.<br>
+        I am not going to tell you.<br>
+        This is not a zero-knowledge proof.<br>
+        I simply don't want to.<br><br>
+        Also, I know how far apart the two cities are.<br>
+        It is not that far. I have slept for longer.<br><br>
+        — T.
+      </blockquote>
+    </div>`;
+  document.getElementById("tunaClose").addEventListener("click", () => {
+    tunaOverlayEl.style.display = "none";
+  });
+}
+
+// ──────────────────────────────────────────────
+// NOTEBOOK PANEL
+// ──────────────────────────────────────────────
+function renderNotebook() {
+  notebookBodyEl.innerHTML = "";
+  FRAGMENTS.forEach(f => {
+    const card = document.createElement("div");
+    if (hasFragment(f.id)) {
+      card.className = "fragment-card";
+      card.innerHTML = `<div class="fc-label">${f.label}</div><div class="fc-number">№ ${f.number}</div>`;
+    } else {
+      card.className = "fragment-card empty";
+      card.textContent = "[not yet found]";
+    }
+    notebookBodyEl.appendChild(card);
+  });
+
+  wingStatusEl.innerHTML = "";
+  const wings = [
+    { label: "Wing 1 — Library",       done: wing1Done() },
+    { label: "Wing 2 — Music Archive", done: wing2Done() },
+    { label: "Wing 3 — Logic Annex",   done: wing3Done() },
+    { label: "Wing 4 — Two Cities",    done: wing4Done() },
+    { label: "Wing 5 — Inner Sanctum", done: isSolved("scene21") },
+  ];
+  wings.forEach(w => {
+    const d = document.createElement("div");
+    d.className = "wing-status" + (w.done ? " done" : "");
+    d.textContent = (w.done ? "✓ " : "  ") + w.label;
+    wingStatusEl.appendChild(d);
+  });
+}
+
+// ──────────────────────────────────────────────
+// NAVIGATION
+// ──────────────────────────────────────────────
+function navTo(scene) {
+  STATE.scene = scene;
+  STATE.tunaState = 0;
+  STATE.tunaScene = null;
+  saveState();
+  render();
+  window.scrollTo(0,0);
+  document.getElementById("mainPanel").scrollTo(0,0);
+}
+
+function setBreadcrumb(text) {
+  breadcrumbEl.innerHTML = text ? ` <span>/ ${text}</span>` : "";
+}
+
+// ──────────────────────────────────────────────
+// SCENE RENDERERS
+// ──────────────────────────────────────────────
+
+// ── ENTRANCE HALL ──
+function renderEntrance() {
+  setBreadcrumb("Entrance Hall");
+  sceneTitleEl.textContent = "Scene 0 — The Entrance Hall";
+  sceneBodyEl.innerHTML = `
+    <p>A hall that smells faintly of chalk and something like rain. The walls are bare stone. Three doors ahead of you, each slightly ajar. A fourth door, directly behind you, is sealed. On the wall beside the sealed door, a small brass mirror.</p>
+    <p>The mirror reflects the room. In the mirror, you can read a word above the three doors that is not visible when you look at them directly:</p>
+    <blockquote><em>ΤΗΡΕΣΗΟΛΔ</em></blockquote>
+    <p>Below the mirror, a small notebook sits open.</p>
+    <div class="door-list">
+      <span class="door-link" id="dl-library">[door — library]</span>
+      <span class="door-link" id="dl-music">[door — music archive]</span>
+      <span class="door-link" id="dl-logic">[door — logic annex]</span>
+      ${(wing1Done() && wing2Done() && wing3Done()) ? `<span class="door-link" id="dl-wing4">[archway — the two cities archive]</span>` : ""}
+      ${wing4Done() ? `<span class="door-link" id="dl-wing5">[passage — the inner sanctum]</span>` : ""}
+    </div>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("mirror", () => setDetail(`<p>The mirror reflects everything behind you — the sealed door, the stone, and above the three open doors, a word in letters that are not quite the letters you know: <em>ΤΗΡΕΣΗΟΛΔ</em>. You do not need to translate it. The house has already told you its name.</p>`)));
+  objectsEl.appendChild(objBtn("notebook", () => setDetail(`<p><em>"There is a cat somewhere in this house. Her name is Tuna. She will not help you, but she will try. You may ask her at any time by selecting [ask tuna]. The three doors ahead lead to the Library, the Music Archive, and the Logic Annex. You may enter them in any order.</em></p><p><em>There is also a fourth wing, and a sanctum beyond that. You will know when you have earned them."</em></p>`)));
+  objectsEl.appendChild(tunaBtn("entrance"));
+
+  document.querySelectorAll(".door-link").forEach(el => {
+    el.style.cursor = "pointer";
+    el.addEventListener("click", () => {
+      const targets = { "dl-library":"scene1","dl-music":"scene4","dl-logic":"scene8","dl-wing4":"wing4hub","dl-wing5":"scene18" };
+      const t = targets[el.id];
+      if (t) navTo(t);
+    });
+  });
+}
+
+// ── SCENE 1 — Crime and Punishment Alcove ──
+function renderScene1() {
+  setBreadcrumb("Wing 1 / Scene 1");
+  sceneTitleEl.textContent = "Scene 1 — The Crime and Punishment Alcove";
+  sceneBodyEl.innerHTML = `
+    <p>A narrow room smelling of old paper and copper. A single gas lamp casts everything amber. On the desk, an open copy of <em>Crime and Punishment</em>, spine cracked at Part Two. The margins are annotated in a hand that is not yours — small, precise, argumentative.</p>
+    <p>On the wall behind the desk, someone has pinned a handwritten note in two pieces. The top half reads:</p>
+    <blockquote><em>"If he belongs to the ordinary class, he must live in submission and has no right to transgress the law. But if he belongs to the other sort — he has the ..."</em></blockquote>
+    <p>The bottom half has been torn away. A <em>[torn fragment]</em> lies on the floor.</p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("annotated margins", () => setDetail(`<p><em>The margin notes are small and argumentative. One reads: "Raskolnikov never asks 'may I.' He asks 'do I have the ___.' One word. Fills the sentence. It rhymes with 'night.'"</em></p><p><em>Other notes: "He needs her to be guilty too. He cannot stand to be the only one who crossed." / "This is not nihilism. Raskolnikov is the argument against nihilism." / "The psychology of exception is not philosophy — it is wound dressed as logic."</em></p>`)));
+  objectsEl.appendChild(objBtn("wall note — top", () => setDetail(`<p><em>"If he belongs to the ordinary class, he must live in submission and has no right to transgress the law. But if he belongs to the other sort — he has the ..."</em></p><p>The sentence is unfinished. The continuation has been torn away.</p>`)));
+  objectsEl.appendChild(objBtn("torn fragment", () => {
+    setDetail(`<p>The torn piece of paper finishes the sentence. Most of the last word has been burned away. Four letter-shaped char marks remain where the word was:</p><p style="font-family:'Fira Code',monospace;font-size:20px;letter-spacing:0.3em;color:#c9a96e;">_ _ _ _ _</p><p><em>"...he has the ... to..."</em></p><p style="color:#8a9ab0;font-size:15px;margin-top:8px;">Five burned marks. The word rhymes with 'night.' Supply it below.</p>`);
+    if (!isSolved("scene1")) {
+      showPuzzle();
+      puzzleZoneEl.innerHTML = "";
+      puzzleZoneEl.appendChild(puzzlePrompt(`Fill in the burned word.`));
+      const row = document.createElement("div"); row.className = "input-row";
+      const inp = inputRow("the missing word");
+      const btn = submitBtn("confirm");
+      btn.addEventListener("click", () => {
+        if (matchesAnswer(inp.value, ["right"])) {
+          markSolved("scene1");
+          setFeedback("The corridor east opens. Raskolnikov had the right — and so do you.", "ok");
+          render();
+        } else {
+          setFeedback("Not quite. The word completes: '...he has the ___ to...' It rhymes with 'night.'", "err");
+        }
+      });
+      inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+      row.append(inp, btn);
+      puzzleZoneEl.appendChild(row);
+    }
+  }));
+  objectsEl.appendChild(objBtn("desk lamp", () => setDetail(`<p>The gas lamp throws amber light that moves very slightly, as if breathing. Under the lamp, a pencil note on a scrap of paper: <em>"Part Two. Chapter 6. He decides. He does not decide. He has already decided."</em></p>`)));
+  objectsEl.appendChild(tunaBtn("scene1"));
+  if (isSolved("scene1")) {
+    objectsEl.appendChild(navBtn("corridor east →", "scene1b"));
+  }
+  objectsEl.appendChild(navBtn("← entrance", "entrance"));
+}
+
+// ── SCENE 1B — The Collatz Cabinet ──
+function renderScene1b() {
+  setBreadcrumb("Wing 1 / Interstitial");
+  sceneTitleEl.textContent = "The Collatz Cabinet";
+  sceneBodyEl.innerHTML = `
+    <p>A narrow corridor between the alcove and the study. You almost walk past it — but a heavy iron cabinet on the left wall stops you. It is padlocked. A card is pinned to the front.</p>
+    <blockquote><em>"Take any positive integer. If it is even, divide it by two. If it is odd, multiply it by three and add one. Repeat. It is conjectured — but as of this writing, unproven — that this process will always eventually reach 1.</em></blockquote>
+    <blockquote><em>Starting from 27: follow the sequence, step by step, until you reach 1. Count every step. That count is the combination."</em></blockquote>
+    <p>A second note is taped below the lock:</p>
+    <blockquote><em>"27 is an interesting starting point. It takes considerably longer than you might expect."</em></blockquote>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("padlock", () => setDetail(`<p>A combination lock numbered 0–999. Below the dials, scratched into the iron: <em>"The sequence from 27. Every step. The count."</em></p><p style="color:var(--muted);font-size:15px;">Search: "Collatz conjecture" or "3n+1 problem." You will need to compute or write code.</p>`)));
+  objectsEl.appendChild(objBtn("pinned card", () => setDetail(`<p><em>"Take any positive integer. If even, divide by 2. If odd, multiply by 3 and add 1. Repeat until you reach 1. Count how many operations you perform."</em></p><p>Each application of the rule is one step. The step that produces 1 counts.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene1b"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene1b")) {
+    puzzleZoneEl.appendChild(solvedNotice("The lock opens. 111 steps from 27 to 1."));
+    objectsEl.appendChild(navBtn("continue east →", "scene2"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt("Enter the number of steps from 27 to 1 in the Collatz sequence."));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("number of steps");
+    const btn = submitBtn("set combination");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["111"])) {
+        markSolved("scene1b");
+        setFeedback("The tumblers click. The cabinet swings open. 111 steps — a sequence that climbs to 9232 before descending.", "ok");
+        render();
+      } else {
+        setFeedback("The lock does not open. Trace each step carefully — or write a small program.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+  objectsEl.appendChild(navBtn("← scene 1", "scene1"));
+}
+
+// ── SCENE 2 — Constructionist Study ──
+function renderScene2() {
+  setBreadcrumb("Wing 1 / Scene 2");
+  sceneTitleEl.textContent = "Scene 2 — The Constructionist Study";
+  sceneBodyEl.innerHTML = `
+    <p>A study with a clinical feel — too clean to be comfortable. All the bookshelves have their spines facing inward. On the central table: an open monograph. At the top of the visible page, a brain diagram labeled <strong>"Interoceptive Network"</strong> with a red circle.</p>
+    <p>Below it, a two-column comparison:</p>
+    <pre>Classical View          | Constructionist View
+------------------------|---------------------
+Emotions are universal  | Emotions are ???
+Discovered, not made    | ??? by the brain
+Fixed biological circuits| Prediction as primary</pre>
+    <p>The right column's first two entries have been blacked out with a thick marker. On the wall: a second panel.</p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("monograph", () => setDetail(`<p>The monograph is open to a page on predictive coding and emotion. A dog-eared corner has a note: <em>"Key verb. Not discovered. Not found. Made. Built. One word. Past tense. Google: 'Barrett theory of constructed emotion key concept' if needed."</em></p>`)));
+  objectsEl.appendChild(objBtn("blacked-out column", () => setDetail(`<p>The blackout marker is thick and deliberate. You can make out the first blacked entry beneath one edge: the word begins with C. The second entry is completely obscured. The theory name itself contains the answer.</p>`)));
+  objectsEl.appendChild(objBtn("wall panel", () => setDetail(`<p><em>"A subject is administered adrenaline. Their heart rate rises. Their palms sweat. In a room with an angry person, they feel fear. In a room with a cheerful person, they feel joy. The physiological arousal is identical in both cases.</em></p><p><em>Barrett's theory explains this as: the brain ___ the emotion from context. The same one-word answer fills the blanks in both the table and the scenario."</em></p>`)));
+  objectsEl.appendChild(objBtn("bookshelves — spines inward", () => setDetail(`<p>All the spines face away. The books are here. You simply cannot read their names from this angle. Barrett argues we perceive the world through a lens we've already built. The books are present but unreadable from outside.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene2"));
+  objectsEl.appendChild(navBtn("← scene 1", "scene1"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene2")) {
+    puzzleZoneEl.appendChild(solvedNotice(`The brain constructs. The corridor south is open.`));
+    objectsEl.appendChild(navBtn("corridor south →", "scene2b"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt(`Supply the missing word. What does Barrett's theory say the brain does to emotion?`));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("the key verb");
+    const btn = submitBtn("confirm");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["constructed","constructs","construction"])) {
+        markSolved("scene2");
+        setFeedback("Correct. The brain constructs. The corridor south opens.", "ok");
+        render();
+      } else {
+        setFeedback("Not the word Barrett uses. The theory's own name contains it.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+}
+
+// ── SCENE 2B — The Busy Beaver Vault ──
+function renderScene2b() {
+  setBreadcrumb("Wing 1 / Interstitial");
+  sceneTitleEl.textContent = "The Busy Beaver Vault";
+  sceneBodyEl.innerHTML = `
+    <p>An alcove off the corridor, sealed by a heavy drawer mounted in the wall. Under glass on the facing wall: a hand-drawn Turing machine transition diagram. Beside it, an engraved plaque:</p>
+    <blockquote><em>"The Busy Beaver function Σ(n) gives the maximum number of 1s that a halting n-state, 2-symbol Turing machine can write on an initially blank tape."</em></blockquote>
+    <pre style="font-family:'Fira Code',monospace;font-size:14px;line-height:1.8;margin:16px 0;color:var(--amber);">Σ(1) = 1
+Σ(2) = 4
+Σ(3) = 6
+Σ(4) = 13
+Σ(5) = ?</pre>
+    <p>The drawer has a keypad. Below it, a second inscription:</p>
+    <blockquote><em>"The fifth value was unknown for decades. A distributed computing project settled the question in 2024. Enter Σ(5) to open the drawer."</em></blockquote>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("transition diagram", () => setDetail(`<p>The diagram shows a 5-state, 2-symbol machine. The states are labeled A through E. The transitions are dense — every state has two rules, one for reading 0 and one for reading 1. The machine runs for a very long time before it halts.</p><p style="color:var(--muted);font-size:15px;">Search: "Busy Beaver function" / "BB(5) 2024" / "bbchallenge.org"</p>`)));
+  objectsEl.appendChild(objBtn("plaque", () => setDetail(`<p>The function grows faster than any computable function. No algorithm can compute Σ(n) for all n — this is a consequence of the halting problem. Each new value requires verifying that no other machine does better, which can require checking an enormous number of candidates.</p><p>The fifth value was formally confirmed on July 2, 2024.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene2b"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene2b")) {
+    puzzleZoneEl.appendChild(solvedNotice("The drawer opens. Σ(5) = 4098 ones on the tape."));
+    objectsEl.appendChild(navBtn("continue south →", "scene3"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt("What is Σ(5)?"));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("maximum ones written");
+    const btn = submitBtn("enter value");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["4098"])) {
+        markSolved("scene2b");
+        setFeedback("The drawer unlocks. 4098 ones — the most any 5-state halting machine can write. The machine that achieves it runs for 47,176,870 steps.", "ok");
+        render();
+      } else {
+        setFeedback("Incorrect. The value was confirmed in 2024 after a multi-year verification effort.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+  objectsEl.appendChild(navBtn("← scene 2", "scene2"));
+}
+
+// ── SCENE 3 — Absurdist Shelf ★ ──
+function renderScene3() {
+  setBreadcrumb("Wing 1 / Scene 3 ★");
+  sceneTitleEl.textContent = "Scene 3 — The Absurdist Shelf ★";
+  sceneBodyEl.innerHTML = `
+    <p>A high-ceilinged room smelling of chalk dust. Floor-to-ceiling shelves hold identical grey-spined books with no titles. At the center: a freestanding chalkboard. On it, written in large letters:</p>
+    <blockquote><em>"There is but ___ truly serious philosophical problem, and that is suicide."</em></blockquote>
+    <p>The blank is large. The chalk is in the tray. Beside the chalkboard: a locked brass box. Its lock has a single dial, numbers 1 through 99. Above the lock, engraved: <em>"The answer fills the blank. The answer is also the combination."</em></p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("chalkboard", () => setDetail(`<p>The sentence is Camus's. It is the most famous sentence he ever wrote. The blank is where a number goes. Numbers below ten can be spelled as words. The dial accepts either.</p>`)));
+  objectsEl.appendChild(objBtn("brass box", () => setDetail(`<p>A locked brass box, dial 1–99. Above the lock: <em>"The answer fills the blank. The answer is also the combination."</em> The mechanism is waiting.</p>`)));
+  objectsEl.appendChild(objBtn("chalk", () => setDetail(`<p>Ordinary chalk. White. Slightly used. The tray is worn. Someone has written on this board before.</p>`)));
+  objectsEl.appendChild(objBtn("identical books", () => setDetail(`<p>Each grey-spined book opens to the same Camus absurd syllogism, in a different language. One book — examined last — is empty except for a single pawprint on the center of the page. It belongs to Tuna.</p><p>A card inside one: <em>"Camus opens his essay with the most important sentence he ever wrote. Google 'Camus Myth of Sisyphus opening line.' The missing word is a number. The dial accepts digits or words."</em></p>`)));
+  objectsEl.appendChild(tunaBtn("scene3"));
+  objectsEl.appendChild(navBtn("← scene 2", "scene2"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene3")) {
+    puzzleZoneEl.appendChild(solvedNotice(`The brass box is open. Fragment A collected.`));
+    const fc = document.createElement("div");
+    fc.className = "fragment-card";
+    fc.innerHTML = `<div class="fc-label">The first fragment. The philosopher said: ONE serious problem. ONE authentic response.</div><div class="fc-number">№ 1</div>`;
+    puzzleZoneEl.appendChild(fc);
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt(`Fill in the blank. Turn the dial to the correct number to open the box.`));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("number or word");
+    const btn = submitBtn("turn dial");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["one","1"])) {
+        markSolved("scene3");
+        grantFragment("A");
+        setFeedback("The box opens. Inside: a small card. Fragment A collected.", "ok");
+        render();
+      } else {
+        setFeedback("The dial does not click into place. Camus's answer is smaller than you think.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+}
+
+// ── SCENE 4 — The Record Room ──
+function renderScene4() {
+  setBreadcrumb("Wing 2 / Scene 4");
+  sceneTitleEl.textContent = "Scene 4 — The Record Room";
+  sceneBodyEl.innerHTML = `
+    <p>A dim room with wood-paneled walls. A record player runs but produces no sound — the needle is down, the record spins, but nothing comes out. The sleeve on the record reads <em>UNDERSTAND</em>.</p>
+    <p>On the wall: a handwritten setlist from a concert that has already happened. One title is missing:</p>
+    <pre>— like i need u
+— UNDERSTAND
+— ___________
+— touch
+— 2 soon</pre>
+    <p>Below the setlist, a note pinned to the wall: <em>"He named himself after a word her parents gave him. The name is a gift he chose to keep. He named his first full album after an angel. The angel is the door."</em></p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("record player", () => setDetail(`<p>The needle is down. The record spins. Nothing comes out. The sleeve notes say: <em>"A song about knowing someone and being known. The voice arrives between a croon and a murmur. It is less than a shout and more than a secret."</em></p>`)));
+  objectsEl.appendChild(objBtn("setlist", () => setDetail(`<p>Handwritten on cream paper. Five songs, one blank. The missing title would fall third in the set. The blank isn't necessary to solve — the door's name is what matters.</p>`)));
+  objectsEl.appendChild(objBtn("sleeve notes", () => setDetail(`<p>Inside the sleeve: <em>"His debut album. Two thousand and twenty-two. A single syllable. The name of a messenger. Search: 'keshi debut album 2022' if you don't know it."</em></p>`)));
+  objectsEl.appendChild(tunaBtn("scene4"));
+  objectsEl.appendChild(navBtn("← entrance", "entrance"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene4")) {
+    puzzleZoneEl.appendChild(solvedNotice(`The door north is open.`));
+    objectsEl.appendChild(navBtn("door north →", "scene4b"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt(`Name the door. What was keshi's debut album?`));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("album name");
+    const btn = submitBtn("speak the name");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["gabriel"])) {
+        markSolved("scene4");
+        setFeedback("The door swings open. The angel was Gabriel. Door north unlocks.", "ok");
+        render();
+      } else {
+        setFeedback("The door does not move. The album named an archangel. One syllable.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+}
+
+// ── SCENE 4B — The Ramsey Antechamber ──
+function renderScene4b() {
+  setBreadcrumb("Wing 2 / Interstitial");
+  sceneTitleEl.textContent = "The Ramsey Antechamber";
+  sceneBodyEl.innerHTML = `
+    <p>A small, low-ceilinged room. Every surface is covered in red and blue lines — edges of graphs, drawn in chalk, over and over. Each diagram is a complete graph with some edges red, some blue. In every one of them, a triangle of the same color has been circled.</p>
+    <p>A framed statement hangs at the center:</p>
+    <blockquote><em>"R(s,t) is the minimum number of vertices n such that any 2-colouring of the edges of Kₙ contains either a red Kₛ or a blue Kₜ."</em></blockquote>
+    <blockquote><em>"R(3,3) = 6. Complete disorder is impossible."</em></blockquote>
+    <p>Below it, a locked gate. Inscribed on the gate:</p>
+    <blockquote><em>"What is R(4,4)?"</em></blockquote>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("framed statement", () => setDetail(`<p>R(3,3) = 6 means: in any party of 6 people, there are always at least 3 mutual friends or 3 mutual strangers. Frank Ramsey proved in 1930 that such numbers always exist. The values grow very quickly — and become impossible to compute beyond a certain point.</p><p style="color:var(--muted);font-size:15px;">Search: "Ramsey number R(4,4)" or "Ramsey theory complete graph"</p>`)));
+  objectsEl.appendChild(objBtn("chalk diagrams", () => setDetail(`<p>Each diagram shows K₆ — the complete graph on 6 vertices — with edges coloured red or blue. In each one, someone has circled a monochromatic triangle. No matter how you colour K₆, a triangle appears. This is R(3,3) = 6.</p><p>The diagram in the corner begins K₁₇. Something is circled in it. The number is not 6.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene4b"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene4b")) {
+    puzzleZoneEl.appendChild(solvedNotice("The gate swings open. R(4,4) = 18."));
+    objectsEl.appendChild(navBtn("through the gate →", "scene5"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt("Enter R(4,4). In any 2-colouring of Kₙ, at what minimum n must a monochromatic K₄ appear?"));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("the Ramsey number");
+    const btn = submitBtn("enter value");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["18"])) {
+        markSolved("scene4b");
+        setFeedback("Correct. R(4,4) = 18. Proved by Greenwood and Gleason, 1955. The gate opens.", "ok");
+        render();
+      } else {
+        setFeedback("Not the number. R(4,4) is larger than R(3,3). It was proved in the 1950s.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+  objectsEl.appendChild(navBtn("← scene 4", "scene4"));
+}
+
+// ── SCENE 5 — keshi Memorial ★ ──
+function renderScene5() {
+  setBreadcrumb("Wing 2 / Scene 5 ★");
+  sceneTitleEl.textContent = "Scene 5 — The keshi Memorial ★";
+  sceneBodyEl.innerHTML = `
+    <p>A small, warm room with fairy lights strung along the ceiling. A framed photograph — described in text, not shown: a young man holding a guitar in a Houston living room. Below the frame, an engraved plaque:</p>
+    <blockquote><em>"He gave himself a name that wasn't his. But every name he has used has been him. How many letters did he start with — first name, middle name, and last name together?"</em></blockquote>
+    <p>A numerical input field below the plaque.</p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("framed photograph", () => setDetail(`<p>A young man in a Houston living room, guitar in hand. Below the photograph, barely legible text: <em>Casey Thai Luong</em>. These are his three names. Three separate words. Three separate counts.</p>`)));
+  objectsEl.appendChild(objBtn("engraved plaque", () => setDetail(`<p><em>"He gave himself a name that wasn't his. But every name he has used has been him. How many letters did he start with — first name, middle name, and last name together?"</em></p><p>A small card tucked into the frame: <em>"He was born Casey. His family came from Vietnam. He has three names. Count all three. Do not count the stage name. Search: 'keshi real name full birth name' — you need all three parts."</em></p>`)));
+  objectsEl.appendChild(objBtn("fairy lights", () => setDetail(`<p>Warm lights strung across the ceiling in no particular pattern. They produce the feeling of being inside something that was built with care. They do not provide additional clues. They are simply warm.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene5"));
+  objectsEl.appendChild(navBtn("← scene 4", "scene4"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene5")) {
+    puzzleZoneEl.appendChild(solvedNotice(`Fragment N1 collected. Casey Thai Luong: 5 + 4 + 5 = 14.`));
+    const fc = document.createElement("div");
+    fc.className = "fragment-card";
+    fc.innerHTML = `<div class="fc-label">Three names, all his. Fourteen letters total.</div><div class="fc-number">№ 14</div>`;
+    puzzleZoneEl.appendChild(fc);
+    objectsEl.appendChild(navBtn("exit →", "scene5b"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt(`Enter the total letter count across all three of keshi's birth names.`));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("a number");
+    const btn = submitBtn("enter count");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["14","fourteen"])) {
+        markSolved("scene5");
+        grantFragment("N1");
+        setFeedback("A drawer opens. Fragment collected. Casey (5) + Thai (4) + Luong (5) = 14.", "ok");
+        render();
+      } else {
+        setFeedback("Recount. Three names: first, middle, last. Count every letter in each.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+}
+
+// ── SCENE 5B — The Isomorphism Gallery ──
+function renderScene5b() {
+  setBreadcrumb("Wing 2 / Interstitial");
+  sceneTitleEl.textContent = "The Isomorphism Gallery";
+  sceneBodyEl.innerHTML = `
+    <p>A long gallery. Every centimetre of wall space is covered in chalk drawings of graphs — four dots arranged in patterns, connected by lines in every conceivable configuration. No two drawings look alike. Yet a notice near the entrance reads:</p>
+    <blockquote><em>"Some of these are the same. Two graphs are isomorphic if one can be relabelled to produce the other — if there is a bijection between their vertex sets that preserves all edges. Isomorphic graphs are, structurally, identical."</em></blockquote>
+    <p>At the far end, a door. On the door, a single question:</p>
+    <blockquote><em>"How many structurally distinct simple graphs exist on exactly 4 vertices? Count without duplicating isomorphic copies."</em></blockquote>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("gallery notice", () => setDetail(`<p>A simple graph on 4 vertices has at most C(4,2) = 6 possible edges. The number of labelled graphs is therefore 2⁶ = 64. But many of these are structurally identical — just relabellings of the same graph. The question asks for non-isomorphic graphs: how many distinct shapes are there?</p><p style="color:var(--muted);font-size:15px;">Search: "non-isomorphic graphs on 4 vertices" or enumerate by edge count (0,1,2,...,6 edges).</p>`)));
+  objectsEl.appendChild(objBtn("chalk drawings", () => setDetail(`<p>There is a drawing with no edges. There is a drawing with all six edges. Between them, there are many drawings — and the question is how many are truly different. You may find it helps to enumerate by the number of edges, then check which graphs with the same edge count are isomorphic to each other.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene5b"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene5b")) {
+    puzzleZoneEl.appendChild(solvedNotice("The door opens. 11 non-isomorphic graphs on 4 vertices."));
+    objectsEl.appendChild(navBtn("through the door →", "scene6"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt("How many structurally distinct simple graphs exist on 4 vertices?"));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("a number");
+    const btn = submitBtn("enter count");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["11","eleven"])) {
+        markSolved("scene5b");
+        setFeedback("Correct. 11 non-isomorphic graphs: one per each structural class across 0 to 6 edges. The door opens.", "ok");
+        render();
+      } else {
+        setFeedback("Not the count. Try enumerating graphs by their number of edges — 0, 1, 2, 3, 4, 5, 6 — and checking which within each group are isomorphic.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+  objectsEl.appendChild(navBtn("← scene 5", "scene5"));
+}
+
+// ── SCENE 6 — Shoegaze Passage ──
+function renderScene6() {
+  setBreadcrumb("Wing 2 / Scene 6");
+  sceneTitleEl.textContent = "Scene 6 — The Shoegaze Passage";
+  sceneBodyEl.innerHTML = `
+    <p>A long corridor whose walls are painted in a blue so saturated it becomes physical — not just a color but a presence. The walls are dimpled like soundproofing foam. At irregular intervals, blank canvases hang at odd angles.</p>
+    <p>At the end: a door. Its plate reads: <em>"Only the former name may enter."</em></p>
+    <p>Beside the door, an alphabetic keypad.</p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("journal", () => setDetail(`<p>A journal on a ledge midway down the corridor. <em>"On June 27, 2022, she released 'Royal Blue Walls.' On the same day, she announced a new name and retired the old one. The old name is the key. It was five characters. No vowels. It is the password."</em></p>`)));
+  objectsEl.appendChild(objBtn("blank canvases", () => setDetail(`<p>One blank canvas, examined closely, has a date written in pencil on its back: <em>"June 27, 2022 — the day a name was retired. Search: 'Jane Remover former stage name' or 'Jane Remover name change 2022.'"</em></p>`)));
+  objectsEl.appendChild(objBtn("door", () => setDetail(`<p>The door plate reads: <em>"Only the former name may enter."</em> The keypad beside it accepts letters. A name that was retired. Five characters. No vowels.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene6"));
+  objectsEl.appendChild(navBtn("← scene 5", "scene5"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene6")) {
+    puzzleZoneEl.appendChild(solvedNotice(`The door is open. DLTZK — the name she left behind.`));
+    objectsEl.appendChild(navBtn("through the door →", "scene7"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt(`Enter the former name at the keypad.`));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("five characters, no vowels");
+    const btn = submitBtn("enter name");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["dltzk"])) {
+        markSolved("scene6");
+        setFeedback("The door clicks open. DLTZK — the name she retired. The passage forward.", "ok");
+        render();
+      } else {
+        setFeedback("The keypad does not respond. The name has no vowels. Five characters. June 27, 2022.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+}
+
+// ── SCENE 7 — Census Designated Chamber ──
+function renderScene7() {
+  setBreadcrumb("Wing 2 / Scene 7");
+  sceneTitleEl.textContent = "Scene 7 — The Census Designated Chamber";
+  sceneBodyEl.innerHTML = `
+    <p>A cavernous room smelling of snow and gasoline. The ceiling is painted with a blizzard. On the wall: a topographic map of Oregon, with a circle drawn around <strong>JOHN DAY</strong>. Beneath it: <em>"I almost wasn't. Then I was. Again."</em></p>
+    <p>A record player runs. The text describes it: <em>"Track five. Something builds to the edge of itself. Then the edge becomes the song."</em></p>
+    <p>On a reading table: a printed page titled <em>CENSUS DESIGNATED — A DOCUMENT</em>. Read it carefully.</p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("topographic map", () => setDetail(`<p>A topographic map of Oregon. A red circle marks JOHN DAY — a census-designated place, population sparse, roads few, sky large. A small card pinned to the map: <em>"Six sentences. Six first letters. A six-letter word. Camus coined the term. She is reading his book. Check Wing 1 if needed. If stuck: search 'Camus confrontation between humans and the universe one word.'"</em></p>`)));
+  objectsEl.appendChild(objBtn("printed page", () => {
+    setDetail(`<div style="font-style:normal;">
+      <p style="margin-bottom:8px;color:#8a9ab0;font-size:14px;font-family:'Fira Code',monospace;">CENSUS DESIGNATED — A DOCUMENT</p>
+      <p class="acrostic-line"><span class="acrostic-first">A</span> concert hall built inside a blizzard.</p>
+      <p class="acrostic-line"><span class="acrostic-first">B</span>etween John Day, Oregon and the rest of the world, she almost didn't make it.</p>
+      <p class="acrostic-line"><span class="acrostic-first">S</span>hocking only in hindsight — these things often are.</p>
+      <p class="acrostic-line"><span class="acrostic-first">U</span>nder that specific weight of snow, something clarified.</p>
+      <p class="acrostic-line"><span class="acrostic-first">R</span>eturning to music after, she said: a near-death experience changed the record.</p>
+      <p class="acrostic-line"><span class="acrostic-first">D</span>eath, specifically the nearness of it, does something to the sound.</p>
+      <p style="margin-top:14px;color:#c05555;font-style:italic;font-size:15px;">"A French philosopher — who wrote the book she is currently reading — gave a precise name to this confrontation: the silence of the world against the demand for meaning. The first letter of each sentence above spells it. Enter the word."</p>
+    </div>`);
+  }));
+  objectsEl.appendChild(objBtn("record player", () => setDetail(`<p>Track five. Something builds to the edge of itself. Then the edge becomes the song. The sleeve reads: <em>Census Designated</em>. A record made by someone who survived something and came back changed.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene7"));
+  objectsEl.appendChild(navBtn("← scene 6", "scene6"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene7")) {
+    puzzleZoneEl.appendChild(solvedNotice(`The sealed arch is open. ABSURD — the word Camus gave to the confrontation.`));
+    objectsEl.appendChild(navBtn("through the sealed arch →", "entrance"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt(`Read the first letter of each sentence. Enter the word they spell.`));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("six letters");
+    const btn = submitBtn("enter word");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["absurd","the absurd"])) {
+        markSolved("scene7");
+        setFeedback("The sealed arch opens. ABSURD — A, B, S, U, R, D. The word Camus named it with. Wing 2 complete.", "ok");
+        render();
+      } else {
+        setFeedback("Not the word. Read the printed page carefully — first letter of each sentence.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+}
+
+// ── SCENE 8 — Drafting Room ★ ──
+function renderScene8() {
+  setBreadcrumb("Wing 3 / Scene 8 ★");
+  sceneTitleEl.textContent = "Scene 8 — The Drafting Room ★";
+  sceneBodyEl.innerHTML = `
+    <p>A room smelling of drafting pencil and coffee. Architectural blueprints cover every surface. All of them depict the same building: ten stories, on a wide straight road labeled <strong>VASSAR STREET</strong>, its facade covered in an irregular grid of small windows.</p>
+    <p>On the central drafting table, a detail circle highlights a single student room. The annotation reads:</p>
+    <blockquote><em>"CONCEPT: POROSITY. The architect called it a sponge. It was built at a school on the Charles River where people learn to make the invisible visible. Each student room in this building has exactly ___ windows. This number is your third fragment."</em></blockquote>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("blueprints — walls", () => setDetail(`<p>Blueprint annotations read: <em>"Simmons Hall, MIT, 229 Vassar Street, Cambridge MA. Architect: Steven Holl. Search: 'Simmons Hall MIT windows per room' or 'Steven Holl sponge building student rooms.' The number is on MIT's own website."</em></p>`)));
+  objectsEl.appendChild(objBtn("detail circle", () => setDetail(`<p>The circled room is a single student room, floor plan shown. The annotation counts window openings: small square panes, gridded across the facade. The number is explicit in the building's design documentation.</p>`)));
+  objectsEl.appendChild(objBtn("note in margin", () => setDetail(`<p>A blueprint annotation: <em>"Simmons Hall MIT windows per room — this is searchable. The building's design was radical: every student room was given an identical grid of small square windows. The exact count is documented on MIT's own website."</em></p>`)));
+  objectsEl.appendChild(tunaBtn("scene8"));
+  objectsEl.appendChild(navBtn("← entrance", "entrance"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene8")) {
+    puzzleZoneEl.appendChild(solvedNotice(`Fragment I collected. Nine windows per room.`));
+    const fc = document.createElement("div");
+    fc.className = "fragment-card";
+    fc.innerHTML = `<div class="fc-label">The third fragment. Nine windows per room. The sponge architect believed in openness.</div><div class="fc-number">№ 9</div>`;
+    puzzleZoneEl.appendChild(fc);
+    objectsEl.appendChild(navBtn("door — cipher cabinet →", "scene8b"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt(`How many windows does each student room in Simmons Hall have?`));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("number of windows");
+    const btn = submitBtn("confirm");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["9","nine"])) {
+        markSolved("scene8");
+        grantFragment("I");
+        setFeedback("A drawer opens. Fragment collected. Nine windows, nine views of sky.", "ok");
+        render();
+      } else {
+        setFeedback("Not the number. Search 'Simmons Hall MIT windows per room.'", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+}
+
+// ── SCENE 8B — The Turing Tape Room ──
+function renderScene8b() {
+  setBreadcrumb("Wing 3 / Interstitial");
+  sceneTitleEl.textContent = "The Turing Tape Room";
+  sceneBodyEl.innerHTML = `
+    <p>A long, thin room. A paper tape runs its full length, mounted on rollers. On the tape, written at the starting position: <strong>1 0 1 1</strong>. The tape extends left and right as blank space.</p>
+    <p>On the wall, a transition table:</p>
+    <pre style="font-family:'Fira Code',monospace;font-size:14px;line-height:1.8;margin:16px 0;color:var(--amber);">State | Read | Write | Move  | Next
+------+------+-------+-------+------
+  A   |  1   |   0   | Right |  A
+  A   |  0   |   1   | Left  | HALT</pre>
+    <p>A note below:</p>
+    <blockquote><em>"The machine begins in state A. The read head begins at the rightmost symbol of the tape. The tape holds 1 0 1 1, left to right. Trace the execution. When the machine halts, read the tape from left to right and enter what you find."</em></blockquote>
+    <p>A sealed hatch on the far wall requires the final tape contents to open.</p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("transition table", () => setDetail(`<p>The machine has one state (A) and one halt condition. The head begins at the rightmost position — position 3, which reads 1. Apply the table rules one step at a time. Each step: read the symbol, write the new symbol, move the head, transition the state. When the state becomes HALT, stop.</p><p style="color:var(--muted);font-size:15px;">Search: "Turing machine execution trace" if you need a refresher on the model.</p>`)));
+  objectsEl.appendChild(objBtn("paper tape", () => setDetail(`<p>The tape currently reads: <strong style="font-family:'Fira Code',monospace;letter-spacing:0.2em;">1 0 1 1</strong></p><p>Position 0 (leftmost) = 1. Position 1 = 0. Position 2 = 1. Position 3 (rightmost, head starts here) = 1.</p><p>Blank cells to the left and right read as 0.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene8b"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene8b")) {
+    puzzleZoneEl.appendChild(solvedNotice("The hatch opens. Tape: 1 1 0 0."));
+    objectsEl.appendChild(navBtn("door — cipher cabinet →", "scene9"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt("Enter the final tape contents, left to right, after the machine halts. No spaces."));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("e.g. 1010");
+    const btn = submitBtn("submit tape");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["1100","1 1 0 0","1,1,0,0"])) {
+        markSolved("scene8b");
+        setFeedback("Correct. The machine propagates carries right-to-left: 1011 + 1 = 1100. The hatch opens.", "ok");
+        render();
+      } else {
+        setFeedback("Trace each step from the rightmost bit. Apply the transition table one symbol at a time.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+  objectsEl.appendChild(navBtn("← scene 8", "scene8"));
+}
+
+// ── SCENE 9 — Cipher Cabinet ★ ──
+function renderScene9() {
+  setBreadcrumb("Wing 3 / Scene 9 ★");
+  sceneTitleEl.textContent = "Scene 9 — The Cipher Cabinet ★";
+  sceneBodyEl.innerHTML = `
+    <p>A room that feels like a clockwork interior — brass and wood, small gears turning for no apparent structural reason along one wall. In the center: a large rotating Caesar wheel on a stand. Outer ring: the alphabet. Inner ring: the alphabet, rotatable.</p>
+    <p>On the wall, in formal type:</p>
+    <blockquote><em>"A Caesar cipher shifts every letter of the alphabet by a fixed number. To encode the letter A with a shift of 3: A becomes D.</em><br><br><em>Your task:<br>Step 1: How many cards are in a single suit of a standard playing deck?<br>Step 2: Starting from the letter A, shift forward by that many positions.<br>Step 3: Name the letter you land on. Where does that letter sit in the alphabet? That alphabet position is your fragment number."</em></blockquote>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("cipher wheel", () => setDetail(`<p>A mechanical Caesar wheel. Rotating the inner ring shifts every letter. A small card affixed to the wheel: <em>"Cards in a standard suit: Ace, 2, 3, 4, 5, 6, 7, 8, 9, 10, Jack, Queen, King = 13 cards. A is position 1. Shift forward 13: position 1 + 13 = position 14. The letter at position 14 is N. What is N's position? It's 14. Enter 14."</em></p>`)));
+  objectsEl.appendChild(objBtn("playing card display", () => setDetail(`<p>A glass case shows a single suit of cards fanned out: <strong>A♠ 2♠ 3♠ 4♠ 5♠ 6♠ 7♠ 8♠ 9♠ 10♠ J♠ Q♠ K♠</strong>. A label: <em>"One suit. Count them."</em></p><p>Thirteen cards. Thirteen positions forward from A lands on N. N is the fourteenth letter. Enter 14.</p>`)));
+  objectsEl.appendChild(objBtn("gears — examine", () => setDetail(`<p>The gears turn without driving anything. They are decorative — or they are a reminder that mechanisms repeat. The cipher wheel uses the same logic: every letter offset by the same step, cycling back around at Z.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene9"));
+  objectsEl.appendChild(navBtn("← scene 8", "scene8"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene9")) {
+    puzzleZoneEl.appendChild(solvedNotice(`Fragment N2 collected. A suit's worth forward from A: position 14.`));
+    const fc = document.createElement("div");
+    fc.className = "fragment-card";
+    fc.innerHTML = `<div class="fc-label">A suit's worth forward from A. The letter is N. Fourteen.</div><div class="fc-number">№ 14</div>`;
+    puzzleZoneEl.appendChild(fc);
+    objectsEl.appendChild(navBtn("→ void terminal", "scene9b"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt(`Enter the alphabet position of the letter you land on.`));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("a number");
+    const btn = submitBtn("confirm position");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["14","fourteen"])) {
+        markSolved("scene9");
+        grantFragment("N2");
+        setFeedback("Fragment collected. A (pos.1) + 13 = N (pos.14). The fourth fragment.", "ok");
+        render();
+      } else {
+        setFeedback("Recheck the steps. Count the cards, shift from A, find the letter, then find its position.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+}
+
+// ── SCENE 9B — The Vertex Cover Office ──
+function renderScene9b() {
+  setBreadcrumb("Wing 3 / Interstitial");
+  sceneTitleEl.textContent = "The Vertex Cover Office";
+  sceneBodyEl.innerHTML = `
+    <p>A small office. A corkboard covers the entire rear wall, covered in graph diagrams pinned with pushpins and connected by red string. One diagram is larger than the rest, mounted behind glass:</p>
+    <div style="font-family:'Fira Code',monospace;font-size:14px;line-height:2;margin:16px 0;color:var(--amber);">
+      Vertices: A B C D E<br>
+      Edges: AB  AC  BC  BD  CD  CE  DE
+    </div>
+    <p>A note below:</p>
+    <blockquote><em>"A vertex cover is a set S of vertices such that every edge has at least one endpoint in S. Find the minimum such set. Enter its size — the number of vertices — to unlock the door."</em></blockquote>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("graph diagram", () => setDetail(`<p>The graph has 5 vertices and 7 edges:</p><p style="font-family:'Fira Code',monospace;font-size:14px;color:var(--amber);">A — B<br>A — C<br>B — C<br>B — D<br>C — D<br>C — E<br>D — E</p><p>Note the degree of each vertex: A has degree 2, B has degree 3, C has degree 4, D has degree 3, E has degree 2.</p><p style="color:var(--muted);font-size:15px;">Search: "minimum vertex cover" or "König's theorem" — but the graph is small enough to solve by inspection.</p>`)));
+  objectsEl.appendChild(objBtn("red string", () => setDetail(`<p>The strings trace edges. Each string must be "covered" — at least one endpoint of every edge must be in your chosen set. The question is: what is the fewest vertices you need to cover all 7 edges?</p><p>Try sets of size 2. Try sets of size 3. Can you always cover every edge?</p>`)));
+  objectsEl.appendChild(tunaBtn("scene9b"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene9b")) {
+    puzzleZoneEl.appendChild(solvedNotice("The door opens. Minimum vertex cover size: 3."));
+    objectsEl.appendChild(navBtn("→ void terminal", "scene9c"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt("What is the size of a minimum vertex cover of this graph?"));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("number of vertices");
+    const btn = submitBtn("enter size");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["3","three"])) {
+        markSolved("scene9b");
+        setFeedback("Correct. {A,C,D} or {B,C,E} both work — every edge is covered. No 2-vertex cover exists.", "ok");
+        render();
+      } else {
+        setFeedback("Not the minimum. Try verifying that no 2-vertex set covers all 7 edges, then find a 3-vertex set that does.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+  objectsEl.appendChild(navBtn("← scene 9", "scene9"));
+}
+
+// ── SCENE 9C — The Diagonal Unification ──
+function renderScene9c() {
+  setBreadcrumb("Wing 3 / Interstitial");
+  sceneTitleEl.textContent = "The Diagonal Unification";
+  sceneBodyEl.innerHTML = `
+    <p>A gallery with three portraits on the wall, each labeled with a name and a year:</p>
+    <div style="display:flex;gap:24px;margin:20px 0;font-family:'Fira Code',monospace;font-size:13px;">
+      <div style="flex:1;border:1px solid var(--border);padding:16px;">
+        <div style="color:var(--amber);margin-bottom:8px;">GEORG CANTOR · 1891</div>
+        <em style="color:var(--muted);">"No surjection from a set to its power set exists."</em><br><br>
+        <span style="font-size:12px;">Proof: assume f: X → 2^X. Construct D = {x ∈ X : x ∉ f(x)}. Then D cannot be in the image of f.</span>
+      </div>
+      <div style="flex:1;border:1px solid var(--border);padding:16px;">
+        <div style="color:var(--amber);margin-bottom:8px;">KURT GÖDEL · 1931</div>
+        <em style="color:var(--muted);">"Any sufficiently powerful consistent formal system is incomplete."</em><br><br>
+        <span style="font-size:12px;">Proof: construct a sentence G that says "I am not provable in this system." G is true but not provable.</span>
+      </div>
+      <div style="flex:1;border:1px solid var(--border);padding:16px;">
+        <div style="color:var(--amber);margin-bottom:8px;">ALAN TURING · 1936</div>
+        <em style="color:var(--muted);">"No algorithm can decide, for all programs and inputs, whether the program halts."</em><br><br>
+        <span style="font-size:12px;">Proof: assume H decides halting. Construct D: run D on itself via H. D halts iff it doesn't halt. Contradiction.</span>
+      </div>
+    </div>
+    <p>A fourth frame hangs blank. The label reads: <em>"Who unified these? — 1969"</em></p>
+    <p>A locked door. On the lock: <em>"One name. The mathematician who proved all three are the same construction, in the language of category theory."</em></p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("the three proofs", () => setDetail(`<p>All three arguments have the same shape: assume a map with certain properties, construct a diagonal element that escapes the map, derive a contradiction or an unprovable truth. The sameness of the argument is visible — but it took until 1969 for someone to state it precisely in categorical language.</p><p>The theorem that unifies them has a name. It involves fixed points. Search: "diagonal argument category theory 1969" or "categorical fixed point theorem incompleteness halting."</p>`)));
+  objectsEl.appendChild(objBtn("blank fourth frame", () => setDetail(`<p>The frame is brass. The mat inside is cream-coloured and empty. Whoever belongs here unified the work of three separate traditions — logic, set theory, computability — into a single abstract statement about cartesian closed categories. The year carved in the frame is 1969. The mathematician worked at Berkeley. The first name is Francis.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene9c"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene9c")) {
+    puzzleZoneEl.appendChild(solvedNotice("The door opens. Lawvere's fixed-point theorem — one construction to rule them all."));
+    objectsEl.appendChild(navBtn("→ void terminal", "scene10"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt("Who unified Cantor, Gödel, and Turing into a single fixed-point theorem? Enter the surname."));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("mathematician's surname");
+    const btn = submitBtn("fill the frame");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["lawvere","f w lawvere","fw lawvere","william lawvere","f. w. lawvere"])) {
+        markSolved("scene9c");
+        setFeedback("The frame fills in. F. W. Lawvere, 1969. His fixed-point theorem shows that Cantor, Gödel, and Turing all derived impossibility from the same categorical obstruction.", "ok");
+        render();
+      } else {
+        setFeedback("Not the name. The theorem is named after its author. First name: Francis. Year: 1969. Field: category theory.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+  objectsEl.appendChild(navBtn("← vertex cover office", "scene9b"));
+}
+
+// ── SCENE 10 — Void Terminal ──
+function renderScene10() {
+  setBreadcrumb("Wing 3 / Scene 10");
+  sceneTitleEl.textContent = "Scene 10 — The Void Terminal";
+  sceneBodyEl.innerHTML = `
+    <p>A room that should not exist inside a house: it is rendered in low-resolution cubes. Stone brick walls. Polished andesite floor. A torch on the wall casts blocky orange light. Two figures stand near a stone door. Their conversation updates in real time:</p>
+    <pre>toborwinner: the key is 24
+toborwinner: that's how many iron ingots you need for a full armor set
+shiny: wrong. the key is 10
+shiny: that's how many hearts you have
+toborwinner: neither of those is the password
+shiny: i know what the password is
+toborwinner: then say it
+shiny: i can't say it. i just know it
+toborwinner: how is that different from not knowing it
+shiny: is it
+toborwinner: yes
+shiny: think about that</pre>
+    <p>The stone door is labeled <em>[PROOF ALCOVE]</em>.</p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("toborwinner — talk", () => setDetail(`<p><em>"I'm telling you, 24 iron ingots for a full set. That's the key. Or wait, is it 10 hearts? Those are both real numbers. Very real numbers. The point is I know things."</em></p><p>He does not seem to know the password.</p>`)));
+  objectsEl.appendChild(objBtn("shiny — talk", () => setDetail(`<p><em>"I know what it is. I genuinely know. I'm just not going to say it. Knowing and saying are not the same. There's an entire branch of cryptography built on this. You should look into it."</em></p>`)));
+  objectsEl.appendChild(objBtn("open chest", () => setDetail(`<p>An open chest. Inside: a note. <em>"shiny's paradox is real. A whole branch of cryptography is built around proving you know something without saying what it is. Search: 'prove you know a secret without revealing it cryptography.' Three words. Or a three-letter acronym."</em></p>`)));
+  objectsEl.appendChild(objBtn("stone door", () => setDetail(`<p>The door is labeled PROOF ALCOVE. It is sealed. To open it, name the protocol that resolves shiny's paradox — the mechanism by which you can prove you know something without revealing what it is.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene10"));
+  objectsEl.appendChild(navBtn("← scene 9", "scene9"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene10")) {
+    puzzleZoneEl.appendChild(solvedNotice(`The stone door grinds open. Zero-knowledge proof — proving without telling.`));
+    const terminal = document.createElement("pre");
+    terminal.textContent = `toborwinner: oh\nshiny: told you\ntoborwinner: you didn't tell me anything\nshiny: exactly`;
+    puzzleZoneEl.appendChild(terminal);
+    objectsEl.appendChild(navBtn("→ proof alcove", "scene10b"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt(`Name the protocol that resolves shiny's paradox.`));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("the cryptographic concept");
+    const btn = submitBtn("name it");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["zero knowledge proof","zero-knowledge proof","zkp","zero knowledge proofs","zero-knowledge proofs"])) {
+        markSolved("scene10");
+        setFeedback("The stone door grinds open. Zero-knowledge proof. Proving without telling.", "ok");
+        render();
+      } else {
+        setFeedback("shiny's mechanism has a specific name. Search: 'prove you know a secret without revealing it cryptography.'", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+}
+
+// ── SCENE 10B — The Ordinal Archive ──
+function renderScene10b() {
+  setBreadcrumb("Wing 3 / Interstitial");
+  sceneTitleEl.textContent = "The Ordinal Archive";
+  sceneBodyEl.innerHTML = `
+    <p>A cold room. The walls are covered in a single cascading diagram — ordinals, ascending from 0 through all the finite numbers, then ω, then ω+1, ω+2, and so on. The diagram branches into towers: ω², ω³, ω^ω, ω^(ω^ω), ω^(ω^(ω^ω)), a tower that grows without end toward something that is not drawn.</p>
+    <p>At the limit of all these towers — written in different ink, as if added later — a single symbol. The label beneath it reads:</p>
+    <blockquote><em>"The smallest ordinal that is a fixed point of α ↦ ω^α. The first ordinal ε such that ω^ε = ε. The limit of the towers above."</em></blockquote>
+    <p>On the wall beside a sealed cabinet, a placard:</p>
+    <blockquote><em>"In 1936, Gerhard Gentzen proved the consistency of Peano Arithmetic by using transfinite induction up to this ordinal — and no further. Peano Arithmetic cannot itself prove that transfinite induction holds beyond this point. This ordinal is the proof-theoretic ordinal of PA."</em></blockquote>
+    <p>The cabinet lock asks for the symbol.</p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("ordinal diagram", () => setDetail(`<p>The tower ascends: ω, ω^ω, ω^(ω^ω), ω^(ω^(ω^ω))... This is an infinite exponent tower of ωs. Its limit — the smallest ordinal larger than all of them — is denoted ε₀ (epsilon naught or epsilon-zero). It satisfies ω^(ε₀) = ε₀.</p><p style="color:var(--muted);font-size:15px;">Search: "proof-theoretic ordinal Peano Arithmetic" or "Gentzen consistency proof 1936 ordinal." The answer is a standard symbol in ordinal notation.</p>`)));
+  objectsEl.appendChild(objBtn("Gentzen placard", () => setDetail(`<p>Gentzen's 1936 proof was a milestone: it showed that PA's consistency is not provable within PA itself (consistent with Gödel), but is provable if you allow transfinite induction up to exactly the right ordinal. Beyond that ordinal, PA cannot reach. The proof-theoretic ordinal of a theory is a measure of its strength — and for PA, that ordinal has a well-known name.</p><p>The fact that PA cannot prove its own consistency (Gödel's second incompleteness theorem) is equivalent to PA being unable to prove the well-foundedness of the ordinal you are looking for.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene10b"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene10b")) {
+    puzzleZoneEl.appendChild(solvedNotice("The cabinet opens. ε₀ — the first ordinal beyond PA's reach."));
+    objectsEl.appendChild(navBtn("→ proof alcove", "scene11"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt("Enter the proof-theoretic ordinal of Peano Arithmetic."));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("ordinal notation");
+    const btn = submitBtn("enter symbol");
+    btn.addEventListener("click", () => {
+      const accepted = ["ε₀","ε0","epsilon 0","epsilon_0","epsilon-0","epsilon naught","epsilon zero","epsilon-zero","e0","ε_0","ε 0"];
+      if (matchesAnswer(inp.value, accepted)) {
+        markSolved("scene10b");
+        setFeedback("The cabinet opens. ε₀ — epsilon naught. The limit of ω, ω^ω, ω^(ω^ω),... The proof-theoretic ordinal of PA.", "ok");
+        render();
+      } else {
+        setFeedback("Not the symbol. It is denoted with the Greek letter epsilon, subscript zero. Gentzen used it in 1936.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+  objectsEl.appendChild(navBtn("← void terminal", "scene10"));
+}
+
+// ── SCENE 11 — Proof Alcove ──
+function renderScene11() {
+  setBreadcrumb("Wing 3 / Scene 11");
+  sceneTitleEl.textContent = "Scene 11 — The Proof Alcove";
+  sceneBodyEl.innerHTML = `
+    <p>A small cave. Rough stone walls, carefully lit with recessed lights. At the far end, it forks into two identical passages. A curtain spans the fork. Carved in the wall:</p>
+    <blockquote><em>"THE ALI BABA CAVE:</em><br><br><em>A cave splits into two passages. They connect in a loop. A magic door in the middle of one passage is locked by a secret word.</em><br><br><em>The prover enters a passage (unseen). The verifier calls LEFT or RIGHT. The prover must emerge from the called side. If the prover knows the magic word, they can always comply. If they don't, they succeed only by luck: 1 in 2.</em><br><br><em>One round proves very little. But repeated rounds make lucky fraud increasingly improbable. After how many rounds does the probability of successful fraud by pure luck fall below 1% for the first time?"</em></blockquote>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("left passage", () => setDetail(`<p>A passage that curves to the right and disappears. Somewhere in the middle, a magic door — locked by a word you do not know.</p>`)));
+  objectsEl.appendChild(objBtn("right passage", () => setDetail(`<p>A passage that curves to the left and disappears. Both passages connect in a loop. The door is in one of them. You do not know which.</p>`)));
+  objectsEl.appendChild(objBtn("carved text", () => setDetail(`<p>A footnote below the carving: <em>"The probability of faking it after n rounds is (1/2)^n. You need (1/2)^n &lt; 0.01 — equivalently, 2^n &gt; 100. Try values: 2^6 = 64 (not enough). 2^7 = 128 (enough). The answer is 7. Or use a calculator: keep doubling from 1 until you pass 100."</em></p>`)));
+  objectsEl.appendChild(objBtn("curtain", () => setDetail(`<p>A heavy curtain across the fork. The verifier stands behind it and calls a side. The prover must emerge from the called side. The curtain makes the demonstration possible — neither party can see what the other is doing.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene11"));
+  objectsEl.appendChild(navBtn("← scene 10", "scene10"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene11")) {
+    puzzleZoneEl.appendChild(solvedNotice(`Seven rounds. (1/2)^7 = 1/128 < 1%.`));
+    objectsEl.appendChild(navBtn("→ window between wings", "scene11b"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt(`After how many rounds does the fraud probability first fall below 1%?`));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("number of rounds");
+    const btn = submitBtn("confirm");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["7","seven"])) {
+        markSolved("scene11");
+        setFeedback("Correct. 2^7 = 128 > 100. After seven rounds, fraud probability drops below 1%.", "ok");
+        render();
+      } else {
+        setFeedback("Recheck. 2^n > 100. Try n=6 (64) and n=7 (128).", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+}
+
+// ── SCENE 11B — The Forcing Chamber ──
+function renderScene11b() {
+  setBreadcrumb("Wing 3 / Interstitial");
+  sceneTitleEl.textContent = "The Forcing Chamber";
+  sceneBodyEl.innerHTML = `
+    <p>A room that appears to be two rooms simultaneously — or rather, one room that has been extended. The walls are semi-transparent. Beyond them, a second set of walls, slightly larger, containing the first. Beyond those, a third set. The nesting continues as far as you can see.</p>
+    <p>On the inner wall, a framed summary:</p>
+    <blockquote><em>"Gödel, 1940: The Continuum Hypothesis is consistent with ZFC. Proof: construct L, the minimal model of ZFC, in which every real number is 'constructible.' CH holds in L."</em></blockquote>
+    <blockquote><em>"Cohen, 1963: The negation of the Continuum Hypothesis is also consistent with ZFC. Proof: begin with a model of ZFC. Add a generic filter. Extend the model. The new model contains more real numbers than the old — enough to violate CH."</em></blockquote>
+    <p>On the outer wall, a heavy iron gate. Beside the lock:</p>
+    <blockquote><em>"Cohen did not guess CH was independent. He invented an entirely new method to build new models of set theory. The method has a single English word as its name — borrowed from physics and mechanics, but meaning something quite different here. A force applied to a model changes what is true. Enter the method's name."</em></blockquote>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("inner wall summary", () => setDetail(`<p>CH is independent of ZFC — it can neither be proved nor disproved from the axioms. Gödel proved you can't disprove it (by building a model where it holds). Cohen proved you can't prove it (by building a model where it fails). These two facts together establish independence.</p><p>Cohen's technique was completely original in 1963 and earned him the Fields Medal in 1966. It has since become one of the central tools of set theory.</p><p style="color:var(--muted);font-size:15px;">Search: "Paul Cohen continuum hypothesis independence method" or "Cohen 1963 set theory technique."</p>`)));
+  objectsEl.appendChild(objBtn("nested walls", () => setDetail(`<p>The nested structure is deliberate. Cohen's construction begins with a ground model V — a universe of sets — and extends it to a larger universe V[G], where G is a 'generic' object not already present in V. The generic filter G makes new sets available without destroying the axioms of ZFC.</p><p>The technique is named for what it does to the model: it applies a kind of pressure, a directed influence that changes what exists and what is true. The English word is borrowed from mechanics and has a verb form meaning to compel something to exist.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene11b"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene11b")) {
+    puzzleZoneEl.appendChild(solvedNotice("The gate opens. Forcing — Cohen's method for building new models of set theory."));
+    objectsEl.appendChild(navBtn("→ window between wings", "scene12"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt("What is Cohen's method called? One word."));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("the method");
+    const btn = submitBtn("name it");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["forcing","cohen forcing","cohen's forcing","set-theoretic forcing","set theoretic forcing"])) {
+        markSolved("scene11b");
+        setFeedback("The gate opens. Forcing. Paul Cohen, 1963 — the technique that proved CH is independent of ZFC and changed set theory entirely.", "ok");
+        render();
+      } else {
+        setFeedback("Not the word. The technique is named for what it does to a model: it compels new objects into existence. The word is physical. It is not 'extending' or 'expanding.' One specific word.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+  objectsEl.appendChild(navBtn("← proof alcove", "scene11"));
+}
+
+// ── SCENE 12 — Window Between Wings ──
+function renderScene12() {
+  setBreadcrumb("Wing 3 / Scene 12");
+  sceneTitleEl.textContent = "Scene 12 — The Window Between Wings";
+  sceneBodyEl.innerHTML = `
+    <p>A corridor with windows on both sides. Left window: looks into a library. Right window: looks into a music room. Straight ahead: a heavy door with two keyholes.</p>
+    <p>Left keyhole plaque: <em>"Name the psychologist."</em><br>Right keyhole plaque: <em>"Name the philosopher."</em></p>
+    <p>On the floor, a note: <em>"Both names have already appeared in this house. Look left — the study of constructed emotion. Look right — the problem of the absurd. If you have completed Wings 1 and 2, you already know both names."</em></p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("left window", () => setDetail(`<p>Through the left window: a clinical study, bookshelves with spines facing inward, a brain diagram on a table. A researcher's name is written on the spine of the central text. The woman who argued that emotions are not discovered — they are made.</p>`)));
+  objectsEl.appendChild(objBtn("right window", () => setDetail(`<p>Through the right window: a high-ceilinged room, a chalkboard, an open brass box. The philosopher's name is in every sentence of that room. He wrote the book. He named the problem. He said there is but one truly serious question.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene12"));
+  objectsEl.appendChild(navBtn("← scene 11", "scene11"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+
+  const p12 = STATE.puzzle.scene12;
+
+  if (isSolved("scene12")) {
+    puzzleZoneEl.appendChild(solvedNotice(`Both keyholes turned. Barrett and Camus. Wing 3 complete.`));
+    objectsEl.appendChild(navBtn("return to entrance →", "entrance"));
+    return;
+  }
+
+  puzzleZoneEl.appendChild(puzzlePrompt(`Both keyholes must be turned to open the door.`));
+
+  // Left keyhole — Barrett
+  const leftRow = document.createElement("div"); leftRow.className = "input-row"; leftRow.style.marginBottom = "8px";
+  const leftLabel = document.createElement("span");
+  leftLabel.style.cssText = "font-family:'Fira Code',monospace;font-size:12px;color:#8a9ab0;min-width:160px;";
+  leftLabel.textContent = "left keyhole (psychologist):";
+  const leftInp = inputRow("name");
+  if (p12.leftDone) {
+    leftInp.value = "BARRETT";
+    leftInp.className += " locked";
+    leftInp.disabled = true;
+  }
+  const leftBtn = submitBtn("turn left");
+  if (p12.leftDone) leftBtn.disabled = true;
+  leftBtn.addEventListener("click", () => {
+    if (matchesAnswer(leftInp.value, ["barrett","lisa barrett","lisa feldman barrett"])) {
+      p12.leftDone = true;
+      saveState();
+      setFeedback("Left keyhole turns. Barrett — the constructionist.", "ok");
+      leftInp.value = "BARRETT"; leftInp.className += " locked"; leftInp.disabled = true;
+      leftBtn.disabled = true;
+      checkScene12Solved();
+    } else {
+      setFeedback("The left keyhole does not turn. Look through the left window — the study of constructed emotion.", "err");
+    }
+  });
+  leftInp.addEventListener("keydown", e => { if (e.key === "Enter") leftBtn.click(); });
+  leftRow.append(leftLabel, leftInp, leftBtn);
+  puzzleZoneEl.appendChild(leftRow);
+
+  // Right keyhole — Camus
+  const rightRow = document.createElement("div"); rightRow.className = "input-row";
+  const rightLabel = document.createElement("span");
+  rightLabel.style.cssText = "font-family:'Fira Code',monospace;font-size:12px;color:#8a9ab0;min-width:160px;";
+  rightLabel.textContent = "right keyhole (philosopher):";
+  const rightInp = inputRow("name");
+  const rightBtn = submitBtn("turn right");
+  if (isSolved("scene12_right")) {
+    rightInp.value = "CAMUS"; rightInp.className += " locked"; rightInp.disabled = true;
+    rightBtn.disabled = true;
+  }
+  rightBtn.addEventListener("click", () => {
+    if (matchesAnswer(rightInp.value, ["camus","albert camus"])) {
+      markSolved("scene12_right");
+      setFeedback("Right keyhole turns. Camus — the absurdist.", "ok");
+      rightInp.value = "CAMUS"; rightInp.className += " locked"; rightInp.disabled = true;
+      rightBtn.disabled = true;
+      checkScene12Solved();
+    } else {
+      setFeedback("The right keyhole does not turn. Look through the right window — the problem of the absurd.", "err");
+    }
+  });
+  rightInp.addEventListener("keydown", e => { if (e.key === "Enter") rightBtn.click(); });
+  rightRow.append(rightLabel, rightInp, rightBtn);
+  puzzleZoneEl.appendChild(rightRow);
+
+  function checkScene12Solved() {
+    if (p12.leftDone && isSolved("scene12_right")) {
+      markSolved("scene12");
+      setFeedback("Both keyholes turn. The door ahead opens. Wing 3 complete.", "ok");
+      objectsEl.appendChild(navBtn("return to entrance →", "entrance"));
+      render();
+    }
+  }
+}
+
+// ── WING 4 HUB ──
+function renderWing4Hub() {
+  setBreadcrumb("Wing 4 — Two Cities Archive");
+  sceneTitleEl.textContent = "The Two Cities Archive — Wing 4";
+  sceneBodyEl.innerHTML = `
+    <p>You step through the archway and the house changes. This wing does not smell like the others. It smells like two places at once.</p>
+    <p>Ahead, the corridor forks. The left branch is labeled in small brass letters: <strong>BOSTON</strong>. The right branch: <strong>HONG KONG</strong>. Both branches can be explored in any order. Both must be completed.</p>
+    <p style="color:#8a9ab0;font-style:italic;margin-top:12px;">This is the hardest wing. These puzzles require research and, in one case, a calculator. The house is patient.</p>
+    <div class="door-list">
+      <span class="door-link" id="d-boston">[boston branch — The Smoot Gallery]</span>
+      <span class="door-link" id="d-hk">[hong kong branch — The Harbour Room]</span>
+    </div>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+  objectsEl.appendChild(tunaBtn("wing4hub"));
+  objectsEl.appendChild(navBtn("← entrance", "entrance"));
+
+  document.getElementById("d-boston").addEventListener("click", () => navTo("scene13"));
+  document.getElementById("d-hk").addEventListener("click", () => navTo("scene16"));
+}
+
+// ── SCENE 13 — Smoot Gallery ──
+function renderScene13() {
+  setBreadcrumb("Wing 4 — Boston / Scene 13");
+  sceneTitleEl.textContent = "Scene 13 — The Smoot Gallery";
+  sceneBodyEl.innerHTML = `
+    <p>A long gallery with a floor painted to resemble a bridge. At intervals along the floor, painted markings with numbers: 10, 20, 30... 360. Beside each marking: a small gold label. After 360, a final mark reads: <em>"+&nbsp;1&nbsp;ear"</em>.</p>
+    <p>On the wall, a framed document:</p>
+    <blockquote><em>"In October 1958, an MIT fraternity pledge lay down on a bridge spanning the Charles River and was rolled from one end to the other. His height became the unit. The bridge was measured to be a specific number of these units — plus one ear.</em><br><br><em>This number, stripped of its decimal, is not your answer. Your answer is hidden in the message below. The message has been encoded using a cipher — one where each letter is shifted forward by a different amount, determined by the letters of a keyword. The keyword repeats across the message. Each keyword letter gives the shift: A shifts by 0, B by 1, C by 2, and so on.</em><br><br><em>The keyword is the name of the cat who lives in this house. Decode the message. The decoded word is the name of the river. Enter the river."</em></blockquote>
+    <p>Below, in large monospace font:</p>
+    <pre>CIPHERTEXT:  V B N R E Y F</pre>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("painted floor markings", () => setDetail(`<p>Measured markings: 10, 20, 30... all the way to 360. After 360: "+ ? ear." The unit is named after a person. His name is not given here. His river is your answer.</p>`)));
+  objectsEl.appendChild(objBtn("framed document", () => setDetail(`<p>The document describes the cipher without using its proper name. A card tucked behind the frame: <em>"The bridge measurement: search 'Harvard Bridge smoots.' The cipher: search 'Vigenère cipher decoder online' — many free tools exist. Enter the ciphertext VBNREYF and the key TUNA (the cat's name). The result is a river name."</em></p>`)));
+  objectsEl.appendChild(objBtn("mechanics plaque", () => setDetail(`<p><em>"To encode a letter, shift it forward by the keyword letter's position (A=0, B=1... Z=25). To decode, shift backward. Example: if the keyword letter is T (position 19) and the ciphertext letter is V (position 21), then: 21 minus 19 = 2 = C.</em></p><p><em>The keyword is four letters. The message is seven. The keyword repeats: four letters, then the first three again. The decoded message is a proper noun — the name of a river."</em></p><p style="font-family:'Fira Code',monospace;font-size:13px;margin-top:10px;">First step worked example:<br>Key letter T → position 19<br>Cipher letter V → position 21<br>21 − 19 = 2 → letter C<br><br>Apply the same process to each letter.<br>The keyword: the cat's name.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene13"));
+  objectsEl.appendChild(navBtn("← two cities hub", "wing4hub"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene13")) {
+    puzzleZoneEl.appendChild(solvedNotice(`The river is CHARLES. Door to the MIThenge Observatory opens.`));
+    objectsEl.appendChild(navBtn("door — MIThenge Observatory →", "scene13b"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt(`Decode the ciphertext using the cat's name as the key. Enter the river.`));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("name of a river");
+    const btn = submitBtn("enter river");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["charles","the charles","charles river"])) {
+        markSolved("scene13");
+        setFeedback("Correct. VBNREYF decoded with key TUNA yields CHARLES — the Charles River.", "ok");
+        render();
+      } else {
+        setFeedback("Not the river. Key = the cat's name (four letters). Try a Vigenère decoder online.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+}
+
+// ── SCENE 13B — The RSA Chamber ──
+function renderScene13b() {
+  setBreadcrumb("Wing 4 — Boston / Interstitial");
+  sceneTitleEl.textContent = "The RSA Chamber";
+  document.getElementById("mainPanel").style.background = "#0f0d0a";
+  sceneBodyEl.innerHTML = `
+    <p>Before the Observatory: a heavy iron safe, set into the wall between the Vigenère room and the MIThenge corridor. A brass plate is mounted on the front:</p>
+    <blockquote><em>"This safe uses RSA encryption with the following public key:<br><strong>n = 551, e = 5</strong><br>The ciphertext is: <strong>c = 93</strong><br>Find the plaintext. Enter it to open the safe."</em></blockquote>
+    <p>A smaller note is taped below:</p>
+    <blockquote><em>"The modulus factors as a product of two primes. Both primes are less than 30. The plaintext is a positive integer."</em></blockquote>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("brass plate", () => setDetail(`<p>RSA encryption: to encrypt message m, compute c = mᵉ mod n. To decrypt: compute d such that e·d ≡ 1 (mod φ(n)), then m = cᵈ mod n, where φ(n) = (p−1)(q−1) for n = p×q.</p><p>Steps:<br>1. Factor n = 551 into p × q (trial division — try primes below √551 ≈ 23.5)<br>2. Compute φ(n) = (p−1)(q−1)<br>3. Find d = e⁻¹ mod φ(n) using the extended Euclidean algorithm<br>4. Decrypt: m = 93ᵈ mod 551</p><p style="color:var(--muted);font-size:15px;">You will need a calculator or code for step 4.</p>`)));
+  objectsEl.appendChild(objBtn("smaller note", () => setDetail(`<p><em>"The plaintext is a positive integer. The answer is something of a philosophical joke — a number that some consider the answer to everything. But you will need to compute it, not guess it."</em></p>`)));
+  objectsEl.appendChild(tunaBtn("scene13b"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene13b")) {
+    puzzleZoneEl.appendChild(solvedNotice("The safe opens. Plaintext: 42. n = 19 × 29."));
+    objectsEl.appendChild(navBtn("door — MIThenge Observatory →", "scene14"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt("Enter the RSA plaintext (a number)."));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("the plaintext");
+    const btn = submitBtn("open safe");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["42"])) {
+        markSolved("scene13b");
+        setFeedback("The safe opens. 42. n = 19 × 29 = 551, φ(551) = 504, d = 101, 93¹⁰¹ mod 551 = 42.", "ok");
+        render();
+      } else {
+        setFeedback("Incorrect. Factor 551 first. Then compute φ(n), then d, then 93ᵈ mod 551.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+  objectsEl.appendChild(navBtn("← Vigenère room", "scene13"));
+}
+
+// ── SCENE 14 — MIThenge Observatory ──
+function renderScene14() {
+  setBreadcrumb("Wing 4 — Boston / Scene 14");
+  sceneTitleEl.textContent = "Scene 14 — The MIThenge Observatory";
+  sceneBodyEl.innerHTML = `
+    <p>A long dark room oriented east to west, with a single narrow window at the far (west) end. At certain times of year, the sun would shine directly from the west window all the way to the east wall. Right now, the corridor is dim. The east wall shows a faded photograph of a corridor filled with blinding sunlight, hundreds of people gathered to watch. Below: <em>"Twice a year. The sun lines up. They all come to see."</em></p>
+    <p>On a side table: a map of a campus. Five buildings are circled and numbered: <strong>7, 3, 10, 4, 8</strong> — from west to east.</p>
+    <p>Below the map, two sequential entry fields:</p>
+    <blockquote><em>Field 1: What is the name of this phenomenon? (named after an ancient monument)</em><br><em>Field 2: How many buildings does this corridor pass through?</em></blockquote>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("narrow window", () => setDetail(`<p>A narrow window at the west end. No sunlight now. The east wall shows where it would fall — straight down the corridor, touching every floor tile, all the way to the opposite wall. Twice a year.</p>`)));
+  objectsEl.appendChild(objBtn("campus map", () => setDetail(`<p>A campus map with five circled buildings: 7, 3, 10, 4, 8 — from west to east. Count them. A note beneath the map: <em>"Search 'MIT Infinite Corridor solar alignment' or 'MIThenge.' It's named after Stonehenge. The second answer is on the map right in front of you — count the circled buildings."</em></p>`)));
+  objectsEl.appendChild(objBtn("east wall photograph", () => setDetail(`<p>A photograph of the corridor flooded with light. Hundreds of people gathered to watch. Below the photograph: <em>"Twice a year. The sun lines up. They all come to see."</em></p><p>The phenomenon has a name — a portmanteau, coined by the people who gather to witness it. It references an ancient monument. The campus map note may help you find it.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene14"));
+  objectsEl.appendChild(navBtn("← scene 13", "scene13"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+
+  const p14 = STATE.puzzle.scene14;
+
+  if (isSolved("scene14")) {
+    puzzleZoneEl.appendChild(solvedNotice(`MIThenge + 5 buildings. Door to the Great Dome opens.`));
+    objectsEl.appendChild(navBtn("door — Great Dome Scriptorium →", "scene15"));
+    return;
+  }
+
+  puzzleZoneEl.appendChild(puzzlePrompt(`Answer both fields to open the door.`));
+
+  // Field 1
+  const f1Row = document.createElement("div"); f1Row.className = "input-row"; f1Row.style.marginBottom = "8px";
+  const f1Label = document.createElement("span");
+  f1Label.style.cssText = "font-family:'Fira Code',monospace;font-size:12px;color:#8a9ab0;min-width:200px;";
+  f1Label.textContent = "field 1 (phenomenon name):";
+  const f1Inp = inputRow("named after an ancient monument");
+  if (p14.field1Done) { f1Inp.value = "MITHENGE"; f1Inp.className += " locked"; f1Inp.disabled = true; }
+  const f1Btn = submitBtn("lock in");
+  if (p14.field1Done) f1Btn.disabled = true;
+  f1Btn.addEventListener("click", () => {
+    if (matchesAnswer(f1Inp.value, ["mithenge","mit-henge","mit henge"])) {
+      p14.field1Done = true; saveState();
+      f1Inp.value = "MITHENGE"; f1Inp.className += " locked"; f1Inp.disabled = true;
+      f1Btn.disabled = true;
+      setFeedback("Field 1 confirmed. MIThenge — named after Stonehenge. Now count the buildings.", "ok");
+    } else {
+      setFeedback("Not the name. It's a portmanteau of 'MIT' and 'Stonehenge.' Search 'MIT Infinite Corridor solar alignment.'", "err");
+    }
+  });
+  f1Inp.addEventListener("keydown", e => { if (e.key === "Enter") f1Btn.click(); });
+  f1Row.append(f1Label, f1Inp, f1Btn);
+  puzzleZoneEl.appendChild(f1Row);
+
+  // Field 2
+  const f2Row = document.createElement("div"); f2Row.className = "input-row";
+  const f2Label = document.createElement("span");
+  f2Label.style.cssText = "font-family:'Fira Code',monospace;font-size:12px;color:#8a9ab0;min-width:200px;";
+  f2Label.textContent = "field 2 (buildings count):";
+  const f2Inp = inputRow("count the circled buildings");
+  const f2Btn = submitBtn("confirm");
+  f2Btn.addEventListener("click", () => {
+    if (!p14.field1Done) { setFeedback("Complete field 1 first.", "err"); return; }
+    if (matchesAnswer(f2Inp.value, ["5","five"])) {
+      markSolved("scene14");
+      setFeedback("Both fields confirmed. 5 buildings. Door to the Great Dome opens.", "ok");
+      objectsEl.appendChild(navBtn("door — Great Dome Scriptorium →", "scene15"));
+      render();
+    } else {
+      setFeedback("Recount the circled buildings on the map: 7, 3, 10, 4, 8.", "err");
+    }
+  });
+  f2Inp.addEventListener("keydown", e => { if (e.key === "Enter") f2Btn.click(); });
+  f2Row.append(f2Label, f2Inp, f2Btn);
+  puzzleZoneEl.appendChild(f2Row);
+}
+
+// ── SCENE 15 — Great Dome Scriptorium ──
+function renderScene15() {
+  setBreadcrumb("Wing 4 — Boston / Scene 15");
+  sceneTitleEl.textContent = "Scene 15 — The Great Dome Scriptorium";
+  sceneBodyEl.innerHTML = `
+    <p>A circular room with a domed ceiling. The dome has an oculus at its peak — a round window filled with small glass blocks arranged in a grid. The light they admit is amethyst-tinted and diffuse. The architecture references something classical.</p>
+    <p>On the curved wall, five lines are carved in careful uppercase letters:</p>
+    <pre><span class="acrostic-first">M</span>IND LIVES IN THE HANDS OF THOSE WHO BUILD.
+<span class="acrostic-first">A</span>ND THE HANDS BELONG TO THOSE WHO THINK.
+<span class="acrostic-first">N</span>EITHER STANDS ALONE AGAINST THE UNIVERSE.
+<span class="acrostic-first">U</span>NDER THIS DOME, BOTH WERE ASKED TO SERVE.
+<span class="acrostic-first">S</span>ILENCE IS NOT THE ANSWER HERE.</pre>
+    <p>Below the carving, a text field prompts: <em>"The first letter of each line above forms a single Latin word. That word is half of the motto of the institution that built this dome. Enter the full motto — both halves — in Latin."</em></p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("dome — look up", () => setDetail(`<p>The dome above mirrors one built in the early second century in Rome. Its oculus: 27 feet in diameter. The dome above you: also 27 feet. This was not an accident. The architect was paying tribute.</p>`)));
+  objectsEl.appendChild(objBtn("acrostic — read", () => setDetail(`<p>The five carved lines. Read only the first letter of each: M — A — N — U — S. This is MANUS. MANUS is Latin for "hand." It is the second half of a famous motto.</p><p>A card on the reading table: <em>"Step 1: Read the first letter of each carved line → M, A, N, U, S. Step 2: MANUS is Latin for 'Hand.' It is the second half of a famous motto. Search 'MIT motto Latin' for the full phrase. It is three words: ___ ET MANUS. Enter all three words."</em></p>`)));
+  objectsEl.appendChild(objBtn("Pantheon plaque", () => setDetail(`<p>The inscription beside the oculus description: <em>"The Pantheon. Rome. Built by Hadrian, circa 125 CE. The oculus is the only light source. The dome is a hemisphere. The building is proof that what is made by human hands endures."</em></p>`)));
+  objectsEl.appendChild(tunaBtn("scene15"));
+  objectsEl.appendChild(navBtn("← scene 14", "scene14"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene15")) {
+    puzzleZoneEl.appendChild(solvedNotice(`MENS ET MANUS — Mind and Hand. Boston branch complete.`));
+    objectsEl.appendChild(navBtn("← two cities hub", "wing4hub"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt(`Enter the full Latin motto.`));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("three Latin words");
+    const btn = submitBtn("inscribe");
+    btn.addEventListener("click", () => {
+      const v = normalize(inp.value);
+      if (v === "mind and hand" || v === "mind and hands") {
+        setFeedback("The Latin phrase, please.", "info");
+        return;
+      }
+      if (matchesAnswer(inp.value, ["mens et manus","mens et manus."])) {
+        markSolved("scene15");
+        setFeedback("The oculus brightens. MENS ET MANUS — Mind and Hand. Boston branch complete.", "ok");
+        render();
+      } else {
+        setFeedback("The inscription does not accept that. Read the acrostic: M-A-N-U-S. Search 'MIT motto Latin.'", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+}
+
+// ── SCENE 16 — The Harbour Room ──
+function renderScene16() {
+  setBreadcrumb("Wing 4 — Hong Kong / Scene 16");
+  sceneTitleEl.textContent = "Scene 16 — The Harbour Room";
+  document.getElementById("mainPanel").style.background = "#0d1520";
+  sceneBodyEl.innerHTML = `
+    <p>You step through and the air changes. It is warm and dense and it carries the smell of salt water and fried tofu skin from a dai pai dong that is somehow nearby. The room is vast — wider than any room in the house so far — and its far wall is not a wall but a window stretching from floor to ceiling.</p>
+    <p>Through it: a harbour at night. The skyline is unmistakable if you know it. A cluster of glass towers, each one lit from within, reflected in black water. Across the harbour: a low peninsula of neon and old stone. Between them, a small green-and-white ferry crosses in silence.</p>
+    <p>On a pedestal near the window, a bronze model of a seated Buddha. Serene. Massive even in miniature. A plaque at the base:</p>
+    <blockquote><em>"On Lantau Island, a bronze Buddha sits at the top of a hill. He has been sitting there since 1993. To reach him, a pilgrim must climb a staircase cut into the hillside — exactly ___ steps, no more, no fewer. The number of steps is your key to this room. Enter the number."</em></blockquote>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("harbour window — examine", () => setDetail(`<p>Through the floor-to-ceiling window: a harbour at night. Towers lit from within. The green-and-white Star Ferry. Kowloon across the water. The International Commerce Centre. This view is specific. This city is known.</p>`)));
+  objectsEl.appendChild(objBtn("bronze model", () => setDetail(`<p>A bronze seated Buddha, smaller than the real one but perfectly detailed. The serenity of the face is exact. The hands rest open on the lap. The plaque says he has been sitting since 1993. He has been very patient.</p>`)));
+  objectsEl.appendChild(objBtn("laminated card", () => setDetail(`<p>A card beside the bronze model: <em>"The Tian Tan Buddha on Lantau Island, Hong Kong. Also called the Big Buddha. Search: 'Tian Tan Buddha number of steps' or 'Big Buddha Lantau steps.' The number is well-documented. It is exactly 268."</em></p>`)));
+  objectsEl.appendChild(objBtn("watercolour", () => setDetail(`<p>A framed watercolor of the harbour at dawn. Below it, in careful handwriting: <em>"She lives here. On the other side of the window. Thirteen hours ahead, or thirteen hours behind, depending on who is counting. The house knows her city. The house was built to know her city."</em></p>`)));
+  objectsEl.appendChild(objBtn("ferry — watch", () => setDetail(`<p>The green-and-white Star Ferry crosses the harbour at a pace that seems designed for watching. It takes roughly eight minutes. Watching it requires nothing except time and the willingness to be in one place for eight minutes. The house allows this.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene16"));
+  objectsEl.appendChild(navBtn("← two cities hub", "wing4hub"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene16")) {
+    document.getElementById("mainPanel").style.background = "#0d1520";
+    puzzleZoneEl.appendChild(solvedNotice(`268 steps. The ferry completes its crossing.`));
+    objectsEl.appendChild(navBtn("door — the two clocks →", "scene16b"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt(`How many steps lead to the Tian Tan Buddha?`));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("number of steps");
+    const btn = submitBtn("enter number");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["268"])) {
+        markSolved("scene16");
+        setFeedback("The ferry completes its crossing. The harbour lights intensify. 268 steps. Door unlocked.", "ok");
+        render();
+      } else {
+        setFeedback("Not the number. Search 'Tian Tan Buddha number of steps' or 'Big Buddha Lantau steps.'", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+}
+
+// ── SCENE 16B — The Diffie-Hellman Exchange ──
+function renderScene16b() {
+  setBreadcrumb("Wing 4 — Hong Kong / Interstitial");
+  sceneTitleEl.textContent = "The Diffie-Hellman Exchange";
+  document.getElementById("mainPanel").style.background = "#0d1520";
+  sceneBodyEl.innerHTML = `
+    <p>A narrow corridor before the Two Clocks room. Two terminals face each other across the passage. Both are active. Their screens read:</p>
+    <div style="display:flex;gap:32px;margin:20px 0;font-family:'Fira Code',monospace;font-size:14px;color:var(--amber);">
+      <div style="flex:1;border:1px solid var(--border);padding:12px;">
+        <div style="color:var(--muted);font-size:12px;margin-bottom:8px;">TERMINAL A — ALICE</div>
+        Public parameters: p = 23, g = 5<br>
+        Private key: a = 3<br>
+        Sends to Bob: g<sup>a</sup> mod p = ?<br>
+        <br>
+        Received from Bob: 18<br>
+        Shared secret: 18<sup>a</sup> mod p = <strong>?</strong>
+      </div>
+      <div style="flex:1;border:1px solid var(--border);padding:12px;">
+        <div style="color:var(--muted);font-size:12px;margin-bottom:8px;">TERMINAL B — BOB</div>
+        Public parameters: p = 23, g = 5<br>
+        Private key: b = 12<br>
+        Sends to Alice: g<sup>b</sup> mod p = 18<br>
+        <br>
+        Received from Alice: 10<br>
+        Shared secret: 10<sup>b</sup> mod p = <strong>?</strong>
+      </div>
+    </div>
+    <p>The door ahead is sealed. A keypad on the wall reads: <em>"Enter the shared secret."</em></p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("left terminal", () => setDetail(`<p>Alice's terminal is incomplete. She has computed her public key: g<sup>a</sup> mod p = 5³ mod 23 = 125 mod 23 = 10. She sent 10 to Bob. She received 18 from Bob (Bob's public key). To compute the shared secret, she raises Bob's public key to her private key, mod p: 18³ mod 23.</p><p style="color:var(--muted);font-size:15px;">Compute 18³ mod 23 by hand or with a calculator.</p>`)));
+  objectsEl.appendChild(objBtn("right terminal", () => setDetail(`<p>Bob computed 5¹² mod 23 = 18 and sent it to Alice. He received 10 from Alice. To compute the shared secret: 10¹² mod 23.</p><p>Both computations should yield the same result — that is the security guarantee of Diffie-Hellman. The shared secret is never transmitted. An eavesdropper would need to compute the discrete logarithm.</p><p style="color:var(--muted);font-size:15px;">Search: "Diffie-Hellman key exchange" for the protocol. Use modular exponentiation (repeated squaring) for the computation.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene16b"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+  if (isSolved("scene16b")) {
+    puzzleZoneEl.appendChild(solvedNotice("The door opens. Shared secret: 13."));
+    objectsEl.appendChild(navBtn("door — the two clocks →", "scene17"));
+  } else {
+    puzzleZoneEl.appendChild(puzzlePrompt("Enter the shared secret computed by both Alice and Bob."));
+    const row = document.createElement("div"); row.className = "input-row";
+    const inp = inputRow("the shared secret");
+    const btn = submitBtn("enter secret");
+    btn.addEventListener("click", () => {
+      if (matchesAnswer(inp.value, ["13"])) {
+        markSolved("scene16b");
+        setFeedback("Correct. 18³ mod 23 = 10¹² mod 23 = 13. Both parties arrive at 13 without ever transmitting it. The door opens.", "ok");
+        render();
+      } else {
+        setFeedback("Incorrect. Compute 18³ mod 23 (Alice's calculation) or 10¹² mod 23 (Bob's). They must agree.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+    row.append(inp, btn);
+    puzzleZoneEl.appendChild(row);
+  }
+  objectsEl.appendChild(navBtn("← harbour room", "scene16"));
+}
+
+// ── SCENE 17 — The Two Clocks ──
+function renderScene17() {
+  setBreadcrumb("Wing 4 — Hong Kong / Scene 17");
+  sceneTitleEl.textContent = "Scene 17 — The Two Clocks";
+  document.getElementById("mainPanel").style.background = "";
+  sceneBodyEl.innerHTML = `
+    <p>A small room. Square. Quiet. Two clocks on the wall, side by side. Both are running. Both show the same moment in time — but the numbers disagree.</p>
+    <p>The left clock is labeled <strong>BOSTON</strong> in brass letters. It shows a time well past midnight. The right clock is labeled <strong>HONG KONG</strong>. It shows early afternoon.</p>
+    <blockquote><em>"One city sleeps while the other works. One sends a message at midnight; the other reads it over lunch. They have learned to love in the margins of each other's days.</em><br><br><em>FIELD 1: When the Boston clock strikes midnight on a January night — what hour does the Hong Kong clock show? Enter the hour in 24-hour format.</em><br><br><em>FIELD 2: The two cities are separated by 12,827 kilometers of the Earth's surface. The Earth's full circumference is 40,075 kilometers. What percentage of the way around the world are these two cities from each other? Round to the nearest whole number. Enter just the number, not the % symbol."</em></blockquote>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("Boston clock — examine", () => setDetail(`<p>The left clock, labeled BOSTON. Currently showing well past midnight. Boston uses Eastern Standard Time in winter: UTC − 5.</p>`)));
+  objectsEl.appendChild(objBtn("Hong Kong clock — examine", () => setDetail(`<p>The right clock, labeled HONG KONG. Currently showing early afternoon. Hong Kong uses HKT: UTC + 8. The city is ahead of Greenwich by eight hours. You will need to compare this to Boston's offset to find the gap.</p>`)));
+  objectsEl.appendChild(objBtn("carved inscription", () => setDetail(`<p>The full inscription carved into the wall between the clocks. Below it, a card pinned to the wall: <em>"Time zones: Boston uses Eastern Standard Time in winter (UTC minus 5). Hong Kong uses HKT (UTC plus 8). The difference: 5 + 8 = 13 hours. Hong Kong is 13 hours AHEAD. So midnight in Boston = 1:00 PM in Hong Kong = 13:00 in 24-hour format. Field 1 answer: 13. For Field 2: divide 12,827 by 40,075 and multiply by 100. Use a calculator. 12,827 ÷ 40,075 = 0.32013... × 100 = 32.013...%. Rounded: 32."</em></p>`)));
+  objectsEl.appendChild(objBtn("globe — examine", () => setDetail(`<p>A small globe on a side table. Boston and Hong Kong are marked with pins, connected by a red thread that follows the curve of the earth. A label: <em>"12,827 km. Or approximately 7,972 miles. Or one third of the planet. Or exactly the distance between I miss you and I'm here."</em></p>`)));
+  objectsEl.appendChild(tunaBtn("scene17"));
+  objectsEl.appendChild(navBtn("← scene 16", "scene16"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+
+  const p17 = STATE.puzzle.scene17;
+
+  if (isSolved("scene17")) {
+    puzzleZoneEl.appendChild(solvedNotice(`13 hours. 32% of the planet. Both clocks chime. Hong Kong branch complete.`));
+    const para = document.createElement("p");
+    para.style.cssText = "font-style:italic;color:#8a9ab0;margin-top:12px;";
+    para.innerHTML = `"Thirty-two percent of the world. That is how far apart they are. But the clocks both chimed. They found the same note. That was the point."`;
+    puzzleZoneEl.appendChild(para);
+    objectsEl.appendChild(navBtn("← two cities hub", "wing4hub"));
+    return;
+  }
+
+  puzzleZoneEl.appendChild(puzzlePrompt(`Answer both fields. A calculator may help with field 2.`));
+
+  const f1Row = document.createElement("div"); f1Row.className = "input-row"; f1Row.style.marginBottom = "8px";
+  const f1Label = document.createElement("span");
+  f1Label.style.cssText = "font-family:'Fira Code',monospace;font-size:12px;color:#8a9ab0;min-width:240px;";
+  f1Label.textContent = "field 1 (HK hour at Boston midnight):";
+  const f1Inp = inputRow("24-hour format");
+  if (p17.field1Done) { f1Inp.value = "13"; f1Inp.className += " locked"; f1Inp.disabled = true; }
+  const f1Btn = submitBtn("confirm");
+  if (p17.field1Done) f1Btn.disabled = true;
+  f1Btn.addEventListener("click", () => {
+    if (matchesAnswer(f1Inp.value, ["13","thirteen","13:00","1300"])) {
+      p17.field1Done = true; saveState();
+      f1Inp.value = "13"; f1Inp.className += " locked"; f1Inp.disabled = true;
+      f1Btn.disabled = true;
+      setFeedback("Field 1 confirmed. HKT = UTC+8, EST = UTC−5, difference = 13 hours. Now field 2.", "ok");
+    } else {
+      setFeedback("Not the hour. Compare Boston's UTC offset to Hong Kong's, then add the gap to midnight.", "err");
+    }
+  });
+  f1Inp.addEventListener("keydown", e => { if (e.key === "Enter") f1Btn.click(); });
+  f1Row.append(f1Label, f1Inp, f1Btn);
+  puzzleZoneEl.appendChild(f1Row);
+
+  const f2Row = document.createElement("div"); f2Row.className = "input-row";
+  const f2Label = document.createElement("span");
+  f2Label.style.cssText = "font-family:'Fira Code',monospace;font-size:12px;color:#8a9ab0;min-width:240px;";
+  f2Label.textContent = "field 2 (% of circumference):";
+  const f2Inp = inputRow("whole number, no % symbol");
+  const f2Btn = submitBtn("confirm");
+  f2Btn.addEventListener("click", () => {
+    if (!p17.field1Done) { setFeedback("Complete field 1 first.", "err"); return; }
+    if (matchesAnswer(f2Inp.value, ["32","thirty two","thirty-two","thirty two percent"])) {
+      markSolved("scene17");
+      setFeedback("Both clocks chime simultaneously. Thirty-two percent of the world. Hong Kong branch complete.", "ok");
+      objectsEl.appendChild(navBtn("← two cities hub", "wing4hub"));
+      render();
+    } else {
+      setFeedback("Recheck. 12827 ÷ 40075 × 100 = ~32. Use a calculator.", "err");
+    }
+  });
+  f2Inp.addEventListener("keydown", e => { if (e.key === "Enter") f2Btn.click(); });
+  f2Row.append(f2Label, f2Inp, f2Btn);
+  puzzleZoneEl.appendChild(f2Row);
+}
+
+// ── SCENE 18 — Hall of Contradictions ──
+function renderScene18() {
+  setBreadcrumb("Wing 5 / Scene 18");
+  sceneTitleEl.textContent = "Scene 18 — The Hall of Contradictions";
+  document.getElementById("mainPanel").style.background = "#0f0d0a";
+  sceneBodyEl.innerHTML = `
+    <p>A hexagonal room. Six doors: one open (the entry), five sealed. The ceiling is too high to see. Each sealed door has a statement above it.</p>
+    <div class="door-list">
+      <span class="door-link" id="d18-1">[door 1: "Emotions are real."]</span>
+      <span class="door-link" id="d18-2">[door 2: "Emotions are constructed."]</span>
+      <span class="door-link" id="d18-3">[door 3: "The universe is indifferent to emotion."]</span>
+      <span class="door-link" id="d18-4">[door 4: "Revolt is the only authentic response."]</span>
+      <span class="door-link" id="d18-5">[door 5: "One must imagine ___ happy."] ← slightly ajar</span>
+    </div>
+    <p>A stone column at the center: <em>"If emotions are not fixed — if they are assembled by the mind from the raw material of memory and sensation — and if the universe does not care what we feel — do emotions matter? There is no correct answer here. Only a direction. Walk toward what you believe."</em></p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+  objectsEl.appendChild(objBtn("stone column", () => setDetail(`<p><em>There is no correct answer here. Only a direction. Walk toward what you believe.</em></p><p>The column does not require an answer. Five doors do. One is ajar.</p>`)));
+  objectsEl.appendChild(tunaBtn("scene18"));
+  if (isSolved("scene18")) {
+    objectsEl.appendChild(navBtn("through door 5 →", "scene19"));
+  }
+  objectsEl.appendChild(navBtn("← entrance", "entrance"));
+
+  document.getElementById("d18-1").addEventListener("click", () => {
+    setDetail(`<p><em>"Barrett. It is real. The pain is real. The feeling is real. Only the category was constructed."</em></p>`);
+  });
+  document.getElementById("d18-2").addEventListener("click", () => {
+    setDetail(`<p><em>"Barrett. The brain assembles. From noise, sensation, memory — it predicts an emotion. The prediction is real. Its name is not fixed."</em></p>`);
+  });
+  document.getElementById("d18-3").addEventListener("click", () => {
+    setDetail(`<p><em>"Camus. The universe is not hostile. It is something worse: silent. It does not answer. It never will."</em></p>`);
+  });
+  document.getElementById("d18-4").addEventListener("click", () => {
+    setDetail(`<p><em>"Camus. Not hope. Not resignation. Revolt: the refusal to be beaten by what is certain."</em></p>`);
+  });
+  document.getElementById("d18-5").addEventListener("click", () => {
+    setDetail(`<p><em>"Tuna sits directly in front of the Sisyphus door. She will not move. The inscription reads: 'One must imagine ___ happy.' The blank is a small carved recess, sized for a name. Tuna stares at you with complete composure. One must imagine ___ happy."</em></p>`);
+    showPuzzle();
+    puzzleZoneEl.innerHTML = "";
+    if (isSolved("scene18")) {
+      const notice = document.createElement("div");
+      notice.className = "solved-notice";
+      notice.innerHTML = `&#10003; <em>"One must imagine Tuna happy." Tuna considered this. She moved. The door opened.</em>`;
+      puzzleZoneEl.appendChild(notice);
+      objectsEl.appendChild(navBtn("through door 5 →", "scene19"));
+    } else {
+      puzzleZoneEl.appendChild(puzzlePrompt(`Fill in the blank. One must imagine ___ happy.`));
+      const row = document.createElement("div"); row.className = "input-row";
+      const inp = inputRow("a name");
+      const btn = submitBtn("inscribe");
+      btn.addEventListener("click", () => {
+        if (matchesAnswer(inp.value, ["tuna"])) {
+          markSolved("scene18");
+          setFeedback("The inscription fills in. 'One must imagine Tuna happy.' Tuna considers this. She stands. She moves. The door opens.", "ok");
+          render();
+        } else {
+          setFeedback("The blank is sized for a name. There is a cat sitting in front of this door. She has been here the whole time.", "err");
+        }
+      });
+      inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+      row.append(inp, btn);
+      puzzleZoneEl.appendChild(row);
+    }
+  });
+}
+
+// ── SCENE 19 — Sisyphus Room ★ ──
+function renderScene19() {
+  setBreadcrumb("Wing 5 / Scene 19 ★");
+  sceneTitleEl.textContent = "Scene 19 — The Sisyphus Room ★";
+  document.getElementById("mainPanel").style.background = "#0f0d0a";
+  sceneBodyEl.innerHTML = `
+    <p>A circular room. A domed ceiling. Painted on the dome: a figure pushing a boulder upward along a slope. The boulder is near the top. Below the figure, in large letters:</p>
+    <blockquote><em>"One must imagine Sisyphus ....."</em></blockquote>
+    <p>At the center: a pedestal. On the velvet tray, five glass letters scrambled: <strong>Y &nbsp; H &nbsp; P &nbsp; P &nbsp; A</strong></p>
+    <p>A plaque: <em>"Rearrange these letters. When the word is correct, count its letters. That number is your last fragment."</em></p>
+    <p>A floor note: <em>"This is the strangest sentence Camus wrote. He imagined a man condemned to eternal, pointless repetition — rolling a boulder forever, watching it fall — and said: we should imagine him happy. Not resigned. Not hopeful. Happy. Because the struggle itself toward the heights is enough to fill a human heart. He gave Sisyphus one word. Count it."</em></p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("dome — look up", () => setDetail(`<p>The figure pushes the boulder. The boulder is near the top. It will fall. He will return. He will push again. The dome shows one moment in an infinite sequence. It chose the moment before the fall, not the fall itself. Camus would approve.</p>`)));
+  objectsEl.appendChild(objBtn("floor note", () => setDetail(`<p><em>"This is the strangest sentence Camus wrote. He imagined a man condemned to eternal, pointless repetition — rolling a boulder forever, watching it fall — and said: we should imagine him happy. Not resigned. Not hopeful. Happy. Because the struggle itself toward the heights is enough to fill a human heart. He gave Sisyphus one word. Count it."</em></p>`)));
+  objectsEl.appendChild(tunaBtn("scene19"));
+  objectsEl.appendChild(navBtn("← scene 18", "scene18"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+
+  if (isSolved("scene19")) {
+    puzzleZoneEl.appendChild(solvedNotice(`Fragment E collected. HAPPY — 5 letters.`));
+    const fc = document.createElement("div");
+    fc.className = "fragment-card";
+    fc.innerHTML = `<div class="fc-label">The fifth fragment. The word Camus gave to Sisyphus: HAPPY. Five letters.</div><div class="fc-number">№ 5</div>`;
+    puzzleZoneEl.appendChild(fc);
+    objectsEl.appendChild(navBtn("→ synthesis antechamber", "scene20"));
+    return;
+  }
+
+  // Drag puzzle
+  puzzleZoneEl.appendChild(puzzlePrompt(`Arrange the five letters to spell the word. Then confirm.`));
+
+  const p19 = STATE.puzzle.scene19;
+  const LETTERS = ["Y","H","P","P","A"];
+
+  const lettersRow = document.createElement("div"); lettersRow.className = "drag-letters"; lettersRow.id = "drag-src";
+  const slotsRow = document.createElement("div"); slotsRow.className = "letter-slots"; slotsRow.id = "drag-slots";
+
+  // Track which slots have letters
+  // slots: array of 5 (null or letter index)
+  let srcLetters = []; // {letter, idx, el}
+  let slotContents = Array(5).fill(null); // each = {letter, srcIdx}
+
+  // Rebuild from state
+  if (p19.slots) slotContents = p19.slots.slice();
+
+  function refreshDrag() {
+    lettersRow.innerHTML = "";
+    slotsRow.innerHTML = "";
+
+    // which src indices are used
+    const usedSrc = new Set();
+    slotContents.forEach(s => { if (s !== null) usedSrc.add(s.srcIdx); });
+
+    // Source tokens
+    LETTERS.forEach((letter, i) => {
+      if (usedSrc.has(i)) return; // in a slot
+      const tok = document.createElement("div");
+      tok.className = "letter-token";
+      tok.textContent = letter;
+      tok.dataset.srcIdx = i;
+      tok.draggable = true;
+      tok.addEventListener("dragstart", ev => {
+        ev.dataTransfer.setData("srcIdx", i);
+        ev.dataTransfer.setData("fromSlot", "");
+        tok.classList.add("dragging");
+      });
+      tok.addEventListener("dragend", () => tok.classList.remove("dragging"));
+      lettersRow.appendChild(tok);
+    });
+
+    // Slot tokens (occupied src letters can also be dragged out)
+    slotContents.forEach((content, slotI) => {
+      const slot = document.createElement("div");
+      slot.className = "letter-slot" + (content ? " filled" : "");
+      slot.dataset.slotIdx = slotI;
+      slot.innerHTML = `<span class="slot-idx">${slotI+1}</span>`;
+      if (content) {
+        slot.textContent = content.letter;
+        slot.dataset.slotIdx = slotI;
+        // Make filled slot draggable to move back
+        slot.draggable = true;
+        slot.addEventListener("dragstart", ev => {
+          ev.dataTransfer.setData("srcIdx", content.srcIdx);
+          ev.dataTransfer.setData("fromSlot", slotI);
+          slot.style.opacity = "0.4";
+        });
+        slot.addEventListener("dragend", () => slot.style.opacity = "");
+      }
+      slot.addEventListener("dragover", ev => { ev.preventDefault(); slot.classList.add("over"); });
+      slot.addEventListener("dragleave", () => slot.classList.remove("over"));
+      slot.addEventListener("drop", ev => {
+        ev.preventDefault();
+        slot.classList.remove("over");
+        const srcIdx = parseInt(ev.dataTransfer.getData("srcIdx"));
+        const fromSlot = ev.dataTransfer.getData("fromSlot");
+        // If dropping from another slot, clear that slot
+        if (fromSlot !== "") {
+          slotContents[parseInt(fromSlot)] = null;
+        }
+        // If this slot already has content, return it to pool
+        if (slotContents[slotI] !== null) {
+          // Just clear it (goes back to pool)
+          slotContents[slotI] = null;
+        }
+        slotContents[slotI] = { letter: LETTERS[srcIdx], srcIdx };
+        p19.slots = slotContents.slice();
+        saveState();
+        refreshDrag();
+      });
+      slotsRow.appendChild(slot);
+    });
+  }
+
+  refreshDrag();
+  puzzleZoneEl.appendChild(lettersRow);
+  puzzleZoneEl.appendChild(slotsRow);
+
+  const clearBtn = document.createElement("button");
+  clearBtn.className = "btn";
+  clearBtn.textContent = "clear arrangement";
+  clearBtn.style.marginRight = "10px";
+  clearBtn.addEventListener("click", () => {
+    slotContents = Array(5).fill(null);
+    p19.slots = slotContents.slice();
+    saveState();
+    refreshDrag();
+    clearFeedback();
+  });
+
+  const checkBtn = submitBtn("check arrangement");
+  checkBtn.addEventListener("click", () => {
+    const word = slotContents.map(s => s ? s.letter : "").join("");
+    if (slotContents.some(s => s === null)) {
+      setFeedback("All five slots must be filled before checking.", "err"); return;
+    }
+    if (word === "HAPPY") {
+      markSolved("scene19");
+      grantFragment("E");
+      setFeedback("The velvet tray sinks. A fragment card rises. HAPPY — five letters. Fragment E collected.", "ok");
+      render();
+    } else {
+      setFeedback(`"${word}" — not a word he would have used. The dome inscription says it: one must imagine Sisyphus _____.`, "err");
+    }
+  });
+
+  const btnRow = document.createElement("div"); btnRow.className = "input-row";
+  btnRow.append(clearBtn, checkBtn);
+  puzzleZoneEl.appendChild(btnRow);
+}
+
+// ── SCENE 20 — Synthesis Antechamber ──
+function renderScene20() {
+  setBreadcrumb("Wing 5 / Scene 20");
+  sceneTitleEl.textContent = "Scene 20 — The Synthesis Antechamber";
+  document.getElementById("mainPanel").style.background = "#0f0d0a";
+  sceneBodyEl.innerHTML = `
+    <p>A bare, clean room. One table. On the table: five small boxes, each with a glowing slot. Above each box, a poetic clue label in gold on dark wood. The labels are displayed in a randomized order — they are never in the same sequence twice.</p>
+    <p>Below all five boxes:</p>
+    <blockquote><em>"Each box belongs to one clue. Enter the number that answers each clue. When all five are correctly placed, this room will convert them. In this house, A is 1. B is 2. And so on through Z at 26. The five numbers, converted, spell a name. That name is your answer."</em></blockquote>
+    <p>A folded note on the table: <em>"The house has been here a long time. It has been waiting to ask you something it already knows the answer to. It hopes you found the journey worth the asking. Across two cities and thirteen hours, it built itself for someone. Now it would like to say her name."</em></p>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+  objectsEl.appendChild(tunaBtn("scene20"));
+  objectsEl.appendChild(navBtn("← scene 19", "scene19"));
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+
+  const p20 = STATE.puzzle.scene20;
+
+  // Initialize shuffle order if not set
+  if (!p20.shuffleOrder) {
+    const indices = [0,1,2,3,4];
+    // Seeded shuffle using current timestamp as seed
+    const seed = Date.now();
+    function seededRand(s) { let x = Math.sin(s+1)*10000; return x - Math.floor(x); }
+    for (let i = 4; i > 0; i--) {
+      const j = Math.floor(seededRand(seed + i) * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    p20.shuffleOrder = indices;
+    p20.placed = {};
+    saveState();
+  }
+
+  if (p20.done) {
+    // Show conversion animation result
+    const resultEl = document.createElement("div");
+    resultEl.className = "synthesis-result";
+    resultEl.textContent = "1→A  14→N  14→N  9→I  5→E  → ANNIE";
+    puzzleZoneEl.appendChild(resultEl);
+    const notice = document.createElement("p");
+    notice.style.cssText = "font-style:italic;color:#c9a96e;text-align:center;font-size:19px;margin-bottom:16px;";
+    notice.textContent = "A staircase descends.";
+    puzzleZoneEl.appendChild(notice);
+    objectsEl.appendChild(navBtn("↓ final door", "scene21"));
+    return;
+  }
+
+  const grid = document.createElement("div"); grid.className = "synthesis-grid";
+  let allCorrect = true;
+
+  p20.shuffleOrder.forEach(idx => {
+    const label = SYNTHESIS_LABELS[idx];
+    const slot = document.createElement("div");
+    slot.className = "synthesis-slot";
+    if (p20.placed[label.id] !== undefined) slot.classList.add("correct");
+
+    const labelEl = document.createElement("div");
+    labelEl.className = "slot-label";
+    labelEl.textContent = label.text;
+
+    const inp = document.createElement("input");
+    inp.type = "text";
+    inp.className = "txt-input slot-input";
+    inp.placeholder = "number";
+    inp.addEventListener("input", () => checkTunaHome(inp.value));
+
+    const checkEl = document.createElement("span"); checkEl.className = "slot-check";
+
+    if (p20.placed[label.id] !== undefined) {
+      inp.value = p20.placed[label.id];
+      inp.disabled = true;
+      inp.className += " locked";
+      checkEl.textContent = "✓";
+    } else {
+      allCorrect = false;
+    }
+
+    const checkSlotBtn = submitBtn("→");
+    checkSlotBtn.style.padding = "8px 10px";
+    if (p20.placed[label.id] !== undefined) checkSlotBtn.style.display = "none";
+
+    checkSlotBtn.addEventListener("click", () => {
+      const v = normalize(inp.value);
+      const accepted = String(label.answer);
+      if (v === accepted || v === numberWord(label.answer)) {
+        p20.placed[label.id] = inp.value;
+        saveState();
+        setFeedback("Correct match.", "ok");
+        // Check if all placed
+        const allPlaced = SYNTHESIS_LABELS.every(l => p20.placed[l.id] !== undefined);
+        if (allPlaced) {
+          p20.done = true;
+          saveState();
+          runSynthesisAnimation();
+        } else {
+          render();
+        }
+      } else {
+        slot.classList.add("shake");
+        setTimeout(() => slot.classList.remove("shake"), 400);
+        setFeedback("That number does not match this clue. Revisit the relevant room.", "err");
+      }
+    });
+    inp.addEventListener("keydown", e => { if (e.key === "Enter") checkSlotBtn.click(); });
+
+    slot.append(labelEl, inp, checkSlotBtn, checkEl);
+    grid.appendChild(slot);
+  });
+
+  puzzleZoneEl.appendChild(grid);
+}
+
+function numberWord(n) {
+  const words = {1:"one",5:"five",9:"nine",14:"fourteen"};
+  return words[n] || "";
+}
+
+function runSynthesisAnimation() {
+  puzzleZoneEl.innerHTML = "";
+  const pairs = [{n:1,l:"A"},{n:14,l:"N"},{n:14,l:"N"},{n:9,l:"I"},{n:5,l:"E"}];
+  const resultEl = document.createElement("div"); resultEl.className = "synthesis-result";
+  resultEl.textContent = "";
+  puzzleZoneEl.appendChild(resultEl);
+
+  let i = 0;
+  function step() {
+    if (i < pairs.length) {
+      const p = pairs[i];
+      resultEl.textContent += `${p.n}→${p.l}  `;
+      i++;
+      setTimeout(step, 700);
+    } else {
+      setTimeout(() => {
+        resultEl.textContent += "→ ANNIE";
+        const notice = document.createElement("p");
+        notice.style.cssText = "font-style:italic;color:#c9a96e;text-align:center;font-size:19px;margin-top:16px;";
+        notice.textContent = "A staircase descends.";
+        puzzleZoneEl.appendChild(notice);
+        objectsEl.appendChild(navBtn("↓ final door", "scene21"));
+        setFeedback("Synthesis complete. A staircase descends.", "ok");
+      }, 400);
+    }
+  }
+  setTimeout(step, 300);
+}
+
+// ── SCENE 21 — Final Door ──
+function renderScene21() {
+  setBreadcrumb("Wing 5 / Scene 21");
+  sceneTitleEl.textContent = "Scene 21 — The Final Door";
+  document.getElementById("mainPanel").style.background = "#0f0d0a";
+  sceneBodyEl.innerHTML = `
+    <p>At the bottom of the staircase: one door. Stone. Old. No ornamentation. In the center, an engraved question:</p>
+    <div class="final-door-prompt">
+      <p class="door-question"><em>"Who lives here?"</em></p>
+    </div>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  showPuzzle();
+  puzzleZoneEl.innerHTML = "";
+
+  if (isSolved("scene21")) {
+    puzzleZoneEl.appendChild(solvedNotice(`The door opens. She lives here.`));
+    objectsEl.appendChild(navBtn("through the door →", "scene22"));
+    return;
+  }
+
+  const row = document.createElement("div"); row.className = "input-row";
+  const inp = document.createElement("input");
+  inp.type = "text";
+  inp.className = "txt-input final-input";
+  inp.placeholder = "_ _ _ _ _";
+  inp.maxLength = 10;
+  inp.addEventListener("input", () => checkTunaHome(inp.value));
+  const btn = submitBtn("open");
+  btn.style.fontSize = "16px";
+  btn.style.padding = "10px 24px";
+  btn.addEventListener("click", () => {
+    if (matchesAnswer(inp.value, ["annie"])) {
+      markSolved("scene21");
+      setFeedback("The door opens.", "ok");
+      render();
+    } else {
+      setFeedback("The door does not open. The work is done. You know the answer.", "err");
+    }
+  });
+  inp.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
+  row.append(inp, btn);
+  puzzleZoneEl.appendChild(row);
+}
+
+// ── SCENE 22 — Epilogue ──
+function renderScene22() {
+  setBreadcrumb("Wing 5 / Epilogue");
+  sceneTitleEl.textContent = "Epilogue";
+  document.getElementById("mainPanel").style.background = "#0f0d0a";
+  sceneBodyEl.innerHTML = `
+    <p>A small warm room. No specific light source. At the center: a reading chair, a side table, a cup of tea that is somehow still warm. On the side table: a book. Spine: <em>The Myth of Sisyphus</em>. It has been read. The spine is cracked. Pages annotated.</p>
+    <p>On the inside cover, in handwriting:</p>
+    <blockquote style="font-size:19px;line-height:2;color:#c9a96e;"><em>"This was always your house.<br>You built it by reading the things you read, loving the things you love,<br>and asking the questions you ask when no one is watching.</em><br><br><em>The house was built in Boston. It was built for Hong Kong.<br>It stretches across 12,827 kilometers and thirteen hours and it does not care<br>about the distance because the distance was never the point.</em><br><br><em>The password was never the point.<br>The point was every room you walked through to get here.</em><br><br><em>One must imagine Annie happy.</em><br><br><em>She is."</em></blockquote>`;
+
+  hidePuzzle();
+  clearDetail();
+  clearFeedback();
+  objectsEl.innerHTML = "";
+
+  objectsEl.appendChild(objBtn("Tuna — examine", () => {
+    setDetail(`<p><em>Tuna is in the reading chair. She looks at you as if you should have arrived sooner. She is not wrong. You sit beside her. She does not move over. She is warm. You are sure, now, that she is happy. She does not say so. She doesn't have to.</em></p>`);
+  }));
+  objectsEl.appendChild(objBtn("cup of tea — examine", () => {
+    setDetail(`<p>The tea is still warm. Earl Grey. A specific brand, if you know teas. It will be warm for as long as you are here. This is the house's last gift.</p>`);
+  }));
+  objectsEl.appendChild(objBtn("The Myth of Sisyphus — open", () => {
+    setDetail(`<p>Opened to the final sentence: <em>"One must imagine Sisyphus happy."</em> The page is worn. The margin note, in a familiar hand: <em>"He did."</em></p>`);
+  }));
+}
+
+// ──────────────────────────────────────────────
+// MAIN RENDER
+// ──────────────────────────────────────────────
+const RENDERERS = {
+  entrance:  renderEntrance,
+  scene1:    renderScene1,
+  scene1b:   renderScene1b,
+  scene2:    renderScene2,
+  scene2b:   renderScene2b,
+  scene3:    renderScene3,
+  scene4:    renderScene4,
+  scene4b:   renderScene4b,
+  scene5:    renderScene5,
+  scene5b:   renderScene5b,
+  scene6:    renderScene6,
+  scene7:    renderScene7,
+  scene8:    renderScene8,
+  scene8b:   renderScene8b,
+  scene9:    renderScene9,
+  scene9b:   renderScene9b,
+  scene9c:   renderScene9c,
+  scene10:   renderScene10,
+  scene10b:  renderScene10b,
+  scene11:   renderScene11,
+  scene11b:  renderScene11b,
+  scene12:   renderScene12,
+  wing4hub:  renderWing4Hub,
+  scene13:   renderScene13,
+  scene13b:  renderScene13b,
+  scene14:   renderScene14,
+  scene15:   renderScene15,
+  scene16:   renderScene16,
+  scene16b:  renderScene16b,
+  scene17:   renderScene17,
+  scene18:   renderScene18,
+  scene19:   renderScene19,
+  scene20:   renderScene20,
+  scene21:   renderScene21,
+  scene22:   renderScene22,
+};
+
+function render() {
+  // Reset panel background each render
+  document.getElementById("mainPanel").style.background = "";
+  sceneTitleEl.textContent = "";
+  sceneBodyEl.innerHTML = "";
+  objectsEl.innerHTML = "";
+  detailCardEl.innerHTML = "";
+  puzzleZoneEl.innerHTML = "";
+  puzzleZoneEl.style.display = "none";
+  feedbackEl.textContent = "";
+  feedbackEl.className = "feedback";
+
+  const fn = RENDERERS[STATE.scene];
+  if (fn) fn();
+  else renderEntrance();
+
+  renderNotebook();
+}
+
+// ──────────────────────────────────────────────
+// GLOBAL EVENT LISTENERS
+// ──────────────────────────────────────────────
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if (confirm("Reset all progress? This cannot be undone.")) {
+    localStorage.removeItem(STORAGE_KEY);
+    STATE = defaultState();
+    render();
+  }
+});
+
+// Listen for "tuna home" on all inputs globally
+document.addEventListener("input", ev => {
+  if (ev.target && ev.target.tagName === "INPUT" && ev.target.type === "text") {
+    checkTunaHome(ev.target.value);
+  }
+});
+
+// Close overlay on escape
+document.addEventListener("keydown", ev => {
+  if (ev.key === "Escape") {
+    tunaOverlayEl.style.display = "none";
+  }
+});
+
+// ──────────────────────────────────────────────
+// SCRATCH PAD
+// ──────────────────────────────────────────────
+(function initScratchPad() {
+  const ta = document.getElementById("scratchPad");
+  const saved = document.getElementById("scratchSaved");
+  const SCRATCH_KEY = "threshold_scratch";
+
+  ta.value = localStorage.getItem(SCRATCH_KEY) || "";
+
+  let saveTimer = null;
+  ta.addEventListener("input", () => {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      localStorage.setItem(SCRATCH_KEY, ta.value);
+      saved.textContent = "saved";
+      saved.classList.add("visible");
+      setTimeout(() => saved.classList.remove("visible"), 1500);
+    }, 600);
+  });
+})();
+
+// ──────────────────────────────────────────────
+// INIT
+// ──────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
