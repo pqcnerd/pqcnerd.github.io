@@ -777,7 +777,41 @@
 
 
     <!-- ═══════════════════════════════════════════════════
-         SCENE 6 — MARK'S BIRTHDAY AUDIO
+         SCENE 7 — HEART GRAPH
+    ════════════════════════════════════════════════════════ -->
+    <div class="scene scene--heart-graph">
+
+      <div class="heart-graph-header">
+        <p class="heart-graph-kicker">loving you mathematically</p>
+        <h2 class="heart-graph-title">graphing a heart for you baby</h2>
+        <div class="heart-graph-formula-card" aria-label="Heart graph formula">
+          <p class="heart-graph-formula-label">parametric heart(t)</p>
+          <p class="heart-graph-formula-line">x(t) = 16 sin<sup>3</sup>(t)</p>
+          <p class="heart-graph-formula-line">y(t) = 13 cos(t) - 5 cos(2t) - 2 cos(3t) - cos(4t)</p>
+          <p class="heart-graph-formula-domain">0 <= t <= 2pi</p>
+        </div>
+      </div>
+
+      <div class="heart-graph-stage">
+        <div class="heart-graph-chrome heart-graph-chrome--left" aria-hidden="true">
+          <span class="heart-graph-chip">y1</span>
+          <span class="heart-graph-chip">heart(t)</span>
+        </div>
+        <div id="heart-graph" aria-label="Animated heart graph on a mathematical grid"></div>
+        <div class="heart-graph-chrome heart-graph-chrome--right" aria-hidden="true">
+          <span class="heart-graph-chip">grid</span>
+          <span class="heart-graph-chip">trace</span>
+        </div>
+      </div>
+
+      <p class="heart-graph-footer" id="heart-graph-status">plotting the curve point by point...</p>
+
+      <button class="scene-next-btn" aria-label="Next">↓</button>
+    </div><!-- /scene--heart-graph -->
+
+
+    <!-- ═══════════════════════════════════════════════════
+         SCENE 8 — MARK'S BIRTHDAY AUDIO
     ════════════════════════════════════════════════════════ -->
     <div class="scene scene--audio-mark">
 
@@ -909,7 +943,7 @@
 
 
     <!-- ═══════════════════════════════════════════════════
-         SCENE 11 — WEBCAM + HEART CONNECTION
+         SCENE 12 — WEBCAM + HEART CONNECTION
     ════════════════════════════════════════════════════════ -->
     <div class="scene scene--webcam">
 
@@ -962,6 +996,7 @@
       <button class="scene-skip-dot" type="button" data-scene-target="8" aria-label="Go to scene 9" title="Scene 9"></button>
       <button class="scene-skip-dot" type="button" data-scene-target="9" aria-label="Go to scene 10" title="Scene 10"></button>
       <button class="scene-skip-dot" type="button" data-scene-target="10" aria-label="Go to scene 11" title="Scene 11"></button>
+      <button class="scene-skip-dot" type="button" data-scene-target="11" aria-label="Go to scene 12" title="Scene 12"></button>
     </nav>
 
 
@@ -982,9 +1017,9 @@
       var cleanupLittlePuzzle = function () {};
       var cleanupCakeMic = function () {};
 
-      /* 11 scenes: 0-Flowers 1-LDR 2-SongLetter 3-LittleThings
-         4-MemoryRoom 5-Nerd 6-MarkAudio 7-Wishes 8-Birthday
-         9-Proposal 10-Webcam
+      /* 12 scenes: 0-Flowers 1-LDR 2-SongLetter 3-LittleThings
+         4-MemoryRoom 5-Nerd 6-HeartGraph 7-MarkAudio 8-Wishes
+         9-Birthday 10-Proposal 11-Webcam
          proposal/webcam advance internally */
 
       function syncSceneDots() {
@@ -1045,11 +1080,12 @@
         if (idx === 3)  { initLittlePuzzle(); }
         if (idx === 4)  { initMemoryScene(); }
         if (idx === 5)  { initNerdGraph(); }
-        if (idx === 6)  { initMarkAudio(); }
-        if (idx === 7)  { initWishes(); }
-        if (idx === 8)  { initBirthdayScene(); }
-        if (idx === 9)  { runHeartfelt(); }
-        if (idx === 10) { startWebcam(); }
+        if (idx === 6)  { initHeartGraph(); }
+        if (idx === 7)  { initMarkAudio(); }
+        if (idx === 8)  { initWishes(); }
+        if (idx === 9)  { initBirthdayScene(); }
+        if (idx === 10) { runHeartfelt(); }
+        if (idx === 11) { startWebcam(); }
       }
 
       /* ── Shared helpers ─────────────────────────────────────── */
@@ -2348,6 +2384,206 @@
             });
           }, 2150 + layerIndex * 950);
         });
+      }
+
+      var heartGraphInited = false;
+
+      function initHeartGraph() {
+        if (heartGraphInited) return;
+        heartGraphInited = true;
+
+        var container = document.getElementById('heart-graph');
+        var status = document.getElementById('heart-graph-status');
+        if (!container || typeof d3 === 'undefined') return;
+
+        var W = container.clientWidth || 1000;
+        var H = container.clientHeight || 640;
+        var xMin = -20;
+        var xMax = 20;
+        var yMin = -19;
+        var yMax = 19;
+        var majorStep = 5;
+        var minorStep = 1;
+        var totalPoints = 260;
+        var duration = 6200;
+
+        function scaleX(value) {
+          return ((value - xMin) / (xMax - xMin)) * W;
+        }
+
+        function scaleY(value) {
+          return H - ((value - yMin) / (yMax - yMin)) * H;
+        }
+
+        function heartPoint(t) {
+          return {
+            x: 16 * Math.pow(Math.sin(t), 3),
+            y: 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)
+          };
+        }
+
+        var sampled = [];
+        for (var i = 0; i < totalPoints; i++) {
+          var t = (i / (totalPoints - 1)) * Math.PI * 2;
+          var point = heartPoint(t);
+          sampled.push({
+            x: scaleX(point.x),
+            y: scaleY(point.y)
+          });
+        }
+
+        var svg = d3.select(container).append('svg')
+          .attr('viewBox', '0 0 ' + W + ' ' + H)
+          .attr('preserveAspectRatio', 'xMidYMid meet')
+          .attr('role', 'img')
+          .attr('aria-label', 'A heart graphed point by point on a mathematical grid');
+
+        var defs = svg.append('defs');
+        var glow = defs.append('filter')
+          .attr('id', 'heart-graph-glow');
+        glow.append('feGaussianBlur')
+          .attr('stdDeviation', 4)
+          .attr('result', 'coloredBlur');
+        var merge = glow.append('feMerge');
+        merge.append('feMergeNode').attr('in', 'coloredBlur');
+        merge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+        var grid = svg.append('g').attr('class', 'heart-grid');
+        var axes = svg.append('g').attr('class', 'heart-axes');
+        var labels = svg.append('g').attr('class', 'heart-axis-labels');
+        var traceGroup = svg.append('g').attr('class', 'heart-trace');
+
+        for (var gx = Math.ceil(xMin / minorStep) * minorStep; gx <= xMax; gx += minorStep) {
+          grid.append('line')
+            .attr('class', gx % majorStep === 0 ? 'heart-grid-line heart-grid-line--major' : 'heart-grid-line')
+            .attr('x1', scaleX(gx))
+            .attr('x2', scaleX(gx))
+            .attr('y1', 0)
+            .attr('y2', H);
+        }
+
+        for (var gy = Math.ceil(yMin / minorStep) * minorStep; gy <= yMax; gy += minorStep) {
+          grid.append('line')
+            .attr('class', gy % majorStep === 0 ? 'heart-grid-line heart-grid-line--major' : 'heart-grid-line')
+            .attr('x1', 0)
+            .attr('x2', W)
+            .attr('y1', scaleY(gy))
+            .attr('y2', scaleY(gy));
+        }
+
+        axes.append('line')
+          .attr('class', 'heart-axis-line')
+          .attr('x1', scaleX(0))
+          .attr('x2', scaleX(0))
+          .attr('y1', 0)
+          .attr('y2', H);
+
+        axes.append('line')
+          .attr('class', 'heart-axis-line')
+          .attr('x1', 0)
+          .attr('x2', W)
+          .attr('y1', scaleY(0))
+          .attr('y2', scaleY(0));
+
+        for (var majorX = xMin; majorX <= xMax; majorX += majorStep) {
+          if (majorX === 0) continue;
+          labels.append('text')
+            .attr('class', 'heart-axis-label')
+            .attr('x', scaleX(majorX))
+            .attr('y', scaleY(0) + 18)
+            .attr('text-anchor', 'middle')
+            .text(majorX);
+        }
+
+        for (var majorY = yMin; majorY <= yMax; majorY += majorStep) {
+          if (majorY === 0) continue;
+          labels.append('text')
+            .attr('class', 'heart-axis-label')
+            .attr('x', scaleX(0) + 10)
+            .attr('y', scaleY(majorY) - 6)
+            .attr('text-anchor', 'start')
+            .text(majorY);
+        }
+
+        labels.append('text')
+          .attr('class', 'heart-axis-name')
+          .attr('x', W - 16)
+          .attr('y', scaleY(0) - 10)
+          .attr('text-anchor', 'end')
+          .text('x');
+
+        labels.append('text')
+          .attr('class', 'heart-axis-name')
+          .attr('x', scaleX(0) + 12)
+          .attr('y', 20)
+          .attr('text-anchor', 'start')
+          .text('y');
+
+        var path = traceGroup.append('path')
+          .attr('class', 'heart-plot-line')
+          .attr('filter', 'url(#heart-graph-glow)')
+          .attr('d', '')
+          .attr('fill', 'none');
+
+        var pointLayer = traceGroup.append('g');
+        var cursor = traceGroup.append('circle')
+          .attr('class', 'heart-plot-cursor')
+          .attr('r', 5.5)
+          .attr('cx', sampled[0].x)
+          .attr('cy', sampled[0].y);
+
+        if (status) {
+          status.textContent = 'plotting the curve point by point...';
+        }
+
+        var lastCount = 0;
+        var startedAt = null;
+
+        function render(count) {
+          if (count <= 0) return;
+          var visible = sampled.slice(0, count);
+          var line = d3.line()
+            .x(function (d) { return d.x; })
+            .y(function (d) { return d.y; })
+            .curve(d3.curveLinear);
+
+          path.attr('d', line(visible));
+
+          while (lastCount < count) {
+            pointLayer.append('circle')
+              .attr('class', 'heart-plot-point')
+              .attr('r', lastCount % 12 === 0 ? 2.4 : 1.7)
+              .attr('cx', sampled[lastCount].x)
+              .attr('cy', sampled[lastCount].y);
+            lastCount++;
+          }
+
+          var currentPoint = sampled[count - 1];
+          cursor.attr('cx', currentPoint.x).attr('cy', currentPoint.y);
+        }
+
+        function tick(timestamp) {
+          if (startedAt === null) startedAt = timestamp;
+          var elapsed = timestamp - startedAt;
+          var progress = Math.min(elapsed / duration, 1);
+          var count = Math.max(1, Math.floor(progress * (sampled.length - 1)) + 1);
+          render(count);
+
+          if (status) {
+            var pct = Math.min(100, Math.round(progress * 100));
+            status.textContent = progress < 1
+              ? 'plotting... ' + pct + '% complete'
+              : 'curve complete. even math knows I love you.';
+          }
+
+          if (progress < 1) {
+            requestAnimationFrame(tick);
+          } else {
+            container.classList.add('heart-graph-complete');
+          }
+        }
+
+        requestAnimationFrame(tick);
       }
 
       /* ── Mark's Birthday Audio ──────────────────────────────── */

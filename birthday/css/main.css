@@ -2500,6 +2500,7 @@ body {
 .scene--ldr         .scene-next-btn  { animation-delay: 10s, 11s; }
 .scene--memory      .scene-next-btn  { animation-delay: 8s, 9s; }
 .scene--nerd        .scene-next-btn  { animation-delay: 10s, 11s; }
+.scene--heart-graph .scene-next-btn  { animation-delay: 7s, 8s; }
 .scene--birthday    .scene-next-btn  { animation-delay: 6s, 7s; }
 
 /* ═══════════════════════════════════════════════════════════
@@ -5957,6 +5958,277 @@ body.cats-celebrate .cat-ambient {
   font-style: italic;
   margin: 0.5rem 0 0;
   text-align: center;
+}
+
+/* ── Heart Graph Scene ────────────────────────────────────── */
+.scene--heart-graph {
+  background:
+    radial-gradient(circle at 50% 12%, rgba(168, 85, 247, 0.18), transparent 35%),
+    radial-gradient(circle at 82% 24%, rgba(244, 114, 182, 0.12), transparent 26%),
+    linear-gradient(180deg, #0b1020 0%, #090d18 48%, #05070f 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+  padding: 1.4rem 1.2rem 1rem;
+  z-index: 7;
+}
+
+.heart-graph-header {
+  width: min(1120px, 96vw);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.6rem;
+  text-align: center;
+}
+
+.heart-graph-kicker {
+  margin: 0;
+  font-family: 'Poppins', monospace;
+  font-size: clamp(0.68rem, 1.35vw, 0.82rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(74, 222, 128, 0.85);
+}
+
+.heart-graph-title {
+  margin: 0;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+  font-weight: 600;
+  color: rgba(248, 240, 255, 0.96);
+}
+
+.heart-graph-formula-card {
+  justify-self: center;
+  width: min(100%, 860px);
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(192, 132, 252, 0.2);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(20, 26, 46, 0.92), rgba(10, 14, 28, 0.88));
+  box-shadow:
+    0 18px 48px rgba(2, 6, 23, 0.36),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(10px);
+}
+
+.heart-graph-formula-label,
+.heart-graph-formula-line,
+.heart-graph-formula-domain {
+  margin: 0;
+  font-family: 'Poppins', monospace;
+}
+
+.heart-graph-formula-label {
+  font-size: clamp(0.68rem, 1.4vw, 0.82rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(125, 211, 252, 0.75);
+  margin-bottom: 0.45rem;
+}
+
+.heart-graph-formula-line {
+  font-size: clamp(0.78rem, 1.65vw, 1.02rem);
+  color: rgba(244, 114, 182, 0.95);
+  line-height: 1.5;
+}
+
+.heart-graph-formula-domain {
+  margin-top: 0.45rem;
+  font-size: clamp(0.7rem, 1.35vw, 0.84rem);
+  color: rgba(196, 181, 253, 0.82);
+}
+
+.heart-graph-stage {
+  position: relative;
+  width: min(1120px, 96vw);
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0;
+}
+
+.heart-graph-chrome {
+  position: absolute;
+  top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 2;
+}
+
+.heart-graph-chrome--left {
+  left: 0.4rem;
+}
+
+.heart-graph-chrome--right {
+  right: 0.4rem;
+}
+
+.heart-graph-chip {
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(15, 23, 42, 0.72);
+  color: rgba(226, 232, 240, 0.8);
+  font-family: 'Poppins', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#heart-graph {
+  position: relative;
+  width: min(1080px, 96vw);
+  height: min(620px, 68vh);
+  border-radius: 28px;
+  overflow: hidden;
+  background:
+    linear-gradient(0deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(59, 130, 246, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 50% 50%, rgba(30, 41, 59, 0.35), rgba(2, 6, 23, 0.95));
+  background-size: 20px 20px, 20px 20px, 100px 100px, 100px 100px, auto;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+    0 24px 60px rgba(2, 6, 23, 0.45);
+}
+
+#heart-graph::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(244, 114, 182, 0.08), transparent 24%),
+    radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.08), transparent 50%);
+  pointer-events: none;
+}
+
+#heart-graph svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.heart-grid-line {
+  stroke: rgba(148, 163, 184, 0.12);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.heart-grid-line--major {
+  stroke: rgba(125, 211, 252, 0.2);
+}
+
+.heart-axis-line {
+  stroke: rgba(226, 232, 240, 0.42);
+  stroke-width: 1.5;
+  shape-rendering: crispEdges;
+}
+
+.heart-axis-label,
+.heart-axis-name {
+  fill: rgba(226, 232, 240, 0.72);
+  font-family: 'Poppins', monospace;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.heart-axis-name {
+  fill: rgba(125, 211, 252, 0.92);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.heart-plot-line {
+  stroke: #fb7185;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.heart-plot-point {
+  fill: rgba(254, 205, 211, 0.95);
+  opacity: 0.92;
+}
+
+.heart-plot-cursor {
+  fill: #fff;
+  stroke: #f472b6;
+  stroke-width: 2.2;
+  filter: drop-shadow(0 0 14px rgba(244, 114, 182, 0.8));
+}
+
+.heart-graph-footer {
+  margin: 0;
+  min-height: 1.4em;
+  font-family: 'Poppins', monospace;
+  font-size: clamp(0.76rem, 1.5vw, 0.96rem);
+  letter-spacing: 0.05em;
+  color: rgba(191, 219, 254, 0.88);
+  text-align: center;
+}
+
+.heart-graph-complete .heart-plot-cursor {
+  opacity: 0.28;
+}
+
+@media (max-width: 900px) {
+  .scene--heart-graph {
+    padding: 1rem 0.85rem 0.9rem;
+  }
+
+  .heart-graph-stage {
+    width: 100%;
+  }
+
+  #heart-graph {
+    width: 100%;
+    height: min(56vh, 520px);
+    border-radius: 22px;
+  }
+
+  .heart-graph-chrome {
+    top: auto;
+    bottom: 0.5rem;
+    gap: 0.35rem;
+  }
+
+  .heart-graph-chip {
+    font-size: 0.64rem;
+    padding: 0.28rem 0.48rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .heart-graph-header {
+    gap: 0.45rem;
+  }
+
+  .heart-graph-formula-card {
+    padding: 0.75rem 0.8rem;
+    border-radius: 16px;
+  }
+
+  .heart-graph-formula-line {
+    font-size: 0.78rem;
+  }
+
+  .heart-graph-stage {
+    padding-bottom: 1.75rem;
+  }
+
+  #heart-graph {
+    height: min(50vh, 440px);
+  }
 }
 
 
