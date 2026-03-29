@@ -896,7 +896,7 @@ Read the rooms in the order of their afterimage.`);
         roomTextEl.innerHTML = `<p>From the ladder, the room changes. Four volumes have graphite words written along their top edges. On the wall behind the upper shelf are four vertical scratches of uneven length.</p>`;
         objectsEl.append(
           objectButton("top edges", () => setDetail("1. ORDER\n2. AFTER\n3. BY\n4. IMAGE")),
-          objectButton("wall scratches", () => setDetail("short\nmedium-long\nmedium\nlong\n\nTreat the ordering as:\n1, 3, 2, 4")),
+          objectButton("wall scratches", () => setDetail("short\nmedium-long\nmedium\nlong\n")),
           objectButton("dust stripes", () => setDetail("These four books have been removed more often than the others. Someone expected height to matter.")),
           objectButton("down", () => navTo("blueHall")),
           objectButton("notebook", () => setDetail(STATE.notebook.join("\n\n") || "No entries yet."))
