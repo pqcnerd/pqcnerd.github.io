@@ -2,170 +2,45 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>For Annie, at Eighteen | pqcnerd</title>
+    <link rel="stylesheet" href="./css/main.css" />
     <link rel="icon" href="./img/flowers.png" type="image/x-icon" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@300;500&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="./css/main.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,700&family=Poppins:wght@300;500&display=swap" rel="stylesheet" />
+    <title>For Annie, at Eighteen | pqcnerd</title>
     <style>
-      /* Poem page — night sky from local copy; edit poem below without touching birthday */
-      html {
-        height: 100%;
-      }
-
-      body {
-        display: block;
-        align-items: unset;
-        justify-content: unset;
-        min-height: 100vh;
-        overflow-x: hidden;
-        overflow-y: auto;
-        perspective: none;
-        background-color: #050510;
-      }
-
-      .sky {
+      /* Poem-only page: stay on the flower scene */
+      .scene--flowers {
         position: fixed;
         inset: 0;
-        z-index: 0;
-        pointer-events: none;
-        overflow: hidden;
       }
-
-      .poem-page {
-        position: relative;
-        z-index: 10;
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: clamp(2.5rem, 6vh, 4rem) clamp(1rem, 4vw, 2rem);
-      }
-
-      .poem-card {
-        width: min(640px, 100%);
-        background: rgba(10, 7, 29, 0.42);
-        border: 1px solid rgba(192, 132, 252, 0.2);
-        border-radius: 22px;
-        box-shadow:
-          0 18px 50px rgba(0, 0, 0, 0.35),
-          0 0 28px rgba(168, 85, 247, 0.12);
-        backdrop-filter: blur(12px);
-        padding: clamp(1.4rem, 3.5vw, 2.2rem) clamp(1.1rem, 3vw, 1.8rem);
-      }
-
-      .poem-scroll {
-        width: 100%;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 0.12rem;
-      }
-
-      .flower-poem-line {
-        font-family: "Poppins", sans-serif;
-        font-weight: 300;
-        font-size: clamp(0.88rem, 2.1vw, 1.05rem);
-        color: rgba(255, 255, 255, 0.94);
-        line-height: 1.7;
-        text-align: center;
-        margin: 0;
-        opacity: 0;
-        transform: translateY(14px);
-        transition: opacity 0.85s ease, transform 0.85s ease;
-        text-shadow: 0 0 18px rgba(168, 85, 247, 0.38);
-      }
-
-      .flower-poem-line.line-visible {
-        opacity: 1;
-        transform: translateY(0);
-      }
-
-      .flower-poem-line.line-title {
-        font-family: "Playfair Display", serif;
-        font-style: italic;
-        font-weight: 700;
-        font-size: clamp(1.15rem, 3vw, 1.55rem);
-        color: #f0abfc;
-        margin-bottom: 0.55rem;
-      }
-
-      .flower-poem-line.line-sig {
-        color: #f472b6;
-        font-style: italic;
-        margin-top: 0.6rem;
-      }
-
-      .poem-stanza-gap {
-        height: 0.85rem;
-      }
-
-      .fireflies {
-        position: fixed;
-        inset: 0;
-        z-index: 3;
-        pointer-events: none;
-      }
-
-      .firefly {
-        position: absolute;
-        width: 0.35vmin;
-        height: 0.35vmin;
-        border-radius: 50%;
-        background: rgba(255, 255, 210, 0.95);
-        box-shadow: 0 0 0.8vmin rgba(255, 245, 180, 0.9), 0 0 2vmin rgba(200, 180, 255, 0.45);
-        animation: mike-firefly 9s ease-in-out infinite;
-      }
-
-      .firefly--1 { top: 22%; left: 12%; animation-delay: 0s; }
-      .firefly--2 { top: 48%; left: 78%; animation-delay: 1.2s; }
-      .firefly--3 { top: 68%; left: 28%; animation-delay: 2.4s; }
-      .firefly--4 { top: 18%; left: 62%; animation-delay: 0.6s; }
-      .firefly--5 { top: 78%; left: 55%; animation-delay: 3.1s; }
-      .firefly--6 { top: 36%; left: 88%; animation-delay: 1.8s; }
-      .firefly--7 { top: 55%; left: 8%; animation-delay: 4s; }
-      .firefly--8 { top: 12%; left: 40%; animation-delay: 2.8s; }
-
-      @keyframes mike-firefly {
-        0%,
-        100% {
-          opacity: 0.15;
-          transform: translate(0, 0) scale(0.7);
-        }
-        40% {
-          opacity: 1;
-          transform: translate(1.2vw, -1.8vh) scale(1.15);
-        }
-        70% {
-          opacity: 0.45;
-          transform: translate(-0.8vw, 1vh) scale(0.9);
-        }
-      }
-
-      @media (max-width: 640px) {
-        .poem-card {
-          border-radius: 18px;
-        }
-
-        .flower-poem-line {
-          line-height: 1.65;
-        }
+      .scene-next-btn {
+        display: none !important;
       }
     </style>
   </head>
-  <body>
-    <div class="sky" aria-hidden="true">
+
+  <body class="container">
+
+    <div class="scene scene--flowers scene--active">
+
       <div class="night"></div>
       <div class="stars stars--small"></div>
       <div class="stars stars--medium"></div>
       <div class="stars stars--large"></div>
       <div class="moon"></div>
       <div class="shooting-star"></div>
+
+      <div class="birds">
+        <div class="bird bird--1"></div>
+        <div class="bird bird--2"></div>
+        <div class="bird bird--3"></div>
+        <div class="bird bird--4"></div>
+        <div class="bird bird--5"></div>
+      </div>
+
       <div class="fireflies">
         <div class="firefly firefly--1"></div>
         <div class="firefly firefly--2"></div>
@@ -175,122 +50,528 @@
         <div class="firefly firefly--6"></div>
         <div class="firefly firefly--7"></div>
         <div class="firefly firefly--8"></div>
+        <div class="firefly firefly--9"></div>
+        <div class="firefly firefly--10"></div>
+        <div class="firefly firefly--11"></div>
+        <div class="firefly firefly--12"></div>
       </div>
-    </div>
 
-    <main class="poem-page">
-      <article class="poem-card" aria-label="For Annie, at Eighteen">
-        <div class="poem-scroll" id="poem"></div>
-      </article>
-    </main>
+      <div class="flower-layout" id="flower-layout">
+        <div class="flower-side-panel" id="flower-side-panel" aria-live="polite">
+          <div class="poem-scroll" id="poem-scroll-side"></div>
+        </div>
 
+        <div class="flower-stage" id="flower-stage">
+          <div class="flower-poem-center" id="flower-poem-center" aria-live="polite">
+            <div class="poem-scroll" id="poem-scroll-center"></div>
+          </div>
+
+          <div class="flowers">
+        <div class="flower flower--1">
+          <div class="flower__leafs flower__leafs--1">
+            <div class="flower__leaf flower__leaf--1"></div>
+            <div class="flower__leaf flower__leaf--2"></div>
+            <div class="flower__leaf flower__leaf--3"></div>
+            <div class="flower__leaf flower__leaf--4"></div>
+            <div class="flower__leaf flower__leaf--5"></div>
+            <div class="flower__leaf flower__leaf--6"></div>
+            <div class="flower__leaf flower__leaf--7"></div>
+            <div class="flower__leaf flower__leaf--8"></div>
+            <div class="flower__inner-leaf flower__inner-leaf--1"></div>
+            <div class="flower__inner-leaf flower__inner-leaf--2"></div>
+            <div class="flower__inner-leaf flower__inner-leaf--3"></div>
+            <div class="flower__inner-leaf flower__inner-leaf--4"></div>
+            <div class="flower__white-circle"></div>
+            <div class="flower__light flower__light--1"></div>
+            <div class="flower__light flower__light--2"></div>
+            <div class="flower__light flower__light--3"></div>
+            <div class="flower__light flower__light--4"></div>
+            <div class="flower__light flower__light--5"></div>
+            <div class="flower__light flower__light--6"></div>
+            <div class="flower__light flower__light--7"></div>
+            <div class="flower__light flower__light--8"></div>
+          </div>
+          <div class="flower__line">
+            <div class="flower__line__leaf flower__line__leaf--1"></div>
+            <div class="flower__line__leaf flower__line__leaf--2"></div>
+            <div class="flower__line__leaf flower__line__leaf--3"></div>
+            <div class="flower__line__leaf flower__line__leaf--4"></div>
+            <div class="flower__line__leaf flower__line__leaf--5"></div>
+            <div class="flower__line__leaf flower__line__leaf--6"></div>
+          </div>
+        </div>
+
+        <div class="flower flower--2">
+          <div class="flower__leafs flower__leafs--2">
+            <div class="flower__leaf flower__leaf--1"></div>
+            <div class="flower__leaf flower__leaf--2"></div>
+            <div class="flower__leaf flower__leaf--3"></div>
+            <div class="flower__leaf flower__leaf--4"></div>
+            <div class="flower__leaf flower__leaf--5"></div>
+            <div class="flower__leaf flower__leaf--6"></div>
+            <div class="flower__leaf flower__leaf--7"></div>
+            <div class="flower__leaf flower__leaf--8"></div>
+            <div class="flower__inner-leaf flower__inner-leaf--1"></div>
+            <div class="flower__inner-leaf flower__inner-leaf--2"></div>
+            <div class="flower__inner-leaf flower__inner-leaf--3"></div>
+            <div class="flower__inner-leaf flower__inner-leaf--4"></div>
+            <div class="flower__white-circle"></div>
+            <div class="flower__light flower__light--1"></div>
+            <div class="flower__light flower__light--2"></div>
+            <div class="flower__light flower__light--3"></div>
+            <div class="flower__light flower__light--4"></div>
+            <div class="flower__light flower__light--5"></div>
+            <div class="flower__light flower__light--6"></div>
+            <div class="flower__light flower__light--7"></div>
+            <div class="flower__light flower__light--8"></div>
+          </div>
+          <div class="flower__line">
+            <div class="flower__line__leaf flower__line__leaf--1"></div>
+            <div class="flower__line__leaf flower__line__leaf--2"></div>
+            <div class="flower__line__leaf flower__line__leaf--3"></div>
+            <div class="flower__line__leaf flower__line__leaf--4"></div>
+          </div>
+        </div>
+
+        <div class="flower flower--3">
+          <div class="flower__leafs flower__leafs--3">
+            <div class="flower__leaf flower__leaf--1"></div>
+            <div class="flower__leaf flower__leaf--2"></div>
+            <div class="flower__leaf flower__leaf--3"></div>
+            <div class="flower__leaf flower__leaf--4"></div>
+            <div class="flower__leaf flower__leaf--5"></div>
+            <div class="flower__leaf flower__leaf--6"></div>
+            <div class="flower__leaf flower__leaf--7"></div>
+            <div class="flower__leaf flower__leaf--8"></div>
+            <div class="flower__inner-leaf flower__inner-leaf--1"></div>
+            <div class="flower__inner-leaf flower__inner-leaf--2"></div>
+            <div class="flower__inner-leaf flower__inner-leaf--3"></div>
+            <div class="flower__inner-leaf flower__inner-leaf--4"></div>
+            <div class="flower__white-circle"></div>
+            <div class="flower__light flower__light--1"></div>
+            <div class="flower__light flower__light--2"></div>
+            <div class="flower__light flower__light--3"></div>
+            <div class="flower__light flower__light--4"></div>
+            <div class="flower__light flower__light--5"></div>
+            <div class="flower__light flower__light--6"></div>
+            <div class="flower__light flower__light--7"></div>
+            <div class="flower__light flower__light--8"></div>
+          </div>
+          <div class="flower__line">
+            <div class="flower__line__leaf flower__line__leaf--1"></div>
+            <div class="flower__line__leaf flower__line__leaf--2"></div>
+            <div class="flower__line__leaf flower__line__leaf--3"></div>
+            <div class="flower__line__leaf flower__line__leaf--4"></div>
+          </div>
+        </div>
+
+        <div class="grow-ans" style="--d: 1.2s">
+          <div class="flower__g-long">
+            <div class="flower__g-long__top"></div>
+            <div class="flower__g-long__bottom"></div>
+          </div>
+        </div>
+
+        <div class="growing-grass">
+          <div class="flower__grass flower__grass--1">
+            <div class="flower__grass--top"></div>
+            <div class="flower__grass--bottom"></div>
+            <div class="flower__grass__leaf flower__grass__leaf--1"></div>
+            <div class="flower__grass__leaf flower__grass__leaf--2"></div>
+            <div class="flower__grass__leaf flower__grass__leaf--3"></div>
+            <div class="flower__grass__leaf flower__grass__leaf--4"></div>
+            <div class="flower__grass__leaf flower__grass__leaf--5"></div>
+            <div class="flower__grass__leaf flower__grass__leaf--6"></div>
+            <div class="flower__grass__leaf flower__grass__leaf--7"></div>
+            <div class="flower__grass__leaf flower__grass__leaf--8"></div>
+            <div class="flower__grass__overlay"></div>
+          </div>
+        </div>
+
+        <div class="growing-grass">
+          <div class="flower__grass flower__grass--2">
+            <div class="flower__grass--top"></div>
+            <div class="flower__grass--bottom"></div>
+            <div class="flower__grass__leaf flower__grass__leaf--1"></div>
+            <div class="flower__grass__leaf flower__grass__leaf--2"></div>
+            <div class="flower__grass__leaf flower__grass__leaf--3"></div>
+            <div class="flower__grass__leaf flower__grass__leaf--4"></div>
+            <div class="flower__grass__leaf flower__grass__leaf--5"></div>
+            <div class="flower__grass__leaf flower__grass__leaf--6"></div>
+            <div class="flower__grass__leaf flower__grass__leaf--7"></div>
+            <div class="flower__grass__leaf flower__grass__leaf--8"></div>
+            <div class="flower__grass__overlay"></div>
+          </div>
+        </div>
+
+        <div class="grow-ans" style="--d: 2.4s">
+          <div class="flower__g-right flower__g-right--1"><div class="leaf"></div></div>
+        </div>
+        <div class="grow-ans" style="--d: 2.8s">
+          <div class="flower__g-right flower__g-right--2"><div class="leaf"></div></div>
+        </div>
+
+        <div class="grow-ans" style="--d: 2.8s">
+          <div class="flower__g-front">
+            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--1"><div class="flower__g-front__leaf"></div></div>
+            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--2"><div class="flower__g-front__leaf"></div></div>
+            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--3"><div class="flower__g-front__leaf"></div></div>
+            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--4"><div class="flower__g-front__leaf"></div></div>
+            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--5"><div class="flower__g-front__leaf"></div></div>
+            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--6"><div class="flower__g-front__leaf"></div></div>
+            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--7"><div class="flower__g-front__leaf"></div></div>
+            <div class="flower__g-front__leaf-wrapper flower__g-front__leaf-wrapper--8"><div class="flower__g-front__leaf"></div></div>
+            <div class="flower__g-front__line"></div>
+          </div>
+        </div>
+
+        <div class="grow-ans" style="--d: 3.2s">
+          <div class="flower__g-fr">
+            <div class="leaf"></div>
+            <div class="flower__g-fr__leaf flower__g-fr__leaf--1"></div>
+            <div class="flower__g-fr__leaf flower__g-fr__leaf--2"></div>
+            <div class="flower__g-fr__leaf flower__g-fr__leaf--3"></div>
+            <div class="flower__g-fr__leaf flower__g-fr__leaf--4"></div>
+            <div class="flower__g-fr__leaf flower__g-fr__leaf--5"></div>
+            <div class="flower__g-fr__leaf flower__g-fr__leaf--6"></div>
+            <div class="flower__g-fr__leaf flower__g-fr__leaf--7"></div>
+            <div class="flower__g-fr__leaf flower__g-fr__leaf--8"></div>
+          </div>
+        </div>
+
+        <div class="long-g long-g--0">
+          <div class="grow-ans" style="--d: 3s"><div class="leaf leaf--0"></div></div>
+          <div class="grow-ans" style="--d: 2.2s"><div class="leaf leaf--1"></div></div>
+          <div class="grow-ans" style="--d: 3.4s"><div class="leaf leaf--2"></div></div>
+          <div class="grow-ans" style="--d: 3.6s"><div class="leaf leaf--3"></div></div>
+        </div>
+        <div class="long-g long-g--1">
+          <div class="grow-ans" style="--d: 3.6s"><div class="leaf leaf--0"></div></div>
+          <div class="grow-ans" style="--d: 3.8s"><div class="leaf leaf--1"></div></div>
+          <div class="grow-ans" style="--d: 4s"><div class="leaf leaf--2"></div></div>
+          <div class="grow-ans" style="--d: 4.2s"><div class="leaf leaf--3"></div></div>
+        </div>
+        <div class="long-g long-g--2">
+          <div class="grow-ans" style="--d: 4s"><div class="leaf leaf--0"></div></div>
+          <div class="grow-ans" style="--d: 4.2s"><div class="leaf leaf--1"></div></div>
+          <div class="grow-ans" style="--d: 4.4s"><div class="leaf leaf--2"></div></div>
+          <div class="grow-ans" style="--d: 4.6s"><div class="leaf leaf--3"></div></div>
+        </div>
+        <div class="long-g long-g--3">
+          <div class="grow-ans" style="--d: 4s"><div class="leaf leaf--0"></div></div>
+          <div class="grow-ans" style="--d: 4.2s"><div class="leaf leaf--1"></div></div>
+          <div class="grow-ans" style="--d: 3s"><div class="leaf leaf--2"></div></div>
+          <div class="grow-ans" style="--d: 3.6s"><div class="leaf leaf--3"></div></div>
+        </div>
+        <div class="long-g long-g--4">
+          <div class="grow-ans" style="--d: 4s"><div class="leaf leaf--0"></div></div>
+          <div class="grow-ans" style="--d: 4.2s"><div class="leaf leaf--1"></div></div>
+          <div class="grow-ans" style="--d: 3s"><div class="leaf leaf--2"></div></div>
+          <div class="grow-ans" style="--d: 3.6s"><div class="leaf leaf--3"></div></div>
+        </div>
+        <div class="long-g long-g--5">
+          <div class="grow-ans" style="--d: 4s"><div class="leaf leaf--0"></div></div>
+          <div class="grow-ans" style="--d: 4.2s"><div class="leaf leaf--1"></div></div>
+          <div class="grow-ans" style="--d: 3s"><div class="leaf leaf--2"></div></div>
+          <div class="grow-ans" style="--d: 3.6s"><div class="leaf leaf--3"></div></div>
+        </div>
+        <div class="long-g long-g--6">
+          <div class="grow-ans" style="--d: 4.2s"><div class="leaf leaf--0"></div></div>
+          <div class="grow-ans" style="--d: 4.4s"><div class="leaf leaf--1"></div></div>
+          <div class="grow-ans" style="--d: 4.6s"><div class="leaf leaf--2"></div></div>
+          <div class="grow-ans" style="--d: 4.8s"><div class="leaf leaf--3"></div></div>
+        </div>
+        <div class="long-g long-g--7">
+          <div class="grow-ans" style="--d: 3s"><div class="leaf leaf--0"></div></div>
+          <div class="grow-ans" style="--d: 3.2s"><div class="leaf leaf--1"></div></div>
+          <div class="grow-ans" style="--d: 3.5s"><div class="leaf leaf--2"></div></div>
+          <div class="grow-ans" style="--d: 3.6s"><div class="leaf leaf--3"></div></div>
+        </div>
+
+        <div class="butterfly butterfly--1">
+          <div class="butterfly__wing butterfly__wing--left"></div>
+          <div class="butterfly__wing butterfly__wing--right"></div>
+          <div class="butterfly__body"></div>
+        </div>
+        <div class="butterfly butterfly--2">
+          <div class="butterfly__wing butterfly__wing--left"></div>
+          <div class="butterfly__wing butterfly__wing--right"></div>
+          <div class="butterfly__body"></div>
+        </div>
+          <div class="butterfly butterfly--3">
+            <div class="butterfly__wing butterfly__wing--left"></div>
+            <div class="butterfly__wing butterfly__wing--right"></div>
+            <div class="butterfly__body"></div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+    </div><!-- /scene--flowers -->
+
+    <script src="./js/main.js"></script>
     <script>
-      (function () {
-        var poem = [
-          ["For Annie, at Eighteen", "line-title"],
-          ["", "line-blank"],
-          ["Across nine thousand miles of star-anointed shore,", ""],
-          ["From Boston’s winter glass I love your radiance more.", ""],
-          ["", "line-blank"],
-          ["Hong Kong awakes in pearl and neon, harbor-bright,", ""],
-          ["While I keep watch for you beneath a scholar’s night.", ""],
-          ["", "line-blank"],
-          ["Though oceans legislate their vast republics of sea,", ""],
-          ["Your name still moves through me like music through a tree.", ""],
-          ["", "line-blank"],
-          ["Today you turn eighteen; the hour, in cloth-of-gold,", ""],
-          ["Sets at your feet another realm for wonder to unfold.", ""],
-          ["", "line-blank"],
-          ["You are my Kuromi star, half velvet dusk, half grace,", ""],
-          ["With clever midnight ribboned softly round your face.", ""],
-          ["", "line-blank"],
-          ["My kitty cat, all purring wit and bright capricious art,", ""],
-          ["As if the moon had loaned its claws to guard a tender heart.", ""],
-          ["", "line-blank"],
-          ["I know the noble weariness that follows gifted light,", ""],
-          ["For both of us have borne burnout, that slow, sepulchral blight.", ""],
-          ["", "line-blank"],
-          ["Yet still you read, still study, still lift your lucid sight,", ""],
-          ["Like script in lamp-lit libraries refusing death by night.", ""],
-          ["", "line-blank"],
-          ["I dream of picnics with you under green, intelligent skies,", ""],
-          ["With books unlatched between our knees and sunlight in your eyes.", ""],
-          ["", "line-blank"],
-          ["We’d annotate the afternoon with laughter, thought, and breeze,", ""],
-          ["And let the grass become a text of minor ecstasies.", ""],
-          ["", "line-blank"],
-          ["Then let us court the heavens in one tremendous dive,", ""],
-          ["Where terror turns to rapture and the whole blue world goes alive.", ""],
-          ["", "line-blank"],
-          ["And later, in the water’s lit and glassy, silver swing,", ""],
-          ["You’d move as though the swimming pool had learned your secret spring.", ""],
-          ["", "line-blank"],
-          ["I’d bring you omurice, gold as a hearth’s domestic flame,", ""],
-          ["And spaghetti bolognese, red as the blush within your name.", ""],
-          ["", "line-blank"],
-          ["Cats would approve your kingdom; even indolence would start", ""],
-          ["To look like highest wisdom when it issued from your heart.", ""],
-          ["", "line-blank"],
-          ["And carwashed, in Minecraft, gleams with such peculiar hue,", ""],
-          ["A small enchanted password no duller soul could ever construe.", ""],
-          ["", "line-blank"],
-          ["For even in made worlds of block and torch and emerald view,", ""],
-          ["You leave the map more memorable for having passed it through.", ""],
-          ["", "line-blank"],
-          ["So happy eighteenth birthday, Annie; may this new year be", "line-title"],
-          ["A gentler lexicon of rest, of joy, of clarity.", ""],
-          ["", "line-blank"],
-          ["And may these nine thousand miles, stern cartographers though they seem,", ""],
-          ["Fold shut like paper at the hour I finally reach your dream.", ""],
-          ["", "line-blank"],
-          ["Till then, from Boston’s book-lined dusk to Hong Kong’s harbor-blue,", ""],
-          ["I send my brightest, rhyming heart across the dark to you.", ""],
-          ["", "line-blank"],
-          ["— Mark", "line-sig"]
-        ];
+      /* Edit this poem freely — it only lives on /mike */
+      function wait(ms) {
+        return new Promise(function (r) { setTimeout(r, ms); });
+      }
 
-        var root = document.getElementById("poem");
+      var flowerLayout     = document.getElementById('flower-layout');
+      var poemScrollCenter = document.getElementById('poem-scroll-center');
+      var poemScrollSide   = document.getElementById('poem-scroll-side');
 
-        function wait(ms) {
-          return new Promise(function (resolve) {
-            setTimeout(resolve, ms);
-          });
+      var flowerPoemSections = [
+        {
+          mode: 'right',
+          pause: 2400,
+          lines: [
+            ['For Annie, at Eighteen', 'line-title'],
+            ['', 'line-blank'],
+            ['Across nine thousand miles of star-anointed shore,', ''],
+            ['From Boston’s winter glass I love your radiance more.', '']
+          ]
+        },
+        {
+          mode: 'left',
+          pause: 1800,
+          lines: [
+            ['Hong Kong awakes in pearl and neon, harbor-bright,', ''],
+            ['While I keep watch for you beneath a scholar’s night.', ''],
+            ['', 'line-blank'],
+            ['Though oceans legislate their vast republics of sea,', ''],
+            ['Your name still moves through me like music through a tree.', '']
+          ]
+        },
+        {
+          mode: 'right',
+          pause: 1800,
+          lines: [
+            ['Today you turn eighteen; the hour, in cloth-of-gold,', ''],
+            ['Sets at your feet another realm for wonder to unfold.', ''],
+            ['', 'line-blank'],
+            ['You are my Kuromi star, half velvet dusk, half grace,', ''],
+            ['With clever midnight ribboned softly round your face.', '']
+          ]
+        },
+        {
+          mode: 'left',
+          pause: 1800,
+          lines: [
+            ['My kitty cat, all purring wit and bright capricious art,', ''],
+            ['As if the moon had loaned its claws to guard a tender heart.', ''],
+            ['', 'line-blank'],
+            ['I know the noble weariness that follows gifted light,', ''],
+            ['For both of us have borne burnout, that slow, sepulchral blight.', '']
+          ]
+        },
+        {
+          mode: 'right',
+          pause: 1800,
+          lines: [
+            ['Yet still you read, still study, still lift your lucid sight,', ''],
+            ['Like script in lamp-lit libraries refusing death by night.', ''],
+            ['', 'line-blank'],
+            ['I dream of picnics with you under green, intelligent skies,', ''],
+            ['With books unlatched between our knees and sunlight in your eyes.', '']
+          ]
+        },
+        {
+          mode: 'left',
+          pause: 1800,
+          lines: [
+            ['We’d annotate the afternoon with laughter, thought, and breeze,', ''],
+            ['And let the grass become a text of minor ecstasies.', ''],
+            ['', 'line-blank'],
+            ['Then let us court the heavens in one tremendous dive,', ''],
+            ['Where terror turns to rapture and the whole blue world goes alive.', '']
+          ]
+        },
+        {
+          mode: 'right',
+          pause: 1800,
+          lines: [
+            ['And later, in the water’s lit and glassy, silver swing,', ''],
+            ['You’d move as though the swimming pool had learned your secret spring.', ''],
+            ['', 'line-blank'],
+            ['I’d bring you omurice, gold as a hearth’s domestic flame,', ''],
+            ['And spaghetti bolognese, red as the blush within your name.', '']
+          ]
+        },
+        {
+          mode: 'left',
+          pause: 1800,
+          lines: [
+            ['Cats would approve your kingdom; even indolence would start', ''],
+            ['To look like highest wisdom when it issued from your heart.', ''],
+            ['', 'line-blank'],
+            ['And carwashed, in Minecraft, gleams with such peculiar hue,', ''],
+            ['A small enchanted password no duller soul could ever construe.', '']
+          ]
+        },
+        {
+          mode: 'right',
+          pause: 1800,
+          lines: [
+            ['For even in made worlds of block and torch and emerald view,', ''],
+            ['You leave the map more memorable for having passed it through.', ''],
+            ['', 'line-blank']
+          ]
+        },
+        {
+          mode: 'center',
+          pause: 2400,
+          lines: [
+            ['So happy eighteenth birthday, Annie; may this new year be', 'line-title'],
+            ['A gentler lexicon of rest, of joy, of clarity.', ''],
+            ['', 'line-blank'],
+            ['And may these nine thousand miles, stern cartographers though they seem,', ''],
+            ['Fold shut like paper at the hour I finally reach your dream.', ''],
+            ['', 'line-blank'],
+            ['Till then, from Boston’s book-lined dusk to Hong Kong’s harbor-blue,', ''],
+            ['I send my brightest, rhyming heart across the dark to you.', ''],
+            ['', 'line-blank'],
+            ['— Mark', 'line-sig']
+          ]
+        }
+      ];
+
+      var activeFlowerPoemContainer = null;
+      var activeFlowerMode = null;
+
+      function setFlowerLayoutMode(mode) {
+        if (!flowerLayout) return;
+        flowerLayout.classList.remove('flower-layout--center', 'flower-layout--left', 'flower-layout--right', 'flower-layout--lift', 'flower-layout--finale');
+        if (mode === 'finale') {
+          flowerLayout.classList.add('flower-layout--center', 'flower-layout--lift', 'flower-layout--finale');
+          return;
+        }
+        flowerLayout.classList.add('flower-layout--' + mode);
+        if (mode !== 'center') {
+          flowerLayout.classList.add('flower-layout--lift');
+        }
+      }
+
+      function appendFlowerPoemLine(container, text, cls) {
+        if (!container) return;
+        if (cls === 'line-blank') {
+          var spacer = document.createElement('div');
+          spacer.className = 'poem-stanza-gap';
+          container.appendChild(spacer);
+          return;
         }
 
-        function appendLine(text, cls) {
-          if (cls === "line-blank") {
-            var spacer = document.createElement("div");
-            spacer.className = "poem-stanza-gap";
-            root.appendChild(spacer);
-            return spacer;
+        var p = document.createElement('p');
+        p.className = 'flower-poem-line' + (cls ? ' ' + cls : '');
+        p.setAttribute('aria-label', text);
+
+        var words = text.split(' ');
+        var charIndex = 0;
+
+        for (var w = 0; w < words.length; w++) {
+          var wordSpan = document.createElement('span');
+          wordSpan.className = 'flower-poem-word';
+
+          for (var c = 0; c < words[w].length; c++) {
+            var span = document.createElement('span');
+            span.className = 'flower-poem-char';
+            span.style.setProperty('--char-delay', (charIndex * 24) + 'ms');
+            span.textContent = words[w][c];
+            wordSpan.appendChild(span);
+            charIndex++;
           }
 
-          var p = document.createElement("p");
-          p.className = "flower-poem-line" + (cls ? " " + cls : "");
-          p.textContent = text;
-          root.appendChild(p);
+          p.appendChild(wordSpan);
+
+          if (w < words.length - 1) {
+            var space = document.createElement('span');
+            space.className = 'flower-poem-space';
+            space.textContent = '\u00A0';
+            p.appendChild(space);
+            charIndex++;
+          }
+        }
+
+        container.appendChild(p);
+        requestAnimationFrame(function () {
           requestAnimationFrame(function () {
-            requestAnimationFrame(function () {
-              p.classList.add("line-visible");
-            });
+            p.classList.add('line-visible');
           });
-          return p;
-        }
+        });
+      }
 
-        async function run() {
-          await wait(600);
-          for (var i = 0; i < poem.length; i++) {
-            var line = poem[i];
-            var el = appendLine(line[0], line[1]);
-            if (line[1] !== "line-blank") {
-              el.scrollIntoView({ behavior: "smooth", block: "nearest" });
-            }
-            await wait(line[1] === "line-blank" ? 420 : 780);
+      function getFlowerExitDirection(fromMode, toMode) {
+        if (toMode === 'left') return 'left';
+        if (toMode === 'right') return 'right';
+        if (fromMode === 'left') return 'right';
+        if (fromMode === 'right') return 'left';
+        return 'right';
+      }
+
+      function spawnFlowerPoemSpecks(container, direction) {
+        if (!container) return;
+        for (var i = 0; i < 16; i++) {
+          var speck = document.createElement('span');
+          speck.className = 'poem-speck poem-speck--' + direction;
+          speck.style.left = (18 + Math.random() * 64) + '%';
+          speck.style.top = (12 + Math.random() * 68) + '%';
+          speck.style.width = (3 + Math.random() * 5) + 'px';
+          speck.style.height = speck.style.width;
+          speck.style.animationDelay = (Math.random() * 120) + 'ms';
+          container.appendChild(speck);
+          speck.addEventListener('animationend', function () {
+            if (this.parentNode) this.parentNode.removeChild(this);
+          });
+        }
+      }
+
+      async function clearFlowerPoemContainer(container, direction) {
+        if (!container || !container.childElementCount) return;
+        container.classList.remove('poem-scroll--drift-left', 'poem-scroll--drift-right');
+        spawnFlowerPoemSpecks(container, direction);
+        void container.offsetWidth;
+        container.classList.add('poem-scroll--drift-' + direction);
+        await wait(900);
+        container.classList.remove('poem-scroll--drift-left', 'poem-scroll--drift-right');
+        container.innerHTML = '';
+      }
+
+      function getFlowerLineDelay(text, cls) {
+        if (cls === 'line-blank') return 1300;
+        var charCount = (text || '').replace(/\s+/g, '').length;
+        return Math.min(4200, 1250 + charCount * 42);
+      }
+
+      async function runFlowerPoem() {
+        if (!flowerLayout || !poemScrollCenter || !poemScrollSide) return;
+
+        await wait(5600);
+
+        for (var s = 0; s < flowerPoemSections.length; s++) {
+          var section = flowerPoemSections[s];
+          var target  = (section.mode === 'center' || section.mode === 'finale') ? poemScrollCenter : poemScrollSide;
+
+          if (activeFlowerPoemContainer && activeFlowerPoemContainer !== target) {
+            await clearFlowerPoemContainer(activeFlowerPoemContainer, getFlowerExitDirection(activeFlowerMode, section.mode));
+          } else if (target.childElementCount) {
+            await clearFlowerPoemContainer(target, getFlowerExitDirection(activeFlowerMode, section.mode));
           }
-        }
 
-        run();
-      })();
+          setFlowerLayoutMode(section.mode);
+          await wait(section.pause);
+          activeFlowerPoemContainer = target;
+          activeFlowerMode = section.mode;
+
+          for (var i = 0; i < section.lines.length; i++) {
+            var line = section.lines[i];
+            appendFlowerPoemLine(target, line[0], line[1]);
+            await wait(getFlowerLineDelay(line[0], line[1]));
+          }
+
+          await wait(2100);
+        }
+      }
+
+      runFlowerPoem();
     </script>
   </body>
 </html>
